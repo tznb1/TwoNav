@@ -1,0 +1,94 @@
+body {
+    margin: 5px 5px 5px 5px;
+    background: #f2f2f2;
+}
+.layui-form-item .layui-input-company {
+    width: auto;padding-right: 10px;line-height: 38px;
+}
+
+.layui-form-item .layui-input-inline {
+    width: 190px;
+}
+
+/*手机端适配*/
+@media screen and (max-width: 768px) {
+    .layui-form-mid {
+        margin-left: 10px;
+    }
+    .layui-form-item .layui-input-inline {
+        margin-right: 0px;
+        width:  calc(100% - 110px);
+    }
+}
+@media screen and (max-width: 450px){
+    .layui-form-item .layui-input-inline+.layui-form-mid {
+        margin-left: 10px;
+    }
+}
+
+
+.layuimini-container {
+    border: 1px solid #f2f2f2;
+    border-radius: 5px;
+    background-color: #ffffff
+}
+.layuimini-container .layuimini-btn-primary {
+    color: #fff;
+    background-color: #2c3e50;
+}
+.layuimini-main {
+    margin: 10px 10px 10px 10px;
+}
+
+/**必填红点 */
+.layuimini-form > .layui-form-item > .required:after {
+    content: '*';
+    color: red;
+    position: absolute;
+    margin-left: 4px;
+    font-weight: bold;
+    line-height: 1.8em;
+    /*top: 6px;*/
+    /*right: 5px;*/
+}
+
+
+.layuimini-form > .layui-form-item > .layui-input-block > tip {
+    display: inline-block;
+    margin-top: 10px;
+    line-height: 10px;
+    /*font-size: 10px;*/
+    color: #a29c9c;
+}
+
+/**搜索框*/
+.layuimini-container .table-search-fieldset {
+    margin: 0;
+    border: 1px solid #e6e6e6;
+    padding: 10px 20px 5px 20px;
+    color: #6b6b6b;
+}
+
+/**自定义滚动条样式 */
+::-webkit-scrollbar {
+    width: 6px;
+    height: 6px
+}
+
+::-webkit-scrollbar-track {
+    background-color: transparent;
+    -webkit-border-radius: 2em;
+    -moz-border-radius: 2em;
+    border-radius: 2em;
+}
+
+::-webkit-scrollbar-thumb {
+    background-color: #9c9da0;
+    -webkit-border-radius: 2em;
+    -moz-border-radius: 2em;
+    border-radius: 2em
+}
+
+.layui-table-tool-temp{
+    padding-right: 0px;
+}

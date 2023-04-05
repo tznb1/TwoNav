@@ -1,0 +1,33 @@
+{
+    "name":"默认主题(加强)",
+    "description":"默认主题(加强)",
+    "homepage":"https://gitee.com/tznb/OneNav",
+    "version":"2.0.0",
+    "update":"2023/03/15",
+    "author":"落幕",
+    "screenshot":"https://s3.bmp.ovh/imgs/2022/04/17/8cac968a8cc8135c.png",
+    "config": {
+        "HeadBackgroundColor":"#3f51b5",
+        "SidebarBackgroundColor":"",
+        "CardBackgroundColor":"#ffffff",
+        "OtherBackgroundColor":"#ffffff",
+        "HeadFontColor":"#ffffff",
+        "CategoryFontColor":"#212121",
+        "TitleFontColor":"#212121",
+        "DescrFontColor":"#9e9e9e",
+        "referrer":"0",
+        "CardNum":"0",
+        "backgroundURL":"",
+        "DescrRowNumber":"2",
+        "night":"0",
+        "WeatherBackground":"1",
+        "WeatherKey":"dd2e9ab2728d4b3c91245fe4057cb9ce",
+        "WeatherFontColor":"1",
+        "WeatherPosition":"2",
+        "ClickLocation":"0"
+    },
+    "support":{
+        "subitem":0,
+        "category_svg":0
+    }
+}

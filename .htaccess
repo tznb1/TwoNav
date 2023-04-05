@@ -1,0 +1,8 @@
+# Apache配置文件
+RewriteEngine On
+RewriteRule  ^(data|system|templates)/.*.(db|db3|sql|tar|gz|zip|info|log)$ - [F]
+RewriteRule '^login$' ./index.php?c=login [L] 
+RewriteRule '^admin$' ./index.php?c=admin [L]
+RewriteRule '^([A-Za-z0-9]+)$' ./index.php?u=$1 [L]
+RewriteRule '^(.+)/click/([A-Za-z0-9]+)$' ./index.php?c=$2&id=$3&u=$1 [L]
+RewriteRule '^(.+)/click/(.+)' ./$3 [L]
