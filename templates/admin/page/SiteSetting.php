@@ -96,7 +96,8 @@
 
 <?php } ?>
             <div class="layui-form-item">
-                <div class="layui-input-block"><button class="layui-btn layui-btn-normal" lay-submit lay-filter="save">确认保存</button></div>
+                <button class="layui-btn layui-btn-primary layui-border-black" id="help" sort_id="7968924">帮助</button>
+                <button class="layui-btn layui-btn-normal" lay-submit lay-filter="save">保存</button>
             </div>
         </div>
     </form>
@@ -146,6 +147,7 @@ layui.use(['jquery','form','upload'], function () {
         });
         return false;
     }); 
+
 });
 </script>
 </body>

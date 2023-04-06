@@ -32,7 +32,7 @@ function _GET(letiable,top = false){
                let pair = lets[i].split("=");
                if(pair[0] == letiable){return pair[1];}
        }
-       return(false);
+       return false;
 }
 //时间戳格式化
 function  timestampToTime(timestamp) {
@@ -68,4 +68,12 @@ function Get_baseUrl() {
         pathname = pathname.substring(0, pathname.lastIndexOf("/") + 1),
         baseUrl = protocol + "//" + hostname + (port ? ":" + port : "") + pathname;
     return baseUrl;
+}
+
+//帮助
+if (typeof jQuery != 'undefined') { 
+    $("#help").click(function(){
+        window.open("https://gitee.com/tznb/TwoNav/wikis/pages?sort_id=" + $(this).attr("sort_id") + "&doc_id=3767990","target");
+        return false;
+    });
 }

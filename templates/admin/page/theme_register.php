@@ -7,6 +7,7 @@
     max-height: 100%;   
     aspect-ratio:16/9;
 }
+#default #del {display: none;}
 </style> 
 <body>
 <div class="layuimini-container">

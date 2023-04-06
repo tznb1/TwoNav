@@ -58,7 +58,7 @@
     <div class="layui-form-item" style="padding-top: 10px;">
      <div class="layui-input-block">
          <button class="layui-btn" lay-submit lay-filter="save">保存</button>
-         &nbsp; 过渡页使用说明，请参考：<a href="https://dwz.ovh/mrkx1" target = "_blank" title = "过渡页使用说明">https://dwz.ovh/mrkx1</a>
+         &nbsp; <a href="https://gitee.com/tznb/TwoNav/wikis/pages?sort_id=7968712&doc_id=3767990" target = "_blank" >过渡页使用说明</a>
      </div>
     </div>
    </form>

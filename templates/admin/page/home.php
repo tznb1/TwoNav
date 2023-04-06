@@ -285,6 +285,10 @@ if($USER_DB['UserGroup'] == 'root'){
 }
 ?>
 <script>
+    layui.extend({
+        echarts: '{/}<?php echo $libs?>/Layui/extend/echarts',
+        echartsTheme: '{/}<?php echo $libs?>/Layui/extend/echartsTheme'
+    });
     layui.use(['layer', 'miniTab','echarts'], function () {
         var $ = layui.jquery,
             layer = layui.layer,

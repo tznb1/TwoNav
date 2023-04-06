@@ -5,6 +5,18 @@
     <li class="layui-timeline-item">
         <i class="layui-icon layui-timeline-axis"></i>
         <div class="layui-timeline-content layui-text">
+            <h4 class="layui-timeline-title">v2.0.08-20230406</h4>
+            <ul>
+                <li>增加一些使用说明</li>
+                <li>优化兼容性(php8.0.0 getdir函数重名)</li>
+                <li>调整主题模板默认主题不显示删除按钮(因为不允许删除默认模板)</li>
+                <li>精简部分静态资源,Medoo框架更新到2.1.8</li>
+            </ul>
+        </div>
+    </li>
+    <li class="layui-timeline-item">
+        <i class="layui-icon layui-timeline-axis"></i>
+        <div class="layui-timeline-content layui-text">
             <h4 class="layui-timeline-title">v2.0.07-20230405</h4>
             <ul>
                 <li>优化Extend版数据导入,支持保留部分全局配置</li>

@@ -58,7 +58,7 @@ if ($page == 'home') {
 
 //调试
 if( $page == 'test' ) {
-    $dirs = getDir(DIR.'/templates/home');
+    $dirs = get_dir_list(DIR.'/templates/home');
     //var_dump($dirs);
     foreach ($dirs as $dir) {
         $path = DIR.'/templates/home/'.$dir; //目录完整路径
@@ -111,7 +111,7 @@ if($page == 'config_home'){
 //主题设置页面
 if( $page == 'theme_home' || $page == 'theme_login' || $page == 'theme_transit' || $page == 'theme_register') {
     $fn = str_replace('theme_','',$page);
-    $dirs = getDir(DIR.'/templates/'.$fn);
+    $dirs = get_dir_list(DIR.'/templates/'.$fn);
     
     foreach ($dirs as $dir) {
         $path = DIR.'/templates/'.$fn.'/'.$dir; //目录完整路径

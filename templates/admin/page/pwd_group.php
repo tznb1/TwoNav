@@ -17,6 +17,7 @@
 <script type="text/html" id="toolbar">
     <div class="layui-btn-group">
         <button class="layui-btn layui-btn-sm layui-btn-normal" lay-event="add">新增</button>
+        <button class="layui-btn layui-btn-sm layui-btn-normal" lay-event="help">使用说明</button>
     </div>
 </script>
 <script src = "<?php echo $libs;?>/jquery/jquery-3.6.0.min.js"></script>
@@ -65,6 +66,9 @@ layui.use(['form','table'], function () {
         if (obj.event === 'add') {
             form.val('form', {'pid':'0','name':'','password':'','description':''});
            index = layer.open({type: 1,scrollbar: false,shadeClose: true,title: '新增分组',area : ['100%', '100%'],content: $('.form')});
+        }else if(obj.event === 'help'){
+            window.open("https://gitee.com/tznb/TwoNav/wikis/pages?sort_id=7969061&doc_id=3767990","target");
+            return false;
         }
     });
     

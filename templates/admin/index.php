@@ -45,15 +45,11 @@
             </ul>
         </div>
     </div>
-
     <!--无限极左侧菜单-->
     <div class="layui-side layui-bg-black layuimini-menu-left"></div>
-
     <!--手机端遮罩层-->
     <div class="layuimini-make"></div>
-
     <!-- 移动导航 -->
-    <!--<div class="layuimini-site-mobile"><i class="layui-icon"></i></div>-->
     <div class="layui-body">
         <div class="layuimini-tab layui-tab-rollTool layui-tab" lay-filter="layuiminiTab" lay-allowclose="true">
             <ul class="layui-tab-title"><li class="layui-this" id="layuiminiHomeTabId" lay-id=""></li></ul>
@@ -82,27 +78,15 @@
 <script>
 var u = "<?php echo U;?>"
 layui.config({version:"<?php echo $Ver;?>"});
-layui.use(['jquery', 'layer', 'miniAdmin'], function () {
-    var $ = layui.jquery,layer = layui.layer,miniAdmin = layui.miniAdmin;
-    miniAdmin.render({
+layui.use(['layer','miniAdmin'], function () {
+    var layer = layui.layer;
+    layui.miniAdmin.render({
         iniUrl: "./index.php?c=admin&page=menu&u="+u,
         urlHashLocation: true,
         bgColorDefault: false,
-        multiModule: false,
         menuChildOpen: true,
         pageAnim: true,
         maxTabNum: 30
-    });
-    $('#logout').on("click", function () {
-        $.post('./index.php?c=admin&page=logout&u='+u,function(d,status){
-            if(d.code == 1) {
-                layer.alert("您已安全的退出登录!", function () {
-                    top.location.href='./index.php?u='+u;
-                });
-            }else{
-                layer.msg(d.msg,{icon: 5});
-            }
-        });
     });
 });
 </script>

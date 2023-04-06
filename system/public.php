@@ -536,8 +536,8 @@ function downFile($url, $file = '', $savePath = './data/temp/'){
         return false;
     }
 }
-//获取目录
-function getDir($dir){
+//获取目录列表
+function get_dir_list($dir){
     $dirArray=[];
     if(false != ($handle = opendir($dir))){
         while(false !== ($file = readdir($handle))) {

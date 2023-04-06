@@ -6,26 +6,33 @@ $subscribe = unserialize(get_db('global_config','v',["k" => "s_subscribe"])); ?>
 <div class="layuimini-container">
   <div class="layuimini-main">
     <div class="layui-form layuimini-form layui-form-pane">
+        <blockquote class="layui-elem-quote layui-text">
+            <li>1. 查询授权时当前域名必须和订阅填写一致</li>
+            <li>2. 其他二级域名使用时请手动输入订单号/邮箱保存</li>
+            <li>3. 授权未绑定邮箱时邮箱留空,已绑定时请输入正确邮箱</li>
+            <li>4. 如有其他疑问联系技术支持</li>
+        </blockquote>
+        
         <h3 style = "margin-bottom:1em;">当前域名：<font color="red"><?php echo $_SERVER['HTTP_HOST']; ?></font> (订阅时填写)</h3>
         
         <div class="layui-form-item">
             <label class="layui-form-label">订单号</label>
             <div class="layui-input-block">
-                <input type="text" id = "order_id" name="order_id" value = "<?php echo $subscribe['order_id']; ?>" required  autocomplete="off" placeholder="请输入订单号" class="layui-input">
+                <input type="text" id = "order_id" name="order_id" value="<?php echo $subscribe['order_id']; ?>" required  autocomplete="off" placeholder="请输入订单号" class="layui-input">
             </div>
         </div>
 
         <div class="layui-form-item">
             <label class="layui-form-label">订阅邮箱</label>
             <div class="layui-input-block">
-                <input type="text" name="email" id = "email" value = "<?php echo $subscribe['email']; ?>" required autocomplete="off" placeholder="订阅邮箱" class="layui-input">
+                <input type="text" name="email" id ="email" value="<?php echo $subscribe['email']; ?>" required autocomplete="off" placeholder="订阅邮箱" class="layui-input">
             </div>
         </div>
 
         <div class="layui-form-item" style = "display:none;">
             <label class="layui-form-label">域名</label>
             <div class="layui-input-block">
-                <input type="text" name="domain" id = "domain" value = "<?php echo $_SERVER['HTTP_HOST']; ?>" autocomplete="off" placeholder="网站域名" class="layui-input">
+                <input type="text" name="domain" id ="domain" value="<?php echo $_SERVER['HTTP_HOST']; ?>" autocomplete="off" placeholder="网站域名" class="layui-input">
             </div>
         </div>
 
@@ -39,9 +46,11 @@ $subscribe = unserialize(get_db('global_config','v',["k" => "s_subscribe"])); ?>
         <div class="layui-btn-group">
             <button class="layui-btn layui-btn-normal" lay-submit lay-filter="set_subscribe">保存设置</button>
             <button class="layui-btn layui-btn-warm" lay-submit lay-filter="reset_subscribe">删除</button>
-            <button class="layui-btn layui-btn-danger" lay-submit lay-filter="buy">购买授权</button>
+            <button class="layui-btn layui-btn-danger" id="help" sort_id="7968669">购买授权</button>
             <button class="layui-btn" lay-submit lay-filter="get_subscribe">查询授权</button>
         </div>
+
+        
         <fieldset class="layui-elem-field layui-field-title" style="margin-top:30px;"><legend>授权用户专享</legend></fieldset>
         <blockquote class="layui-elem-quote layui-text">
           <li>1. 可使用一键更新功能</li>
@@ -59,6 +68,7 @@ $subscribe = unserialize(get_db('global_config','v',["k" => "s_subscribe"])); ?>
     </div>
   </div>
 </div>
+<script src = "<?php echo $libs;?>/jquery/jquery-3.6.0.min.js"></script>
 <script src = "./templates/admin/js/public.js?v=<?php echo $Ver;?>"></script>
 <?php load_static('js.layui');?>
 <script>
@@ -75,7 +85,6 @@ layui.use(['jquery','form'], function () {
             if(data.code == 200) {
                 $("#order_id").val(data.data.order_id);
                 $("#end_time").val(timestampToTime(data.data.end_time));
-                //$("#email").attr({"lay-verify":"email"});
                 layer.msg(data.msg, {icon: 1,time: 10000});
             }else{
                 layer.msg(data.msg, {icon: 5,time: 10000});
@@ -109,7 +118,6 @@ layui.use(['jquery','form'], function () {
         return false;
     });
     
-    
     //清空订阅信息
     form.on('submit(reset_subscribe)', function(data){
         var order_id = data.field.order_id;
@@ -121,11 +129,10 @@ layui.use(['jquery','form'], function () {
         layer.closeAll('loading');
         return false;
     });
-    
   
     //存储到数据库中
     function set_subscribe(order_id,email,end_time,domain) {
-        $.post("./index.php?c=api&method=write_subscribe&u=<?php echo $u;?>",{order_id:order_id,email:email,end_time:end_time,domain:domain},function(data,status){
+        $.post(get_api('write_subscribe'),{order_id:order_id,email:email,end_time:end_time,domain:domain},function(data,status){
             if(data.code == 1) {
                 layer.msg(data.msg, {icon: 1});
             }else{
@@ -133,12 +140,6 @@ layui.use(['jquery','form'], function () {
             }
         });
     }
-  
-    //购买订阅
-    form.on('submit(buy)', function (data) {
-        window.open("https://gitee.com/tznb/TwoNav/wikis/pages?sort_id=7934408&doc_id=3674619","target");
-        return false;
-    }); 
     
 });
 </script>

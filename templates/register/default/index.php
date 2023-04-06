@@ -11,7 +11,7 @@
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="format-detection" content="telephone=no">
     <link rel="stylesheet" href="<?php echo $libs?>/Layui/v2.6.8/css/layui.css">
-    <link rel="stylesheet" href="./templates/register/default/main.css">
+    <link rel="stylesheet" href="<?php echo $libs?>/Other/login.css">
     <link rel="shortcut icon" href="./favicon.ico" type="image/x-icon">
     <!--[if lt IE 9]>
     <script src="<?php echo $libs?>/Other/html5.min.js"></script>

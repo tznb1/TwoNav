@@ -141,6 +141,7 @@
         </div>
   </form>
 </ul>
+<script src = "<?php echo $libs;?>/jquery/jquery-3.6.0.min.js"></script>
 <script src = "./templates/admin/js/public.js?v=<?php echo $Ver;?>"></script>
 <script src = "<?php echo $libs?>/Other/ClipBoard.min.js"></script>
 <?php load_static('js');?>

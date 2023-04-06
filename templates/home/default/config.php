@@ -212,7 +212,7 @@
 									<div class="layui-form-item">
 										<label class="layui-form-label">背景图URL</label>
 										<div class="layui-input-inline" style="width: 73%;">
-											<input type="url" id="backgroundURL" name="backgroundURL" value="<?php echo $theme_config['backgroundURL'];?>" placeholder="存在时其他背景色无效,请输入图片URL" autocomplete="off" class="layui-input">
+											<input type="url" name="backgroundURL" value="<?php echo $theme_config['backgroundURL'];?>" placeholder="存在时其他背景色无效,请输入图片URL" autocomplete="off" class="layui-input">
 										</div>
 									</div>
 
@@ -282,13 +282,13 @@
 <script src = '<?php echo $libs?>/jquery/jquery-3.6.0.min.js'></script>
 <script src="<?php echo $libs?>/Layui/v2.6.8/layui.js"></script>
 <script src="./templates/admin/js/public.js?v=<?php echo $Ver;?>"></script>
-
+<script src="./templates/admin/js/lay-config.js?v=<?php echo $Ver;?>" charset="utf-8"></script>
 <script>
 var u = '<?php echo $u?>';
 var t = '<?php echo $theme;?>';
 var s = '<?php echo $_GET['source'];?>';
 var api = get_api('write_theme','config') + '&t=' + t;
-layui.use(['form','colorpicker','element','dropdown'], function(){
+layui.use(['form','colorpicker','element','dropdown','background'], function(){
     var form = layui.form;
     var colorpicker = layui.colorpicker;
     var dropdown = layui.dropdown;
@@ -328,93 +328,8 @@ dropdown.render({elem: '#OtherBackgroundColor-input',data:BackgroundColor ,click
 dropdown.render({elem: '#SidebarBackgroundColor-input',data:BackgroundColor ,click: function(obj){this.elem.val(obj.code);},style: 'width: 225px;'});
 
 //背景图下拉菜单 
-  dropdown.render({
-    elem: '#backgroundURL'
-    ,data: [{
-      title: '博天(自适应/动漫)'
-      ,url: 'https://api.btstu.cn/sjbz/api.php?lx=dongman&method=zsy'
-      ,author:'https://api.btstu.cn/doc/sjbz.php'
-    },{
-      title: '博天(自适应/妹子)'
-      ,url: 'https://api.btstu.cn/sjbz/api.php?lx=meizi&method=zsy'
-      ,author:'https://api.btstu.cn/doc/sjbz.php'
-    },{
-      title: '博天(自适应/风景)'
-      ,url: 'https://api.btstu.cn/sjbz/api.php?lx=fengjing&method=zsy'
-      ,author:'https://api.btstu.cn/doc/sjbz.php'
-    },{
-      title: '博天(自适应/随机)'
-      ,url: 'https://api.btstu.cn/sjbz/api.php?lx=suiji&method=zsy'
-      ,author:'https://api.btstu.cn/doc/sjbz.php'
-    },{ 
-      title: '姬长信(PC/每日必应)'
-      ,url: 'https://api.isoyu.com/bing_images.php'
-      ,author:'https://api.isoyu.com'
-      ,n:'姬长信'
-    },{
-      title: '樱花(PC/动漫)'
-      ,url: 'https://www.dmoe.cc/random.php'
-      ,author:'https://www.dmoe.cc'
-    },{
-      title: '梁炯灿(PC/动漫)'
-      ,url: 'https://tuapi.eees.cc/api.php?category=dongman&type=302'
-      ,author:'https://tuapi.eees.cc'
-    },{
-      title: '梁炯灿(PC/风景)'
-      ,url: 'https://tuapi.eees.cc/api.php?category=fengjing&type=302'
-      ,author:'https://tuapi.eees.cc'
-    },{
-      title: '梁炯灿(PC/必应)'
-      ,url: 'https://tuapi.eees.cc/api.php?category=biying&type=302'
-      ,author:'https://tuapi.eees.cc'
-    },{
-      title: '梁炯灿(PC/美女)'
-      ,url: 'https://tuapi.eees.cc/api.php?category=meinv&type=302'
-      ,author:'https://tuapi.eees.cc'
-    },{
-      title: '苏晓晴(PC/动漫)'
-      ,url: 'https://acg.toubiec.cn/random.php'
-      ,author:'https://acg.toubiec.cn'
-    },{
-      title: '墨天逸(PC/动漫)'
-      ,url: 'https://api.mtyqx.cn/api/random.php'
-      ,author:'https://api.mtyqx.cn/'
-    },{
-      title: '小歪(PC/动漫)'
-      ,url: 'https://api.ixiaowai.cn/api/api.php'
-      ,author:'https://api.ixiaowai.cn'
-    },{
-      title: '小歪(PC/MC酱)'
-      ,url: 'https://api.ixiaowai.cn/mcapi/mcapi.php'
-      ,author:'https://api.ixiaowai.cn'
-    },{
-      title: '小歪(PC/风景)'
-      ,url: 'https://api.ixiaowai.cn/gqapi/gqapi.php'
-      ,author:'https://api.ixiaowai.cn' 
-    },{
-      title: '保罗(PC/动漫)'
-      ,url: 'https://api.paugram.com/wallpaper/?source=sina'
-      ,author:'https://api.paugram.com/help/wallpaper'
-      ,n:'保罗'
-    },{
-      title: '樱道(PC/动漫)'
-      ,url: 'https://api.r10086.com/img-api.php?type=动漫综合1'
-      ,author:'https://img.r10086.com/'
-      ,n:'樱道'
-    }]
-    ,click: function(obj){
-        if (obj.n == '樱道'){
-            layeropen('官方还有很多分类哦<br />感兴趣的自己去看<br />访问速度比较慢<br />友链有个镜像接口比较快','https://img.r10086.com/');
-        }else if (obj.n == '保罗'){
-            layeropen('官方还有其他接口<br />感兴趣的自己去看<br />有缓存','https://api.paugram.com/help/wallpaper');
-        }else if (obj.n == '姬长信'){
-            layeropen('官方还有其他接口<br />感兴趣的自己去看<br />慢且不稳','https://api.isoyu.com/#/壁纸模块');
-        }
-      this.elem.val(obj.url);
-    }
-    ,style: 'width: 235px;'
-  });
-  
+layui.background.render("input[name='backgroundURL']");
+ 
 function layeropen(content,url){
     layer.open({
         type: 1

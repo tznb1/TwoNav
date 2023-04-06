@@ -1,15 +1,10 @@
-/**
-配色方案（如有需要，请自行配置）
- */
 /**头部-配色*/
 .layui-layout-admin .layui-header {
     background-color: #1aa094 !important;
 }
-
 .layui-header > ul > .layui-nav-item.layui-this, .layuimini-tool i:hover {
     background-color: #197971 !important;
 }
-
 .layui-header .layuimini-header-content > ul > .layui-nav-item.layui-this, .layuimini-tool i:hover {
     background-color: #197971 !important;
 }
@@ -32,7 +27,6 @@
 .layui-layout-admin .layui-nav-tree .layui-this, .layui-layout-admin .layui-nav-tree .layui-this > a, .layui-layout-admin .layui-nav-tree .layui-nav-child dd.layui-this, .layui-layout-admin .layui-nav-tree .layui-nav-child dd.layui-this a {
     background-color: #1aa094 !important;
 }
-
 
 /**头部样式 */
 .layui-layout-admin .header {
@@ -656,20 +650,6 @@
     overflow: hidden;
 }
 
-/**
-菜单缩放
- */
-.popup-tips .layui-layer-TipsG{
-    display: none;
-}
-.popup-tips.layui-layer-tips .layui-layer-content{
-    padding: 0;
-}
-.popup-tips .layui-nav-tree{
-    width: 150px;
-    border-radius: 10px;
-}
-
 /**左侧菜单字体间距*/
 .layuimini-menu-left .layui-nav-item a span {
     letter-spacing: 1px;
@@ -679,7 +659,6 @@
 .layui-layout-admin .layui-header .layuimini-header-menu.layuimini-pc-show,.layui-layout-admin .layui-header .layuimini-header-menu.layuimini-mobile-show {
     letter-spacing: 1px;
 }
-
 
 /**左侧菜单更多下拉样式*/
 .layuimini-menu-left .layui-nav-more,.layuimini-menu-left-zoom .layui-nav-more {
@@ -691,18 +670,12 @@
     overflow: hidden;
     width: auto;
     height: auto;
-    /*line-height: normal;*/
     border: none;
     display: inline-block;
-    /*margin-top: -6px !important;*/
 }
 
 .layuimini-menu-left .layui-nav-child .layui-nav-more {
     margin-top: -6px !important;
-}
-
-.layuimini-menu-left .layui-nav .layui-nav-mored,.layuimini-menu-left .layui-nav-itemed>a .layui-nav-more{
-    /*margin-top: -9px!important;*/
 }
 
 .layuimini-menu-left-zoom.layui-nav .layui-nav-mored,.layuimini-menu-left-zoom.layui-nav-itemed>a .layui-nav-more{
@@ -735,10 +708,7 @@
     width: 20px;
 }
 
-
-/**
- PC版样式
- */
+/**PC版样式*/
 @media screen and (min-width: 1025px) {
     /**头部样式（缩放） */
     .layuimini-mini .layui-layout-left.layuimini-header-menu.layuimini-pc-show {
@@ -796,7 +766,7 @@
 
     /**菜单缩放*/
     .layuimini-mini .layuimini-menu-left .layui-nav-more,.layuimini-mini .layuimini-menu-left .layui-nav-child{
-        display: none;!important;
+        display: none!important;
     }
 }
 
@@ -886,25 +856,6 @@
         left: 15px;
     }
 
-    .layuimini-mini .layuimini-site-mobile {
-        display: none !important;
-    }
-
-    .layuimini-site-mobile {
-        display: block !important;
-        position: fixed;
-        z-index: 100000;
-        bottom: 15px;
-        left: 15px;
-        width: 40px;
-        height: 40px;
-        line-height: 40px;
-        border-radius: 2px;
-        text-align: center;
-        background-color: rgba(0, 0, 0, .7);
-        color: #fff;
-    }
-
     .layuimini-header-content {
         z-index: 997;
     }
@@ -913,14 +864,9 @@
     .layuimini-make {
         cursor: pointer;
     }
-
-    .layuimini-site-mobile {
-        cursor: pointer;
-    }
 }
 
 @media screen and (max-width: 550px){
-
     /**头部右侧数据*/
     .layuimini-multi-module.layuimini-mini .layuimini-header-content .layui-layout-right {
         display: none;
