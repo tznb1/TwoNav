@@ -25,13 +25,15 @@ function other_upsys(){
         if(!preg_match('/^v.+-(\d{8})$/i',SysVer,$matches)){
             msg(-1,"获取程序版本异常");
         }
+        if (!is_dir('./data/temp')) mkdir('./data/temp',0755,true) or msg(-1,'下载失败,创建临时[/data/temp]目录失败');
         //检查指定文件夹是否可写
-        $paths = ["./","./data","./static","./system","./templates"];
+        $paths = ["./","./data","./data/temp","./static","./system","./templates"];
         foreach($paths as $path){
             if(!is_writable($path)){
                 msg(-1,"文件夹不可写 >> $path");
             }
         }
+        
         $_SESSION['upsys']['sysver'] = intval($matches[1]);
         usleep(1000*300); //延迟300毫秒
         msg(1,'success');

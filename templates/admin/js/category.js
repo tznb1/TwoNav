@@ -80,20 +80,6 @@
                         $("#fid").append("<option value=\""+res.data[i].cid+"\">"+res.data[i].name+"</option>");
                     }
                 }
-                //加载加密分组数据
-                $.post(get_api('read_pwd_group_list'),{'page':'1','limit':'9999'},function(data,status){
-                    if(data.code == 1){
-                        pwds = [];
-                        $("#pwd_id").empty();
-                        $("#pwd_id").append("<option value=\"0\">无</option>");
-                        for(var i =0;i<data.count;i++){
-                            pwds['pid_'+data.data[i].pid] = {'pwd':data.data[i].password,'name':data.data[i].name};
-                            $("#pwd_id").append("<option value=\""+data.data[i].pid+"\">"+data.data[i].name+" | 密码 [" + data.data[i].password +"]</option>");
-                        }
-                    }
-                });
-                
-                layui.form.render("select");//重新渲染下拉框
                 limit = false; //取消修改限制
                 layer.closeAll('loading'); //关闭加载层
             } 

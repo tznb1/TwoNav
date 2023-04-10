@@ -28,6 +28,7 @@
             <label class="layui-form-label required">所属分类</label>
             <div class="layui-input-block">
                 <select name="fid" id="fid" lay-verify="required">
+                    <option value=""></option><?php echo_category(true); ?>
                 </select> 
             </div>
         </div>

@@ -67,7 +67,6 @@
         <button class="layui-btn layui-btn-sm layui-btn-normal layui-hide-xs" lay-event="batch_disable" id="batch_disable">设为禁用</button>
         <button class="layui-btn layui-btn-sm layui-btn-normal layui-btn-danger layui-hide-xs" lay-event="testing" id="testing" <?php echo $global_config['offline']?'style="display:none;"':''?> >检测</button>
         <button class="layui-btn layui-btn-sm layui-btn-normal layui-btn-danger" layuimini-content-href="link_sort" data-title="链接排序">排序模式</button>
-        <button class="layui-btn layui-btn-sm layui-btn-normal layui-btn-danger layui-hide-xs" lay-event="generate" id="generate">生成</button>
     </div>
 </script>
 <script src = "<?php echo $libs;?>/jquery/jquery-3.6.0.min.js"></script>

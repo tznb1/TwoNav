@@ -46,7 +46,7 @@ var menu = {
         link_id = link_id.replace('id_','');
         mdui.confirm('确认删除？'
             ,function(){
-                $.post(get_api('write_link','del'),{id:link_id},function(data,status){
+                $.post(get_api('write_link','del'),{lid:link_id},function(data,status){
                     if(data.code == 1) {
                         $("#id_" + link_id).remove();
                     }else{

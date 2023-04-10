@@ -1,7 +1,9 @@
 <?php 
 if($USER_DB['UserGroup'] != 'root'){$content='您没有权限访问此页面'; require(DIR.'/templates/admin/page/404.php');exit;}
 $title='授权管理';require(dirname(__DIR__).'/header.php'); 
-$subscribe = unserialize(get_db('global_config','v',["k" => "s_subscribe"])); ?>
+$subscribe = unserialize(get_db('global_config','v',["k" => "s_subscribe"])); 
+$HTTP_HOST = preg_replace('/:\d+$/','',$_SERVER['HTTP_HOST']); //去除端口号
+?>
 <body>
 <div class="layuimini-container">
   <div class="layuimini-main">
@@ -12,8 +14,7 @@ $subscribe = unserialize(get_db('global_config','v',["k" => "s_subscribe"])); ?>
             <li>3. 授权未绑定邮箱时邮箱留空,已绑定时请输入正确邮箱</li>
             <li>4. 如有其他疑问联系技术支持</li>
         </blockquote>
-        
-        <h3 style = "margin-bottom:1em;">当前域名：<font color="red"><?php echo $_SERVER['HTTP_HOST']; ?></font> (订阅时填写)</h3>
+        <h3 style = "margin-bottom:1em;">当前域名：<font color="red"><?php echo $HTTP_HOST; ?></font> (订阅时填写)</h3>
         
         <div class="layui-form-item">
             <label class="layui-form-label">订单号</label>
@@ -32,7 +33,7 @@ $subscribe = unserialize(get_db('global_config','v',["k" => "s_subscribe"])); ?>
         <div class="layui-form-item" style = "display:none;">
             <label class="layui-form-label">域名</label>
             <div class="layui-input-block">
-                <input type="text" name="domain" id ="domain" value="<?php echo $_SERVER['HTTP_HOST']; ?>" autocomplete="off" placeholder="网站域名" class="layui-input">
+                <input type="text" name="domain" id ="domain" value="<?php echo $HTTP_HOST; ?>" autocomplete="off" placeholder="网站域名" class="layui-input">
             </div>
         </div>
 

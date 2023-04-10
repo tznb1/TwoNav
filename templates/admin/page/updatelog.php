@@ -5,6 +5,20 @@
     <li class="layui-timeline-item">
         <i class="layui-icon layui-timeline-axis"></i>
         <div class="layui-timeline-content layui-text">
+            <h4 class="layui-timeline-title">v2.0.09-20230410</h4>
+            <ul>
+                <li>优化兼容性/细节调整</li>
+                <li>放宽授权验证规则</li>
+                <li>修复前端调用添加链接页面没有分类的bug</li>
+                <li>修复默认主题删除链接提示ID不存在的bug</li>
+                <li>修复下载更新时temp目录不存在时未自动创建导致下载失败的bug</li>
+                <li>调整手机端布局(减小边距/不显示描述)</li>
+            </ul>
+        </div>
+    </li>
+    <li class="layui-timeline-item">
+        <i class="layui-icon layui-timeline-axis"></i>
+        <div class="layui-timeline-content layui-text">
             <h4 class="layui-timeline-title">v2.0.08-20230406</h4>
             <ul>
                 <li>增加一些使用说明</li>

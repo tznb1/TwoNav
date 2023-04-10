@@ -248,18 +248,6 @@ layui.use(['form','table','dropdown','miniTab'], function () {
                 return true;
             }
           })
-        }else if(event === 'generate'){  //生成大量链接
-            if($('#fid').val() == 0 ){
-                layer.msg("请选择一个分类",{icon:3});
-                return;
-            }
-            var fid = $('#fid').val();
-            for (i = 0; i < 1000; i++) {
-                $.post(get_api('write_link','add'),{title:'百度翻译'+i,fid:fid,url:'https://fanyi.baidu.com/#zh/en/'+i+'_'+randomString(5)},function(data,status){
-
-                });
-            }
-            
         }
     });
     

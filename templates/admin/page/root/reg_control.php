@@ -71,7 +71,7 @@ $user_groups = select_db('user_group',['id','code','name'],'');
 <script src = "./templates/admin/js/public.js?v=<?php echo $Ver;?>"></script>
 <?php load_static('js');?>
 <script>
-var host = '<?php echo getindexurl().'?c='.$global_config['Register']."&key=";?>';
+var host = Get_baseUrl() + '<?php echo 'index.php?c='.$global_config['Register']."&key=";?>';
 
 layui.use(['table','layer','form'], function(){
     var table = layui.table;

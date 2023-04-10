@@ -10,23 +10,6 @@ body {
     width: 190px;
 }
 
-/*手机端适配*/
-@media screen and (max-width: 768px) {
-    .layui-form-mid {
-        margin-left: 10px;
-    }
-    .layui-form-item .layui-input-inline {
-        margin-right: 0px;
-        width:  calc(100% - 110px);
-    }
-}
-@media screen and (max-width: 450px){
-    .layui-form-item .layui-input-inline+.layui-form-mid {
-        margin-left: 10px;
-    }
-}
-
-
 .layuimini-container {
     border: 1px solid #f2f2f2;
     border-radius: 5px;
@@ -91,4 +74,40 @@ body {
 
 .layui-table-tool-temp{
     padding-right: 0px;
+}
+
+
+/*手机端适配*/
+@media screen and (max-width: 768px) {
+    .layui-form-mid {
+        margin-left: 10px;
+    }
+    .layui-form-item .layui-input-inline {
+        margin-right: 0px;
+        width:  calc(100% - 110px);
+    }
+    /*手机端表单调整230410*/
+    .layui-form-label{
+        width: 60px;
+        padding: 9px 9px;
+    }
+    .layui-input-block{
+        margin-left: 85px; 
+    }
+    /*隐藏描述*/
+    .layui-form-mid{
+        display:none
+    }
+    /*边距*/
+    .layuimini-main {
+        margin: 10px 5px 10px 0px;
+    }
+    .layui-form-item{
+        margin-bottom: 8px;
+    }
+}
+@media screen and (max-width: 450px){
+    .layui-form-item .layui-input-inline+.layui-form-mid {
+        margin-left: 10px;
+    }
 }

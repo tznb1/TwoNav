@@ -230,8 +230,8 @@ function echo_category($property = false){
 function echo_pwds(){
     $where["uid"] = UID;
     $where['ORDER']['pid'] = 'ASC';
-    foreach (select_db('user_pwd_group',['pid','name'],$where) as $data) {
-        echo "<option value=\"{$data['pid']}\">{$data['name']}</option>";
+    foreach (select_db('user_pwd_group',['pid','name','password'],$where) as $data) {
+        echo "<option value=\"{$data['pid']}\">{$data['name']} | 密码 [{$data['password']}]</option>";
     }
 }
 //检查链接

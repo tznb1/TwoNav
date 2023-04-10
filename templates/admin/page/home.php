@@ -1,8 +1,6 @@
 <?php 
 $title='概况'; 
 $awesome=true;
-$HOST = getindexurl();
-
 
 //读取缓存数据
 $Notice = get_db('global_config','v',['k'=>'notice']);
@@ -261,11 +259,11 @@ require 'header.php';
                             <tr>
                                 <td>专属地址</td>
                                 <td>
-                                    <a href="<?php echo $HOST.'?u='.U;?>" target="_blank">我的主页</a>
+                                    <a href="<?php echo './?u='.U;?>" target="_blank">我的主页</a>
                                     &nbsp;
-                                    <a href="<?php echo $HOST.'?c='.$USER_DB['Login'].'&u='.U;?>" target="_blank">TwoNav - 登录</a>
+                                    <a href="<?php echo './?c='.$USER_DB['Login'].'&u='.U;?>" target="_blank">TwoNav - 登录</a>
                                     &nbsp;
-                                    <i class="fa fa-arrow-left layui-hide-xs" style="color: #ff5722;">&nbsp;<span style="color: #ff5722;" title="收藏专属入口可避免出现无法登录后台的情况">建议收藏</span></i>
+                                    <i class="fa fa-arrow-left layui-hide-xs" style="color: #ff5722;">&nbsp;<span style="color: #ff5722;" title="收藏专属入口可避免无法登录后台的情况">建议收藏</span></i>
                                 </td>
                             <tr>
                             </tbody>

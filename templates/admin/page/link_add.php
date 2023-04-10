@@ -13,7 +13,7 @@
     .badge{display:inline-block;min-width:10px;padding:3px 7px;font-size:11px;font-weight:700;color:#fff;line-height:1;vertical-align:middle;white-space:nowrap;text-align:center;background-color:#777;border-radius:10px}
 </style>
 <div class="layuimini-container">
-    <div class="layuimini-main" style=" margin-left: 0px; ">
+    <div class="layuimini-main">
      <form class="layui-form layuimini-form" lay-filter="form">
          
         <div class="layui-form-item">

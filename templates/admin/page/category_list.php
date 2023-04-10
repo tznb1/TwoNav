@@ -72,6 +72,7 @@
             <div class="layui-input-block">
                 <select name="pwd_id" id="pwd_id">
                     <option value="0">无</option>
+                    <?php echo_pwds(); ?>
                 </select> 
             </div>
         </div>
