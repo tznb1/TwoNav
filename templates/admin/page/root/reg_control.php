@@ -16,6 +16,7 @@ $user_groups = select_db('user_group',['id','code','name'],'');
 <script type="text/html" id="toolbar">
     <div class="layui-btn-group"  >
         <button class="layui-btn layui-btn-sm" lay-event="generate">生成注册码</button>
+        <button class="layui-btn layui-btn-sm layui-btn-danger" lay-event="del">删除</button>
         <button class="layui-btn layui-btn-sm" lay-event="refresh">刷新</button>
         <button class="layui-btn layui-btn-sm" lay-event="set">设置</button>
     </div>
@@ -81,7 +82,8 @@ layui.use(['table','layer','form'], function(){
     
 
     var cols=[[ //表头
-      {field:'id',title:'id',width:80,sort:true}
+      {type:'checkbox'}
+      ,{field:'id',title:'id',width:80,sort:true}
       ,{field:'regcode',title:'注册码',width:120,sort:true}
       ,{field:'UserGroupName',title:'用户组',width:120,sort:true}
       ,{field:'url',title:'注册链接',minWidth:400,sort:true,templet:function(d){
@@ -150,6 +152,25 @@ layui.use(['table','layer','form'], function(){
                     title: '设置',
                     area : ['100%','100%'],
                     content: $('.Set')
+                });
+                break;
+            case 'del':
+                if( checkStatus.data.length == 0 && ['LAYTABLE_COLS','LAYTABLE_EXPORT','LAYTABLE_PRINT'].indexOf(obj.event) == -1 ) {
+                    layer.msg('未选中任何数据！');
+                    return;
+                }
+                layer.confirm('确认删除?',{icon: 3, title:'温馨提示'}, function(index){
+                    tableIds = checkStatus.data.map(function (value) {return value.id;});
+                    tableIds = JSON.stringify(tableIds);
+                    $.post(get_api('write_regcode','del') ,{"id":tableIds},function(data,status){
+                        if(data.code == 1){
+                            table.reload('table');
+                            layer.msg(data.msg, {icon: 1});
+                        }else{
+                            layer.msg(data.msg, {icon: 5});
+                        }
+                    });
+                    return false; 
                 });
                 break;
         };

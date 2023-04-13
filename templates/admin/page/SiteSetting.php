@@ -67,6 +67,42 @@
                 <div class="layui-form-mid layui-word-aux">所有API接口均由其他大佬提供!若有异常请尝试更换接口!</div>
             </div>
             
+            <div class="layui-form-item">
+                <label class="layui-form-label">热门网址</label>
+                <div class="layui-input-inline" >
+                    <select name="top_link">
+                        <option value="0" selected>不显示</option>
+                        <option value="5" >显示5条</option>
+                        <option value="10" >显示10条</option>
+                        <option value="15" >显示15条</option>
+                        <option value="20" >显示20条</option>
+                    </select>
+                </div>
+                <div class="layui-form-mid layui-word-aux">在主页显示热门网址(点击排行)</div>
+            </div>
+            
+            <div class="layui-form-item">
+                <label class="layui-form-label">最新网址</label>
+                <div class="layui-input-inline" >
+                    <select name="new_link">
+                        <option value="0" selected>不显示</option>
+                        <option value="5" >显示5条</option>
+                        <option value="10" >显示10条</option>
+                        <option value="15" >显示15条</option>
+                        <option value="20" >显示20条</option>
+                    </select>
+                </div>
+                <div class="layui-form-mid layui-word-aux">在主页显示最新的网址(创建时间)</div>
+            </div>
+            
+           <div class="layui-form-item">
+                <label class="layui-form-label">输出上限</label>
+                <div class="layui-input-inline">
+                    <input type="number" name="max_link" class="layui-input" value="0" placeholder="输入范围: 0-100" lay-verify="required">
+                </div>
+                <div class="layui-form-mid layui-word-aux">限制每个分类下显示多少链接,0表示不限制</div>
+            </div>
+            
            <div class="layui-form-item">
                 <label class="layui-form-label">站点图标</label>
                 <div class="layui-input-block">
@@ -97,14 +133,18 @@
 <?php } ?>
             <div class="layui-form-item">
                 <button class="layui-btn layui-btn-primary layui-border-black" id="help" sort_id="7968924">帮助</button>
+<?php if($global_config['Default_User'] != U ){ ?>
+                <button class="layui-btn layui-btn-primary layui-border-black" id="sdhp" data=>设为默认主页</button>
+<?php } ?>
                 <button class="layui-btn layui-btn-normal" lay-submit lay-filter="save">保存</button>
             </div>
         </div>
     </form>
     </div>
 </div>
-<script src = "<?php echo $libs;?>/jquery/jquery-3.6.0.min.js"></script>
-<script src = "./templates/admin/js/public.js?v=<?php echo $Ver;?>"></script>
+<script src="<?php echo $libs;?>/jquery/jquery-3.6.0.min.js"></script>
+<script src="<?php echo $libs;?>/jquery/jQueryCookie.js"></script>
+<script src="./templates/admin/js/public.js?v=<?php echo $Ver;?>"></script>
 <?php load_static('js.layui');?>
 <script>
 layui.use(['jquery','form','upload'], function () {
@@ -136,6 +176,18 @@ layui.use(['jquery','form','upload'], function () {
         layer.msg("权限不足", {icon: 2});
     });
     
+    $("#sdhp").text( getCookie("Default_User") == u ? '取消默认主页' : '设为默认主页')
+    $('#sdhp').click(function () {
+        if(getCookie("Default_User") == u){
+            $.removeCookie("Default_User");
+            $("#sdhp").text('设为默认主页')
+        }else{
+            $.cookie("Default_User",u);
+            $("#sdhp").text('取消默认主页')
+        }
+        layer.msg("设置成功", {icon: 1});
+        return false;
+    });
     //监听提交
     form.on('submit(save)', function (data) {
         $.post('./index.php?c=api&method=write_site_setting&u='+u,data.field,function(data,status){

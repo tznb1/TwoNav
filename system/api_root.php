@@ -422,6 +422,9 @@ function write_regcode(){
     }elseif($_GET['type'] == 'set'){
         write_global_config('reg_tips',$_POST['content'],'注册提示');
         msg(1,'保存成功');
+    }elseif($_GET['type'] == 'del'){
+        delete_db("regcode_list",[ "id" => json_decode($_POST['id'])]);
+        msg(1,'删除成功');
     }
     
     msg(-1,'无效的请求类型');

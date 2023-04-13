@@ -5,6 +5,18 @@
     <li class="layui-timeline-item">
         <i class="layui-icon layui-timeline-axis"></i>
         <div class="layui-timeline-content layui-text">
+            <h4 class="layui-timeline-title">v2.0.10-20230413</h4>
+            <ul>
+                <li>支持删除注册管理生成的注册码</li>
+                <li>站点设置增加设为默认用户按钮(储存在浏览器Cookie,不影响其他用户)</li>
+                <li>站点设置增加热门链接/最新链接/输出上限</li>
+                <li>主页支持传参来浏览指定分类(配合站点设置>输出上限使用)</li>
+            </ul>
+        </div>
+    </li>
+    <li class="layui-timeline-item">
+        <i class="layui-icon layui-timeline-axis"></i>
+        <div class="layui-timeline-content layui-text">
             <h4 class="layui-timeline-title">v2.0.09-20230410</h4>
             <ul>
                 <li>优化兼容性/细节调整</li>

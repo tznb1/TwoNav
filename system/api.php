@@ -846,6 +846,9 @@ function write_site_setting(){
         'link_model'=>['v'=>['direct','Privacy','Privacy_js','Privacy_meta','301','302','Transition'],'msg'=>'链接模式参数错误'],
         'link_icon'=>['int'=>true,'min'=>0,'max'=>6,'msg'=>'链接图标参数错误'],
         'site_icon'=>['empty'=>true],
+        'top_link'=>['int'=>true,'min'=>0,'max'=>20,'msg'=>'热门链接参数错误'],
+        'new_link'=>['int'=>true,'min'=>0,'max'=>20,'msg'=>'最新链接参数错误'],
+        'max_link'=>['int'=>true,'min'=>0,'max'=>100,'msg'=>'输出上限参数错误'],
         'custom_header'=>['empty'=>true],
         'custom_footer'=>['empty'=>true]
         ];
@@ -865,6 +868,7 @@ function write_site_setting(){
     //留空时尝试删除图标
     if(empty($s_site['site_icon']) && !empty($site['site_icon_file']) && is_file($site['site_icon_file'])){
         @unlink($site['site_icon_file']);
+        $s_site['site_icon_file'] = '';
     }
     update_db("user_config",["v"=>$s_site],["k"=>'s_site',"uid"=>UID],[1,'保存成功']);
 }

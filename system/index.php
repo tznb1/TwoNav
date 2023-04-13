@@ -50,7 +50,7 @@ $theme_config_db = unserialize($theme_config_db);
 $theme_config = empty($theme_config_db) ? $theme_config : array_merge ($theme_config,$theme_config_db);
 //主题版本(调试时追加时间戳)
 $theme_ver = !Debug?$theme_info['version']:$theme_info['version'].'.'.time();
-
+$site['ex_theme'] = in_array($theme,['snail-nav','heimdall']); //例外主题,不支持热门网址/最新网址/输出上限
 //分类查找条件
 $categorys = []; //声明一个空数组
 $content = ['cid(id)','name','property','font_icon','icon','description'];//需要的内容
@@ -92,7 +92,7 @@ function get_category_sub($id) {
 
 //根据分类id查找链接
 function get_links($fid) {
-    global $site,$fid_s,$share,$data;
+    global $site,$fid_s,$share,$data,$u;
     $where = [];
     $where = ["uid"=> UID];
     $where['fid'] = intval($fid);
@@ -111,8 +111,24 @@ function get_links($fid) {
         $where['lid'] = $data;
         unset($where['fid']);
     }
+    
+    if($fid == 'top_link'){
+        unset($where['fid']);
+        unset($where['ORDER']);
+        $where['ORDER']['click'] = 'DESC';
+        $where['ORDER']['lid'] = 'DESC';
+        $where['LIMIT'] = $site['top_link'];
+    }elseif($fid == 'new_link'){
+        unset($where['fid']);
+        unset($where['ORDER']);
+        $where['ORDER']['add_time'] = 'DESC';
+        $where['ORDER']['lid'] = 'DESC';
+        $where['LIMIT'] = $site['new_link'];
+    }elseif($site['max_link'] > 0 && empty(Get('oc')) && !$site['ex_theme']){
+        $count = count_db('user_links',$where);
+        $where['LIMIT'] = $site['max_link'];
+    }
     $links = select_db('user_links',['lid(id)','fid','property','title','url(real_url)','url_standby','description','icon','click','pid'],$where);
-    //var_dump($fid_s);exit;
     foreach ($links as $key => $link) {
         $click = false; $lock = false;
         
@@ -147,6 +163,11 @@ function get_links($fid) {
         //获取图标链接
         $links[$key]['ico'] = $lock ? $GLOBALS['libs'].'/Other/lock.svg' : geticourl($site['link_icon'],$link);
     }
+    if($site['max_link'] > 0 && $count > $site['max_link'] && empty(Get('oc')) && !$site['ex_theme']){
+        $oc_url = "./index.php?u={$u}&oc={$fid}" . (empty($_GET['theme']) ? '':"&theme={$_GET['theme']}");
+        array_push($links,['id'=>0,'title'=>'查看全部','url'=>$oc_url,'real_url'=>$oc_url,'description'=>'该分类共有'.$count.'条数据','ico'=>'./favicon.ico']);
+    }
+   
     return $links;
 }
 
@@ -204,6 +225,27 @@ if($category_parent == []){
         $categorys = array_merge ($categorys,$category_subitem);
     }
 }
+
+if(empty(Get('oc'))){
+    //热门链接
+    if($site['top_link'] > 0 && !$site['ex_theme']){
+        $top_link = ['name' => "热门网址","font_icon" =>"fa fa-bookmark-o" , "id" => 'top_link' ,"description" => ""];
+        array_unshift($category_parent,$top_link);
+        array_unshift($categorys,$top_link);
+    }
+    //最新链接
+    if($site['new_link'] > 0 && !$site['ex_theme']){
+        $new_link = ['name' => "最新网址","font_icon" =>"fa fa-bookmark-o" , "id" => 'new_link' ,"description" => ""];
+        array_unshift($category_parent,$new_link);
+        array_unshift($categorys,$new_link);
+    }
+}elseif(!$site['ex_theme']){
+    unset($where['fid']);
+    $where['cid'] = Get('oc');
+    $categorys = select_db('user_categorys',$content,$where);
+    $category_parent = $categorys;
+}
+
 //访问统计
 write_user_count(date('Ym'),'index_Ym');
 write_user_count(date('Ymd'),'index_Ymd');
