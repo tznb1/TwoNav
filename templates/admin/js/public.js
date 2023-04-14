@@ -35,13 +35,16 @@ function _GET(letiable,top = false){
        return false;
 }
 //时间戳格式化
-function  timestampToTime(timestamp) {
+function  timestampToTime(timestamp,ymd = false) {
     let date =  new  Date(timestamp * 1000);
     let y = date.getFullYear();
     let m = date.getMonth() + 1;
     m = m < 10 ? ('0' + m) : m;
     let d = date.getDate();
     d = d < 10 ? ('0' + d) : d;
+    if(ymd){
+        return y + '-' + m + '-' + d;
+    }
     let h = date.getHours();
     h = h < 10 ? ('0' + h) : h;
     let minute = date.getMinutes();

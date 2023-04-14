@@ -66,7 +66,7 @@
         <div class="content">
             <p class="result"><?php echo $msg['big_title'] ??''; ?></p>
             <div class="method">
-                <p class="methodTitle">可能原因：</p>
+                <p class="methodTitle"><?php echo $msg['methodTitle'] ??'可能原因：'; ?></p>
                 <div class="methodItems">
                     <?php echo $msg['content']; ?>
                 </div>

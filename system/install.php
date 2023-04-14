@@ -2,6 +2,7 @@
 if(!defined('DIR')){header('HTTP/1.1 404 Not Found');header("status: 404 Not Found");exit;}
 
 //初始化
+session_name('TwoNav_initial');
 session_start();
 
 //判断请求类型

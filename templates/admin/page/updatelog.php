@@ -5,6 +5,17 @@
     <li class="layui-timeline-item">
         <i class="layui-icon layui-timeline-axis"></i>
         <div class="layui-timeline-content layui-text">
+            <h4 class="layui-timeline-title">v2.0.11-20230414</h4>
+            <ul>
+                <li>修复热门网址/最新网址的一些问题</li>
+                <li>新增Atool工具 (应急工具),用于强行修改密码/配置等 <a href="https://gitee.com/tznb/TwoNav/wikis/pages?sort_id=7993451&doc_id=3767990" target="_blank">使用说明</a></li>
+                <li>调整安装脚本session_name避免与其他面板冲突(如小皮面板,造成安装提示无法满足)</li>
+            </ul>
+        </div>
+    </li>
+    <li class="layui-timeline-item">
+        <i class="layui-icon layui-timeline-axis"></i>
+        <div class="layui-timeline-content layui-text">
             <h4 class="layui-timeline-title">v2.0.10-20230413</h4>
             <ul>
                 <li>支持删除注册管理生成的注册码</li>

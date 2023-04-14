@@ -70,6 +70,10 @@ $fid_s = array_column($fid_s,null,'cid');
 //根据分类ID查询二级分类
 function get_category_sub($id) {
     global $site,$share,$data;
+    //禁止搜索非数字
+    if(intval($id) == 0){
+        return;
+    }
     //书签分享>限定范围内的分类ID
     if(!empty($share)){
         $where['cid'] = $data;
@@ -101,6 +105,7 @@ function get_links($fid) {
     $where['ORDER']['lid'] = 'ASC';
     if(!is_login){
         $where['property'] = 0;
+
     }
     //书签分享>私有可见
     if(isset($share['pv']) && $share['pv'] == 1){
@@ -112,18 +117,23 @@ function get_links($fid) {
         unset($where['fid']);
     }
     
-    if($fid == 'top_link'){
-        unset($where['fid']);
+    //虚拟分类,根据特定条件查找
+    if($fid == 'top_link' || $fid == 'new_link' ){
         unset($where['ORDER']);
-        $where['ORDER']['click'] = 'DESC';
+        if(!is_login) {
+            $where['fid'] = get_open_category();
+        }else{
+            unset($where['fid']);
+        }
+        if($fid == 'top_link'){
+            $where['ORDER']['click'] = 'DESC';
+            $where['LIMIT'] = $site['top_link'];
+        }elseif($fid == 'new_link'){
+            $where['ORDER']['add_time'] = 'DESC';
+            $where['LIMIT'] = $site['new_link'];
+        }
         $where['ORDER']['lid'] = 'DESC';
-        $where['LIMIT'] = $site['top_link'];
-    }elseif($fid == 'new_link'){
-        unset($where['fid']);
-        unset($where['ORDER']);
-        $where['ORDER']['add_time'] = 'DESC';
-        $where['ORDER']['lid'] = 'DESC';
-        $where['LIMIT'] = $site['new_link'];
+    //输出上限&不在子页面&例外主题
     }elseif($site['max_link'] > 0 && empty(Get('oc')) && !$site['ex_theme']){
         $count = count_db('user_links',$where);
         $where['LIMIT'] = $site['max_link'];
@@ -225,38 +235,38 @@ if($category_parent == []){
         $categorys = array_merge ($categorys,$category_subitem);
     }
 }
-
-if(empty(Get('oc'))){
-    //热门链接
-    if($site['top_link'] > 0 && !$site['ex_theme']){
-        $top_link = ['name' => "热门网址","font_icon" =>"fa fa-bookmark-o" , "id" => 'top_link' ,"description" => ""];
-        array_unshift($category_parent,$top_link);
-        array_unshift($categorys,$top_link);
+//书签分享/例外主题禁止热门和最新
+if(empty($_GET['share']) && !$site['ex_theme']){
+    //非指定分类页面
+    if(empty(Get('oc'))){
+        //热门链接
+        if($site['top_link'] > 0){
+            $top_link = ['name' => "热门网址","font_icon" =>"fa fa-bookmark-o" , "id" => 'top_link' ,"description" => ""];
+            array_unshift($category_parent,$top_link);
+            array_unshift($categorys,$top_link);
+        }
+        //最新链接
+        if($site['new_link'] > 0){
+            $new_link = ['name' => "最新网址","font_icon" =>"fa fa-bookmark-o" , "id" => 'new_link' ,"description" => ""];
+            array_unshift($category_parent,$new_link);
+            array_unshift($categorys,$new_link);
+        }
+    }else{
+        unset($where['fid']);
+        $where['cid'] = Get('oc');
+        $categorys = select_db('user_categorys',$content,$where);
+        $category_parent = $categorys;
     }
-    //最新链接
-    if($site['new_link'] > 0 && !$site['ex_theme']){
-        $new_link = ['name' => "最新网址","font_icon" =>"fa fa-bookmark-o" , "id" => 'new_link' ,"description" => ""];
-        array_unshift($category_parent,$new_link);
-        array_unshift($categorys,$new_link);
-    }
-}elseif(!$site['ex_theme']){
-    unset($where['fid']);
-    $where['cid'] = Get('oc');
-    $categorys = select_db('user_categorys',$content,$where);
-    $category_parent = $categorys;
 }
+
 
 //访问统计
 write_user_count(date('Ym'),'index_Ym');
 write_user_count(date('Ymd'),'index_Ymd');
-//var_dump($site);
-//var_dump(is_login);
-//var_dump($theme_info);
-//var_dump($categorys);
-
+//载入模板
 require($index_path);
 
-//辅助函数
+//取分类图标(六零系主题在用)
 function get_category($content){
     if(empty($content)){
         return '';
@@ -267,7 +277,17 @@ function get_category($content){
         return $content;
     }
 }
-
+//获取公开分类(返回数组cid)
+function get_open_category(){
+    $where['uid'] = UID; 
+    $where['fid'] = 0;
+    $where['status'] = 1;
+    $where['property'] = 0;
+    $categorys = select_db('user_categorys','cid',$where);
+    $where['fid'] = $categorys;
+    $categorys = array_merge ($categorys,select_db('user_categorys','cid',$where));
+    return $categorys;
+}
 //获取图标URL
 function geticourl($icon,$link){
     if( !empty( $link['icon']) ){
