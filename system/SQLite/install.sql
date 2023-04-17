@@ -35,6 +35,7 @@ CREATE TABLE IF NOT EXISTS "updatadb_logs" (
   "extra" TEXT(512) NOT NULL DEFAULT "",
   CONSTRAINT "file_name" UNIQUE ("file_name" ASC)
 );
+INSERT INTO "updatadb_logs" ("id", "file_name", "update_time", "status", "extra") VALUES ('1', '20230417.php', '1681719049', 'TRUE', '');
 
 -- 创建用户表
 CREATE TABLE IF NOT EXISTS "global_user" (
@@ -158,7 +159,10 @@ INSERT INTO `purview_list` (`code`, `name`, `description`) VALUES
 ('link', '链接管理', '允许添加/编辑/删除链接(未勾选时只读)'),
 ('apply', '收录管理', '允许使用收录功能'),
 ('link_pwd', '加密管理', '允许使用加密管理(未勾选时只读)'),
-('guestbook', '留言板', '允许使用留言板功能');
+('guestbook', '留言板', '允许使用留言板功能'),
+('link_extend', '链接扩展', '允许使用链接扩展字段'),
+('theme_in', '主题设置', '后台显示主题设置菜单'),
+('theme_set', '主题配置', '允许自定义主题配置');
 
 -- 注册码列表
 CREATE TABLE IF NOT EXISTS "regcode_list" (

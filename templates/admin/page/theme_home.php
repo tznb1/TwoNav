@@ -52,6 +52,7 @@ $color = ($s_templates['home_pc'] == $key || $s_templates['home_pad'] == $key ?"
                     <div class="layui-card-header" style="height: auto;" id="home">
                         <div class="layui-btn-group" id="<?php echo $key;?>">
 <?php 
+    $theme_set = check_purview('theme_set',1);
     if($online){ //如果是在线主题则显示下载
         echo $Space.'<button type="button" class="layui-btn layui-btn-sm layui-btn-danger" id="dw">下载</button>'."\n";
     }elseif($theme['info']['up'] == 1){ //如果有更新则同时显示下载和使用
@@ -64,7 +65,7 @@ $color = ($s_templates['home_pc'] == $key || $s_templates['home_pad'] == $key ?"
     if(!$online){ //本地主题显示预览
         echo $Space.'<button type="button" class="layui-btn layui-btn-sm layui-btn-normal" id="preview">预览</button>'."\n";
     }
-    if($theme['info']['config'] == '1'){ //支持配置的主题显示配置
+    if($theme['info']['config'] == '1' && $theme_set){ //支持配置的主题显示配置
         echo $Space.'<button type="button" class="layui-btn layui-btn-sm layui-btn-normal" id="config">配置</button>'."\n";
     }
     if($USER_DB['UserGroup'] === 'root' && !$online){ //管理员&本地主题>显示删除

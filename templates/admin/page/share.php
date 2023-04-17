@@ -339,16 +339,17 @@ layui.use(['form','table','laydate','tableSelect'], function () {
         }else if(obj.event === 'edit'){
             form.val('data', data);
             form.val('data', {'pv':data.pv == 1});
-            console.log(data.data);
+            data.data = ts_selected_format(data.data,/"/g);
+            let ts = ts_selected_format(data.data);
             if(data.type == '1'){
                 $('#category_data').val(data.data);
-                $('#category_data').attr("ts-selected",data.data.replace('[', '').replace(']', ''));
+                $('#category_data').attr("ts-selected",ts);
                 type = 'category';
                 $('#cf').show();
                 $('#lf').hide();
             }else if(data.type == '2'){
                 $('#link_data').val(data.data);
-                $('#link_data').attr("ts-selected",data.data.replace('[', '').replace(']', ''));
+                $('#link_data').attr("ts-selected",ts);
                 type = 'link';
                 $('#cf').hide();
                 $('#lf').show();
@@ -358,7 +359,9 @@ layui.use(['form','table','laydate','tableSelect'], function () {
         }
     });
 
-      
+    function ts_selected_format(v,z = /"|\[|\]/g){
+        return v.replace(z,'')
+    }
       
     //书签选择 
     function load_tableSelect(searchPlaceholder,name,url,elem,limit,limits){ tableSelect.render({
@@ -386,7 +389,7 @@ layui.use(['form','table','laydate','tableSelect'], function () {
                 id.push(item.id);
             })
             elem.val(id.join(","));
-            $(elem).val(JSON.stringify(id));
+            $(elem).val(ts_selected_format(JSON.stringify(id),/"/g) );
         }
     })}
     load_tableSelect('分类名称搜索','分类名',get_api('read_share','categorys'),'#category_data',9999,[9999]);

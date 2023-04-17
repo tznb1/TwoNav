@@ -179,7 +179,16 @@ $title='系统设置';require(dirname(__DIR__).'/header.php');
                 </div>
                 <div class="layui-form-mid layui-word-aux">此处关闭时即使用户组允许也无法使用!</div>
             </div>
-            
+            <div class="layui-form-item">
+                <label class="layui-form-label required">链接扩展</label>
+                <div class="layui-input-inline">
+                    <select name="link_extend">
+                        <option value="0" selected="">关闭</option>
+                        <option value="1" >开启</option>
+                    </select>
+                </div>
+                <div class="layui-form-mid layui-word-aux">自定义链接的扩展信息(需自行添加字段,目前仅用于自定义过渡页)</div>
+            </div>
             <div class="layui-form-item">
                 <div class="layui-input-block"><button class="layui-btn layui-btn-normal" lay-submit lay-filter="save">确认保存</button></div>
             </div>

@@ -22,7 +22,8 @@ if($db_config['type'] == 'sqlite'){
             'port' => $db_config['port'],
             'database' => $db_config['name'],
             'username' => $db_config['user'],
-            'password' => $db_config['password']
+            'password' => $db_config['password'],
+            'charset' => 'utf8mb4'
         ]);
     }catch (Exception $e) {
         Amsg(-1,'链接数据库失败!'); 

@@ -5,7 +5,7 @@ CREATE TABLE IF NOT EXISTS `global_config` (
   `v` text NOT NULL COMMENT '值',
   `d` varchar(32) DEFAULT '' COMMENT '描述',
   UNIQUE KEY `k` (`k`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- 用户配置
 DROP TABLE IF EXISTS `user_config`;
@@ -17,7 +17,7 @@ CREATE TABLE IF NOT EXISTS `user_config` (
   `t` varchar(32) NOT NULL COMMENT '类型',
   `d` varchar(32) DEFAULT '' COMMENT '描述',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4;
 
 
 -- 统计
@@ -27,7 +27,7 @@ CREATE TABLE IF NOT EXISTS `user_count` (
   `k` varchar(32) NOT NULL COMMENT '键',
   `v` bigint(10) UNSIGNED DEFAULT '0' COMMENT '值',
   `t` varchar(32) NOT NULL COMMENT '类型'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 
 -- 数据库升级记录
@@ -40,8 +40,9 @@ CREATE TABLE IF NOT EXISTS `updatadb_logs` (
   `extra` varchar(512) NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `file_name` (`file_name`)
-) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4;
 
+INSERT INTO "updatadb_logs" ("id", "file_name", "update_time", "status", "extra") VALUES ('1', '20230417.php', '1681719049', 'TRUE', '');
 
 -- 创建用户表
 DROP TABLE IF EXISTS `global_user`;
@@ -64,7 +65,7 @@ CREATE TABLE IF NOT EXISTS `global_user` (
   PRIMARY KEY (`ID`),
   UNIQUE KEY `User` (`User`),
   UNIQUE KEY `Email` (`Email`)
-) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4;
 
 -- 用户分类表
 DROP TABLE IF EXISTS `user_categorys`;
@@ -85,7 +86,7 @@ CREATE TABLE IF NOT EXISTS `user_categorys` (
   `icon` text NOT NULL DEFAULT '' COMMENT '个性图标',
   `extend` text NOT NULL COMMENT '扩展',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COMMENT='用户分类';
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COMMENT='用户分类';
 
 INSERT INTO `user_categorys` (`id`, `cid`, `fid`, `uid`, `pid`, `status`, `property`, `name`, `add_time`, `up_time`, `weight`, `description`, `font_icon`, `icon`, `extend`) VALUES
 (1, 1, 0, 0, 0, 1, 0, '默认分类', 1672502400, 1672502400, 0, 'TwoNav默认分类', 'fa fa-book', '', '');
@@ -112,7 +113,7 @@ CREATE TABLE IF NOT EXISTS `user_links` (
   `up_time` int(10) UNSIGNED NOT NULL DEFAULT '0' COMMENT '修改时间',
   `extend` text NOT NULL COMMENT '扩展',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COMMENT='用户链接';
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COMMENT='用户链接';
 
 
 INSERT INTO `user_links` (`id`, `lid`, `uid`, `fid`, `pid`, `status`, `property`, `title`, `url`, `url_standby`, `weight`, `description`, `icon`, `click`, `add_time`, `up_time`, `extend`) VALUES
@@ -134,7 +135,7 @@ CREATE TABLE IF NOT EXISTS `user_login_info` (
   `expire_time` int(10) UNSIGNED NOT NULL COMMENT '过期时间',
   `cookie_key` varchar(32) NOT NULL COMMENT 'cookie_key',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4;
 
 -- 日志表
 DROP TABLE IF EXISTS `user_log`;
@@ -148,7 +149,7 @@ CREATE TABLE IF NOT EXISTS `user_log` (
   `content` text NOT NULL COMMENT '请求内容',
   `description` varchar(128) NOT NULL COMMENT '描述',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COMMENT='日志';
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COMMENT='日志';
 
 -- 用户组
 DROP TABLE IF EXISTS `user_group`;
@@ -162,7 +163,7 @@ CREATE TABLE IF NOT EXISTS `user_group` (
   `codes` text NOT NULL COMMENT '允许代号',
   PRIMARY KEY (`id`),
   UNIQUE KEY `code` (`code`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- 权限列表
 DROP TABLE IF EXISTS `purview_list`;
@@ -172,7 +173,7 @@ CREATE TABLE IF NOT EXISTS `purview_list` (
   `name` varchar(64) NOT NULL COMMENT '名称',
   `description` varchar(128) NOT NULL COMMENT '描述',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 INSERT INTO `purview_list` (`code`, `name`, `description`) VALUES
 ('Upload_icon', '上传图标', '允许上传分类和链接图标'),
@@ -185,7 +186,10 @@ INSERT INTO `purview_list` (`code`, `name`, `description`) VALUES
 ('link', '链接管理', '允许添加/编辑/删除链接(未勾选时只读)'),
 ('apply', '收录管理', '允许使用收录功能'),
 ('link_pwd', '加密管理', '允许使用加密管理(未勾选时只读)'),
-('guestbook', '留言板', '允许使用留言板功能');
+('guestbook', '留言板', '允许使用留言板功能'),
+('link_extend', '链接扩展', '允许使用链接扩展字段'),
+('theme_in', '主题设置', '后台显示主题设置菜单'),
+('theme_set', '主题配置', '允许自定义主题配置');
 
 -- 注册码列表
 DROP TABLE IF EXISTS `regcode_list`;
@@ -199,7 +203,7 @@ CREATE TABLE IF NOT EXISTS `regcode_list` (
   `use_time` int(10) UNSIGNED NOT NULL COMMENT '使用时间',
   PRIMARY KEY (`id`),
   UNIQUE KEY `regcode` (`regcode`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- 加密分组
 DROP TABLE IF EXISTS `user_pwd_group`;
@@ -212,7 +216,7 @@ CREATE TABLE IF NOT EXISTS `user_pwd_group` (
   `description` varchar(128) NOT NULL DEFAULT '' COMMENT '描述',
   `display` int(1) UNSIGNED NOT NULL DEFAULT '1' COMMENT '主页显示',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- 收录申请
 DROP TABLE IF EXISTS `user_apply`;
@@ -231,7 +235,7 @@ CREATE TABLE IF NOT EXISTS `user_apply` (
   `category_name` varchar(512) NOT NULL DEFAULT '' COMMENT '分类名',
   `description` varchar(512) NOT NULL DEFAULT '' COMMENT '描述',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- 书签分享
 DROP TABLE IF EXISTS `user_share`;
@@ -250,5 +254,5 @@ CREATE TABLE IF NOT EXISTS `user_share` (
   `data` text NOT NULL COMMENT '数据',
   `pv` int(1) NOT NULL COMMENT '私有可见',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 

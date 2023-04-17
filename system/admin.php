@@ -197,9 +197,14 @@ if( $page == 'theme_home' || $page == 'theme_login' || $page == 'theme_transit' 
 
 //菜单接口
 if ($page == 'menu') {
-    $menu = array( 
-        ['title'=>'站点设置','href'=>'SiteSetting','icon'=>'fa fa-cog'],
-        ['title'=>'主题设置','href'=>'theme_home','icon'=>'fa fa-magic'],
+    $menu = [];
+    if(check_purview('site_info',1)){
+        array_push($menu,['title'=>'站点设置','href'=>'SiteSetting','icon'=>'fa fa-cog']);
+    }
+    if(check_purview('theme_in',1)){
+        array_push($menu,['title'=>'主题设置','href'=>'theme_home','icon'=>'fa fa-magic']);
+    }
+    array_push($menu,
         ['title'=>'分类管理','href'=>'category_list','icon'=>'fa fa-list-ul'],
         ['title'=>'加密管理','href'=>'pwd_group','icon'=>'fa fa-lock'],
         ['title'=>'链接管理','icon'=>'fa fa-folder-open-o','href'=>'','child'=>

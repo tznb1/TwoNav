@@ -5,11 +5,25 @@
     <li class="layui-timeline-item">
         <i class="layui-icon layui-timeline-axis"></i>
         <div class="layui-timeline-content layui-text">
+            <h4 class="layui-timeline-title">v2.0.12-20230417</h4>
+            <ul>
+                <li>优化书签分享的兼容性</li>
+                <li>新增链接自定义扩展信息(用于自定义过渡页模板)</li>
+                <li>[数据库更新] 调整MySQL字符集编码(utf8改为utf8mb4,使其兼容Emoji字符)</li>
+                <li>[数据库更新] 用户组权限列表新增3个选项</li>
+                <li>调整用户无权限配置站点信息时隐藏入口</li>
+                <li>修复已知问题</li>
+            </ul>
+        </div>
+    </li>
+    <li class="layui-timeline-item">
+        <i class="layui-icon layui-timeline-axis"></i>
+        <div class="layui-timeline-content layui-text">
             <h4 class="layui-timeline-title">v2.0.11-20230414</h4>
             <ul>
                 <li>修复热门网址/最新网址的一些问题</li>
                 <li>新增Atool工具 (应急工具),用于强行修改密码/配置等 <a href="https://gitee.com/tznb/TwoNav/wikis/pages?sort_id=7993451&doc_id=3767990" target="_blank">使用说明</a></li>
-                <li>调整安装脚本session_name避免与其他面板冲突(如小皮面板,造成安装提示无法满足)</li>
+                <li>调整安装脚本session_name避免特定环境冲突</li>
             </ul>
         </div>
     </li>

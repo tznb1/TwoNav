@@ -62,6 +62,8 @@
                         <option value="4" >api.15777.cn</option>
                         <option value="5" >favicon.cccyun.cc</option>
                         <option value="6" >api.iowen.cn</option>
+                        <!--<option value="7" >toolb.cn</option>-->
+                        <!--<option value="8" >apis.jxcxin.cn</option>-->
                     </select>
                 </div>
                 <div class="layui-form-mid layui-word-aux">所有API接口均由其他大佬提供!若有异常请尝试更换接口!</div>

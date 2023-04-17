@@ -18,7 +18,7 @@ if(empty($link)){
 //站点设置和站点图标
 $site = unserialize(get_db('user_config','v',['uid'=>UID,'k'=>'s_site']));
 $favicon = ( !empty($site['site_icon_file'])) ? $site['site_icon'] : './favicon.ico';
-    
+$site['Title']  =  $site['title'].(empty($site['subtitle'])?'':' - '.$site['subtitle']);
 //取登录状态
 $is_login = is_login();
 
@@ -111,10 +111,6 @@ if(!is_file($transit_path)){
 $copyright = empty($global_config['copyright'])?'<a target="_blank" href="https://gitee.com/tznb/twonav">Copyright © TwoNav</a>':$global_config['copyright'];
 $ICP = empty($global_config['ICP'])?'':'<a target="_blank" href="https://beian.miit.gov.cn">'.$global_config['ICP'].'</a>';
 
-//读取站点配置
-$s_site = unserialize(get_db("user_config","v",["k"=>"s_site","uid"=>UID]));
-
-//var_dump($link,$transit_path,$category_parent,$category_ancestor,$s_site);
 
 //统计点击数
 write_user_count(date('Ym'),'click_Ym');
@@ -124,19 +120,21 @@ update_db("user_links", ["click[+]"=>1],['uid'=>UID,'lid'=>$id]);
 //读取过渡页设置
 $transition_page = unserialize(get_db("user_config","v",["t"=>"config","k"=>"s_transition_page","uid"=>UID]));
 
-//载入站点设置
-$site = unserialize(get_db('user_config','v',['uid'=>UID,'k'=>'s_site']));
-
 //读取用户主题配置
 $theme_config_db = unserialize(get_db('user_config','v',['t'=>'theme','k'=>$s_templates['transit'],'uid'=>UID]));
 
 //读取默认主题配置
 $theme_info = json_decode(@file_get_contents($dir_path.'/info.json'),true);
 $theme_config = empty($theme_info['config']) ? []:$theme_info['config'];
+$theme_ver = !Debug?$theme_info['version']:$theme_info['version'].'.'.time();
 
 //合并配置数据
 $theme_config = empty($theme_config_db) ? $theme_config : array_merge ($theme_config??[],$theme_config_db??[]);
 
+//如果主题信息声明支持扩展字段
+if($global_config['link_extend'] == 1 && check_purview('link_extend',1) && in_array($theme_info['support']['link_extend'],["true","1"])){
+    $extend = empty($link['extend']) ? [] : unserialize($link['extend']);
+}
 
 //如果存在备用链接,则强制载入过渡页
 if(!empty($link['url_standby'])) {

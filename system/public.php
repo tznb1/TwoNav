@@ -582,7 +582,18 @@ function getindexurl(){
     $HOST = $http_type.$_SERVER['HTTP_HOST'].$_SERVER['PHP_SELF'];
     return($HOST);
 }
-
+//检查数组指定字段是否有重复值
+function is_Duplicated($array, $field){
+    $values = [];
+    foreach($array as $item){
+        if(in_array($item[$field], $values)){ 
+            return true; 
+        }else{
+            $values[] = $item[$field];
+        }
+    }
+    return false;
+}
 //检查权限(有权限返回true 没有权限时根传递参数1是返回false 2是直接返回错误信息)
 function check_purview($name,$return_type){
     global $USER_DB;

@@ -65,7 +65,12 @@
         <button class="layui-btn layui-btn-sm layui-btn-normal layui-hide-xs" lay-event="batch_public" id="batch_public">设为公开</button>
         <button class="layui-btn layui-btn-sm layui-btn-normal layui-hide-xs" lay-event="batch_start" id="batch_start">设为启用</button>
         <button class="layui-btn layui-btn-sm layui-btn-normal layui-hide-xs" lay-event="batch_disable" id="batch_disable">设为禁用</button>
-        <button class="layui-btn layui-btn-sm layui-btn-normal layui-btn-danger layui-hide-xs" lay-event="testing" id="testing" <?php echo $global_config['offline']?'style="display:none;"':''?> >检测</button>
+<?php if($global_config['link_extend']  == 1 &&  check_purview('link_extend',1)){ ?> 
+        <button class="layui-btn layui-btn-sm layui-btn-normal layui-btn-danger layui-hide-xs" lay-event="link_extend" id="link_extend">扩展字段</button>
+<?php }?> 
+<?php if($global_config['offline']  != 1 ){ ?> 
+        <button class="layui-btn layui-btn-sm layui-btn-normal layui-btn-danger layui-hide-xs" lay-event="testing" id="testing">检测</button>
+<?php }?> 
         <button class="layui-btn layui-btn-sm layui-btn-normal layui-btn-danger" layuimini-content-href="link_sort" data-title="链接排序">排序模式</button>
     </div>
 </script>
@@ -73,25 +78,35 @@
 <script src = "./templates/admin/js/public.js?v=<?php echo $Ver;?>"></script>
 <?php load_static('js');?>
 <script src = "./templates/admin/js/link_list.js?v=<?php echo $Ver;?>"></script>
-<ul class="batch_category" style = "margin-top:18px;display:none;padding-right: 10px;" >
+<ul class="batch_category" style="margin-top:18px;display:none;padding-right: 10px;">
     <form class="layui-form" lay-filter="batch_category">
-        
         <div class="layui-form-item">
             <label class="layui-form-label">父级分类</label>
             <div class="layui-input-block">
-                <select  id="batch_category_fid">
+                <select id="batch_category_fid">
                 </select> 
             </div>
         </div>
-
-
         <div class="layui-form-item">
             <div class="layui-input-block">
                 <button class="layui-btn layui-btn-normal" lay-submit lay-filter="batch_category" id="batch_category" >确定修改</button>
                 <button class="layui-btn layui-btn-warm" type="button" id="close" >关闭</button>
             </div>
         </div>
-  </form>
+    </form>
+</ul>
+<ul class="link_extend" style="margin-top: 18px;display:none;padding-right: 10px;padding-left: 10px;">
+    <div class="layui-btn-container">
+        <button class="layui-btn" lay-submit id="add_field">新增字段</button>
+        <button class="layui-btn" lay-submit id="save_field">保存</button>
+        <button class="layui-btn layui-btn-primary" style="color: red;">数据变更需要点击保存!确定好需要的字段后请勿随意修改,以免造成数据错乱!</button>
+    </div>
+    <table id="link_extend_list" lay-filter="link_extend_list"></table>
+    <script type="text/html" id="link_extend_toolbar">
+        <div class="layui-btn-container">
+            <button class="layui-btn layui-btn-sm layui-btn-danger del" lay-event="del">移除</button>
+        </div>
+    </script>
 </ul>
 </body>
 </html>

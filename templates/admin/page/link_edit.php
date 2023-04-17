@@ -99,7 +99,11 @@ $title='编辑链接';$awesome=true; require 'header.php';
                 <textarea name="description" id="description" placeholder="请输入内容" class="layui-textarea"></textarea>
             </div>
         </div>
-    
+<?php 
+//判断全局是否开启扩展
+if($global_config['link_extend'] && check_purview('link_extend',1)){
+    require 'link_extend.php';
+}?>
         <div class="layui-form-item">
             <div class="layui-input-block layui-btn-group">
                 <button class="layui-btn layui-btn-warm" type="button" id="close" >关闭</button>

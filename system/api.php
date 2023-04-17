@@ -282,6 +282,18 @@ function write_category(){
 
 //读链接列表
 function read_link_list(){
+    if($_GET['type'] == 'extend_list'){
+        if($GLOBALS['global_config']['link_extend'] != 1 || !check_purview('link_extend',1)){
+            msgA(['code'=>1,'msg'=>'无权限','count'=>0,'data'=>[]]);
+        }
+        $list = get_db("user_config","v",["k"=>"s_extend_list","uid"=>UID]);
+        if(empty($list)){
+            msgA(['code'=>1,'msg'=>'无数据','count'=>0,'data'=>[]]);
+        }
+        $list = unserialize($list);
+        msgA(['code'=>1,'msg'=>'获取成功','count'=>count($list),'data'=>$list]);
+    }
+    
     $query  = $_POST['query'];
     $fid    = intval(@$_POST['fid']); //获取分类ID
     $page   = empty(intval($_REQUEST['page'])) ? 1 : intval($_REQUEST['page']);
@@ -541,6 +553,22 @@ function write_link(){
             'icon'          =>  $icon
             ];
         
+        //扩展字段
+        if($GLOBALS['global_config']['link_extend'] == 1 && check_purview('link_extend',1)){
+            $list = get_db("user_config","v",["k"=>"s_extend_list","uid"=>UID]);
+            if(!empty($list)){
+                $list = unserialize($list); 
+                $extend = [];
+                foreach($list as $field){
+                    $name = "_{$field['name']}";
+                    if(isset($_POST[$name])){
+                        $data['extend'][$name] = $_POST[$name];
+                    }
+                }
+            }
+        
+        }
+        
         //非必须参数,未传递参数时
         if(isset($_POST['icon'])){
             //指定本地图标时检测是否存在
@@ -641,11 +669,85 @@ function write_link(){
         if(empty($fid)){msg(-1,'分类ID错误');}
         //加一个查找分类是否存在
         update_db('user_links',['fid'=>$fid],['uid'=>UID ,"lid" => json_decode($_POST['lid']) ],[1,'设置成功']);
+    //图标拉取(不完善,未开放使用)
+    }elseif($_GET['type'] === 'icon_pull'){
+        $link = get_db('user_links','url',['uid'=>UID,'lid'=>$_POST['id']]);
+        if(empty($link)){
+            msg(-1,'请求的链接id不存在');
+        }
+        $s_site = unserialize(get_db("user_config","v",["k"=>"s_site","uid"=>UID]));
+        if(empty($s_site['link_icon']) || $s_site['link_icon'] == 0){
+            msg(-1,'站点设置链接图标不能是离线图标!请先修改配置!');
+        }
+        $icon = $s_site['link_icon'];
+        if($icon ==2){
+            function base64($url){
+                $urls = parse_url($url);
+                $scheme = empty( $urls['scheme'] ) ? 'http://' : $urls['scheme'].'://'; //获取请求协议
+                $host = $urls['host']; //获取主机名
+                $port = empty( $urls['port'] ) ? '' : ':'.$urls['port']; //获取端口
+                $new_url = $scheme.$host.$port;
+                return base64_encode($new_url);
+            }
+            $api = 'https://favicon.rss.ink/v1/'.base64($link);
+        }elseif($icon ==4){
+            $api = 'https://api.15777.cn/get.php?url='.$link;
+        }elseif($icon ==5){
+            $api = 'https://favicon.cccyun.cc/'.$link;
+        }elseif($icon ==6){
+            $api = 'https://api.iowen.cn/favicon/'.parse_url($link)['host'].'.png';
+        }elseif($icon ==7){
+            $api = 'https://toolb.cn/favicon/'.parse_url($link)['host'];
+        }
+        if(downFile($api,$_POST['id'].'.ico',DIR ."/data/user/".U."/favicon/")){
+            update_db('user_links',['icon'=>"./data/user/".U.'/favicon/'.$_POST['id'].'.ico'],['uid'=>UID ,"lid" => $_POST['id'] ],[1,'获取成功']);
+        }
+        msg(-1,'获取失败');
+
+    }elseif($_GET['type'] == 'extend_list'){
+        if($GLOBALS['global_config']['link_extend'] != 1 ||!check_purview('link_extend',1)){
+            msg(-1,'无权限');
+        }
+        $lists = json_decode($_POST['list'],true);
+        
+        $weight = [];
+        foreach ($lists as  $data ){
+            if(empty($data['weight']) || !preg_match('/^\d$/', $data['weight'])){
+                msgA( ['code' => -1,'msg' => '序号错误,请输入正整数'] );
+            }
+            if(empty($data['title']) || check_xss($data['title'])){
+                msgA( ['code' => -1,'msg' => '标题不能为空'] );
+            }
+            if(empty($data['name']) || check_xss($data['name']) || !preg_match('/^[A-Za-z0-9]{3,18}$/',$data['name'])){
+                msgA( ['code' => -1,'msg' => '字段名错误,请输入长度3-18的字母/数字'] );
+            }
+            if(!in_array($data['type'],['text','textarea'])){
+                msgA( ['code' => -1,'msg' => '类型错误'] );
+            }
+        }
+        if(is_Duplicated($lists,'weight')){
+            msg(-1,'序号不能重复');
+        }elseif(is_Duplicated($lists,'title')){
+            msg(-1,'标题不能重复');
+        }elseif(is_Duplicated($lists,'name')){
+            msg(-1,'字段名不能重复');
+        }
+        
+        $datas = [];
+        foreach ($lists as $key => $data ){
+            array_push($datas,['title'=>$data['title'],'name'=>$data['name'],'weight'=>$data['weight'],'type'=>$data['type'],'default'=> "{$data['default']}"]);
+        }
+        //根据序号排序
+        usort($datas, function($a, $b) {
+            return $a['weight'] - $b['weight'];
+        });
+        write_user_config('s_extend_list',$datas,'config','链接扩展字段');
+        msgA( ['code' => 1,'msg' => '保存成功','datas'=>$datas] );
     }
-    
-    
+
     msg(-1,'操作类型错误');
 }
+
 
 //写安全设置
 function write_security_setting(){ 
@@ -844,7 +946,7 @@ function write_site_setting(){
         'keywords'=>['empty'=>true],
         'description'=>['empty'=>true],
         'link_model'=>['v'=>['direct','Privacy','Privacy_js','Privacy_meta','301','302','Transition'],'msg'=>'链接模式参数错误'],
-        'link_icon'=>['int'=>true,'min'=>0,'max'=>6,'msg'=>'链接图标参数错误'],
+        'link_icon'=>['int'=>true,'min'=>0,'max'=>10,'msg'=>'链接图标参数错误'],
         'site_icon'=>['empty'=>true],
         'top_link'=>['int'=>true,'min'=>0,'max'=>20,'msg'=>'热门链接参数错误'],
         'new_link'=>['int'=>true,'min'=>0,'max'=>20,'msg'=>'最新链接参数错误'],
@@ -1123,6 +1225,9 @@ function write_theme(){
         
     //配置主题信息
     }elseif($_GET['type'] == 'config'){
+        if(!check_purview('theme_set',1)){
+            msg(-1,"无权限！");
+        }
         if(empty($_POST)){
             msg(-1,"POST请求数据不能为空！");
         }

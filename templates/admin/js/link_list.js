@@ -165,7 +165,7 @@ layui.use(['form','table','dropdown','miniTab'], function () {
         }
         
         var checkStatus = table.checkStatus(obj.config.id);
-        if( checkStatus.data.length == 0 && ['LAYTABLE_COLS','LAYTABLE_EXPORT','LAYTABLE_PRINT','batch'].indexOf(event) == -1 ) {
+        if( checkStatus.data.length == 0 && ['LAYTABLE_COLS','LAYTABLE_EXPORT','LAYTABLE_PRINT','batch','link_extend'].indexOf(event) == -1 ) {
             layer.msg('未选中任何数据！');
             return;
         }
@@ -248,9 +248,63 @@ layui.use(['form','table','dropdown','miniTab'], function () {
                 return true;
             }
           })
+        }else if(event === 'icon_pull'){
+            let i = 0;
+            let total = checkStatus.data.length;
+            layer.load(1, {shade:[0.3,'#fff']});//加载层
+            let msg_id = layer.msg('正在拉取中', {icon: 16,time: 1000*300});
+            icon_pull(i);
+            function icon_pull(id){
+                if(i >= total){
+                    layer.closeAll();
+                    layer.alert('拉取完毕',{icon:1,title:'信息',anim: 2,shadeClose: false,closeBtn: 0});
+                    return true;
+                }
+                $("#layui-layer"+ msg_id+" .layui-layer-padding").html('<i class="layui-layer-ico layui-layer-ico16"></i>[ ' + i + ' / ' + total + ' ] 正在拉取图标');
+                $.post(get_api('write_link','icon_pull'),{id:checkStatus.data[i].lid},function(data,status){
+                    if(data.code == 1){
+                        i ++;
+                        icon_pull(i);
+                    } else{
+                        layer.closeAll();
+                        layer.alert(data.msg,{icon:5,title:'信息',anim: 2,shadeClose: false,closeBtn: 0});
+                    }
+                });
+            }
+        }else if(event === 'link_extend'){
+            extend_data = '';
+            index = layer.open({type: 1,scrollbar: false,shadeClose: true,title: '编辑扩展字段',area : ['100%', '100%'],content: $('.link_extend')});
+            $.post(get_api('read_link_list','extend_list'),function(data,status){
+                if(data.code == 1){
+                    extend_data = data.data;
+                    table.reload('link_extend_list', {data: extend_data});
+                } else{
+                    layer.msg(data.msg);
+                }
+            });
         }
     });
     
+    table.render({
+        elem: '#link_extend_list'
+        ,height: 'full-150'
+        ,data: {}
+        ,response: {statusCode: 1 } 
+        ,method: 'post'
+        ,page: false
+        ,limit: 1000
+        ,even:true
+        ,id:'link_extend_list'
+        ,loading:true
+        ,cols: [[
+            {field:'weight',title:'序号',edit:'text',width:80}
+            ,{field:'title',title:'标题',edit:'text',width:256}
+            ,{field:'name',title:'字段名',edit:'text',width:256}
+            ,{field:'type',title:'类型',edit:'text',width:256}
+            ,{field:'default',title:'默认值',edit:'text',width:256}
+            ,{ title:'操作',toolbar:'#link_extend_toolbar',align:'center',width:118}
+        ]]
+    });
     //监听工具条
     table.on('tool(table)', function (obj) {
         var data = obj.data;
@@ -374,5 +428,59 @@ layui.use(['form','table','dropdown','miniTab'], function () {
             ,click: function(obj){$('#'+ obj.id).click();}
         });
     }
+    
+    
+    //自定义字段行事件
+    table.on('tool(link_extend_list)', function (obj) {
+        var data = obj.data;
+        var row = $(obj.tr).attr("data-index"); //获取行索引
+        if (obj.event === 'del') {
+            layer.confirm('确认移除？',{icon: 3, title:'温馨提示'}, function(index){
+                obj.del();
+                layer.close(index);
+                layer.msg("移除成功,点击保存后生效!",{icon:1});
+            });
+        }
+    });
+    //添加字段
+    $('#add_field').click(function () {
+        let data = table.cache.link_extend_list;
+        let max_weight = 0;
+        //找出最大的一个排序值
+        for (let i = 0; i < data.length; i++) {
+            if( parseInt(data[i].weight) > max_weight ){
+                max_weight = parseInt(data[i].weight);
+            }
+        }
+        data.push({
+            "title": "请输入标题",
+            "name":"请输入字段名(大小写字母或数字)",
+            "weight":(max_weight + 1),
+            "type":"请输入 text 或 textarea",
+            "default":""
+        });
+        table.reload('link_extend_list', {data: data});
+        return false;
+    });
+    //保存字段
+    $('#save_field').click(function () {
+        var data = [];
+        var tableBak = table.cache.link_extend_list; 
+        for (var i = 0; i < tableBak.length; i++) {
+            //过滤掉被删除的空数据
+            if(typeof tableBak[i].LAY_TABLE_INDEX == 'number'){
+                data.push(tableBak[i]);
+            }
+        }
+        $.post(get_api('write_link','extend_list') ,{list:JSON.stringify(data)},function(data,status){
+            if(data.code == 1){
+                table.reload("link_extend_list",{data:data.datas}); 
+                layer.msg('保存成功', {icon: 1});
+            } else{
+                layer.msg(data.msg,{icon:5});
+            }
+        });
+        return false;
+    });
     
 });

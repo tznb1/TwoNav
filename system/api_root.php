@@ -505,6 +505,7 @@ function write_sys_settings(){
         //扩展功能-(全局开关)
         'apply'=>['int'=>true,'min'=>0,'max'=>1,'msg'=>'收录管理参数错误'],
         'guestbook'=>['int'=>true,'min'=>0,'max'=>1,'msg'=>'留言管理参数错误'],
+        'link_extend'=>['int'=>true,'min'=>0,'max'=>1,'msg'=>'链接扩展参数错误'],
         ];
     $o_config = [];
     foreach ($datas as $key => $data){
