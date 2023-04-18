@@ -1,10 +1,9 @@
 <?php if(!defined('DIR')){header('HTTP/1.1 404 Not Found');header("status: 404 Not Found");exit;}
 //主页入口
 define('is_login',is_login());
-//var_dump($global_config['offline']);
 
 //判断用户组,是否允许未登录时访问主页
-if(!is_login && !check_purview('Common_home',1)){
+if(!is_login && ($global_config['Privacy'] == 1 || !check_purview('Common_home',1))){
     header("HTTP/1.1 302 Moved Permanently");
     header("Location: ./?c=admin");
     exit;

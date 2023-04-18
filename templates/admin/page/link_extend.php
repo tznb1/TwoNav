@@ -25,7 +25,7 @@ function echo_text($data){ ?>
         <div class="layui-form-item">
             <label class="layui-form-label"><?php echo $data['title']?></label>
             <div class="layui-input-block">
-                <input type="text" name="_<?php echo $data['name']?>" autocomplete="off" value="<?php echo $data['value']?>" class="layui-input">
+                <input type="text" name="_<?php echo $data['name']?>" autocomplete="off" value="<?php echo htmlentities($data['value'])?>" class="layui-input">
             </div>
         </div>
 <?php 
@@ -35,7 +35,7 @@ function echo_textarea($data){ ?>
         <div class="layui-form-item">
             <label class="layui-form-label"><?php echo $data['title']?></label>
             <div class="layui-input-block">
-                <textarea name="_<?php echo $data['name']?>" class="layui-textarea"><?php echo $data['value']?></textarea>
+                <textarea name="_<?php echo $data['name']?>" class="layui-textarea"><?php echo htmlentities($data['value'])?></textarea>
             </div>
         </div>
 <?php 

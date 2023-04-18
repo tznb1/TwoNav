@@ -200,7 +200,7 @@ layui.use(['form','table','laydate','tableSelect'], function () {
         ,{field:'id',title:'ID',width:60,sort:true,hide:true}
         ,{title: '操作',toolbar: '#tablebar',align:'center',width:140}
         ,{field:'sid',title:'标识',width:118,align:'center',templet:function(d){
-            return '<a style="color:#3c78d8" href = "./index.php?share='+d.sid+'" target = "_blank" title = "点击打开">'+d.sid+'</a>';
+            return '<a style="color:#3c78d8" href = "./index.php?u='+u+'&share='+d.sid+'" target = "_blank" title = "点击打开">'+d.sid+'</a>';
         }}
         ,{field:'name',title:'名称',width:180}
         ,{field:'pwd',title:'提取码',width:160}
@@ -331,7 +331,7 @@ layui.use(['form','table','laydate','tableSelect'], function () {
             });
         }else if(obj.event === 'copy'){
             if(isSupported){
-                ClipboardJS.copy(baseUrl + "index.php?share=" + data.sid +(data.pwd != '' ? '&pwd=' + data.pwd:''));
+                ClipboardJS.copy(baseUrl + "index.php?u="+u+"&share=" + data.sid +(data.pwd != '' ? '&pwd=' + data.pwd:''));
                 layer.msg('复制成功', {icon: 1});
             }else{
                 layer.msg('复制失败,浏览器不支持', {icon: 5});

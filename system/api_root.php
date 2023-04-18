@@ -499,6 +499,7 @@ function write_sys_settings(){
         'Debug'=>['int'=>true,'min'=>0,'max'=>1,'msg'=>'调试模式参数错误'],
         'Maintenance'=>['int'=>true,'min'=>0,'max'=>1,'msg'=>'维护模式参数错误'],
         'Sub_domain'=>['int'=>true,'min'=>0,'max'=>1,'msg'=>'二级域名参数错误'],
+        'Privacy'=>['int'=>true,'min'=>0,'max'=>1,'msg'=>'强制私有参数错误'],
         'copyright'=>['empty'=>true],
         'global_header'=>['empty'=>true],
         'global_footer'=>['empty'=>true],
@@ -519,11 +520,13 @@ function write_sys_settings(){
     }
     if(!is_subscribe('bool')){
         if($_POST['Sub_domain'] == 1){$o_config['Sub_domain'] = 0;$filter = true;}
+        if($_POST['Privacy'] == 1){$o_config['Privacy'] = 0;$filter = true;}
         if(!empty($_POST['copyright'])){$o_config['copyright'] = "";$filter = true;}
         if(!empty($_POST['global_header'])){$o_config['global_header'] = "";$filter = true;}
         if(!empty($_POST['global_footer'])){$o_config['global_footer'] = "";$filter = true;}
-        if(!empty($_POST['apply'])){$o_config['apply'] = 0;$filter = true;}
-        if(!empty($_POST['guestbook'])){$o_config['guestbook'] = 0;$filter = true;}
+        if($_POST['apply'] == 1){$o_config['apply'] = 0;$filter = true;}
+        if($_POST['guestbook'] == 1){$o_config['guestbook'] = 0;$filter = true;}
+        if($_POST['link_extend'] == 1){$o_config['link_extend'] = 0;$filter = true;}
     }
     
     update_db("global_config", ["v" => $o_config], ["k" => "o_config"],[1,($filter ?"保存成功,未检测到有效授权,带*号的配置无法为你保存":"保存成功")]);

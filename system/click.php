@@ -8,17 +8,20 @@ if(empty($id)){Not_Found();}
 //查询链接信息
 $where['lid'] = $id;
 $where['uid'] = UID;
-//$where['status'] = 1;
+$where['status'] = 1;
 $link = get_db('user_links','*',$where);
 
 //查找失败时显示404
-if(empty($link)){
-    Not_Found();
-}
+if(empty($link)){Not_Found();}
+
 //站点设置和站点图标
 $site = unserialize(get_db('user_config','v',['uid'=>UID,'k'=>'s_site']));
-$favicon = ( !empty($site['site_icon_file'])) ? $site['site_icon'] : './favicon.ico';
 $site['Title']  =  $site['title'].(empty($site['subtitle'])?'':' - '.$site['subtitle']);
+//免费用户请保留版权,谢谢!
+$copyright = empty($global_config['copyright'])?'<a target="_blank" href="https://gitee.com/tznb/twonav">Copyright © TwoNav</a>':$global_config['copyright'];
+$ICP = empty($global_config['ICP'])?'':'<a target="_blank" href="https://beian.miit.gov.cn">'.$global_config['ICP'].'</a>';
+$favicon = ( !empty($site['site_icon_file'])) ? $site['site_icon'] : './favicon.ico';
+
 //取登录状态
 $is_login = is_login();
 
@@ -39,7 +42,6 @@ if(!$is_login){
             $pv = empty($share['pwd']) || $_SESSION['verify']['share'][$share['id']] == $share['pwd'];
         }
     }
-
     
     //判断链接是否停用/私有
     if($link['status'] == 0){
@@ -63,7 +65,6 @@ if(!$is_login){
     if($category_ancestor['property'] == 1 && !$pv){
         exit('很抱歉,页面所属的祖分类是私有的!您无权限查看,如果您是管理员,请先登录!');
     }
-    
     
     //判断链接是否加密
     if(!empty($link['pid'])){
@@ -94,9 +95,6 @@ if(!$is_login){
     }
 }
 
-
-
-
 //取模板信息
 require DIR ."/system/templates.php";
 $dir_path = DIR.'/templates/transit/'.$s_templates['transit'];
@@ -107,18 +105,12 @@ if(!is_file($transit_path)){
     $transit_path= DIR.'/templates/transit/default/index.php';
 }
 
-//免费用户请保留版权,谢谢!
-$copyright = empty($global_config['copyright'])?'<a target="_blank" href="https://gitee.com/tznb/twonav">Copyright © TwoNav</a>':$global_config['copyright'];
-$ICP = empty($global_config['ICP'])?'':'<a target="_blank" href="https://beian.miit.gov.cn">'.$global_config['ICP'].'</a>';
-
-
 //统计点击数
 write_user_count(date('Ym'),'click_Ym');
 write_user_count(date('Ymd'),'click_Ymd');
 update_db("user_links", ["click[+]"=>1],['uid'=>UID,'lid'=>$id]);
 
-//读取过渡页设置
-$transition_page = unserialize(get_db("user_config","v",["t"=>"config","k"=>"s_transition_page","uid"=>UID]));
+
 
 //读取用户主题配置
 $theme_config_db = unserialize(get_db('user_config','v',['t'=>'theme','k'=>$s_templates['transit'],'uid'=>UID]));
@@ -143,24 +135,24 @@ if(!empty($link['url_standby'])) {
     exit;
 }
 
-if ($s_site['link_model'] == '302'){ //302重定向
+if ($site['link_model'] == '302'){ //302重定向
     header("HTTP/1.1 302 Moved Permanently");
     header("Location: ".$link['url']);
     exit;
-}elseif($s_site['link_model'] == '301'){  //301重定向
+}elseif($site['link_model'] == '301'){  //301重定向
     header("HTTP/1.1 301 Moved Permanently");
     header("Location: ".$link['url']);
     exit;
-}elseif($s_site['link_model'] == 'Privacy'){ //隐私保护_header
+}elseif($site['link_model'] == 'Privacy'){ //隐私保护_header
     header("Content-type: text/html; charset=utf-8"); 
     header("Refresh:0;url=".$link['url']);
     echo '<html lang="zh-ch"><head><title>正在保护您的隐私..</title><meta name="referrer" content="same-origin"></head>';
     exit;
-}elseif($s_site['link_model'] == 'Privacy_js'){ //隐私保护_js
+}elseif($site['link_model'] == 'Privacy_js'){ //隐私保护_js
     header("Content-type: text/html; charset=utf-8");
     echo '<html lang="zh-ch"><head><title>正在保护您的隐私..</title><meta name="referrer" content="same-origin"><script>window.location.href="'.$link['url'].'"</script></head>';
     exit;
-}elseif($s_site['link_model'] == 'Privacy_meta'){ //隐私保护_meta
+}elseif($site['link_model'] == 'Privacy_meta'){ //隐私保护_meta
     header("Content-type: text/html; charset=utf-8");
     echo '<html lang="zh-ch"><head><title>正在保护您的隐私..</title><meta name="referrer" content="same-origin"><meta http-equiv="refresh" content="0;url='.$link['url'].'"></head>';
     exit;

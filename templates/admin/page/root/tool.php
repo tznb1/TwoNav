@@ -1,6 +1,9 @@
 <?php 
 if($USER_DB['UserGroup'] != 'root'){$content='您没有权限访问此页面'; require(DIR.'/templates/admin/page/404.php');exit;}
 $title='站长工具'; 
+if(function_exists("opcache_reset")){
+    opcache_reset(); //清理PHP缓存
+}
 require(dirname(__DIR__).'/header.php');
 ?>
 <style>

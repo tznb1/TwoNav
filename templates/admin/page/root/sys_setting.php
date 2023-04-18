@@ -123,6 +123,17 @@ $title='系统设置';require(dirname(__DIR__).'/header.php');
                 </div>
                 <div class="layui-form-mid layui-word-aux">开启时将关闭主页/登录/注册等服务,站长账号不受影响(网站升级迁移时适用)</div>
             </div>
+
+            <div class="layui-form-item">
+                <label class="layui-form-label required">强制私有</label>
+                <div class="layui-input-inline">
+                    <select name="Privacy">
+                        <option value="0" selected="">依用户组配置</option>
+                        <option value="1" >全站用户</option>
+                    </select>
+                </div>
+                <div class="layui-form-mid layui-word-aux">开启后用户必须登录才可以进入主页(过渡页不限制)</div>
+            </div>
             
             <div class="layui-form-item">
                 <label class="layui-form-label required">二级域名</label>
