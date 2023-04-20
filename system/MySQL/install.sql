@@ -42,7 +42,8 @@ CREATE TABLE IF NOT EXISTS `updatadb_logs` (
   UNIQUE KEY `file_name` (`file_name`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4;
 
-INSERT INTO "updatadb_logs" ("id", "file_name", "update_time", "status", "extra") VALUES ('1', '20230417.php', '1681719049', 'TRUE', '');
+INSERT INTO "updatadb_logs" ("file_name", "update_time", "status", "extra") VALUES ('20230417.php', '1681719049', 'TRUE', '');
+INSERT INTO "updatadb_logs" ("file_name", "update_time", "status", "extra") VALUES ('20230420.php', '1681977368', 'TRUE', '');
 
 -- 创建用户表
 DROP TABLE IF EXISTS `global_user`;

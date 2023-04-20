@@ -51,7 +51,6 @@ $HTTP_HOST = preg_replace('/:\d+$/','',$_SERVER['HTTP_HOST']); //去除端口号
             <button class="layui-btn" lay-submit lay-filter="get_subscribe">查询授权</button>
         </div>
 
-        
         <fieldset class="layui-elem-field layui-field-title" style="margin-top:30px;"><legend>授权用户专享</legend></fieldset>
         <blockquote class="layui-elem-quote layui-text">
           <li>1. 可使用一键更新功能</li>

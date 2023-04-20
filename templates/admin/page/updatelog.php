@@ -5,6 +5,16 @@
     <li class="layui-timeline-item">
         <i class="layui-icon layui-timeline-axis"></i>
         <div class="layui-timeline-content layui-text">
+            <h4 class="layui-timeline-title">v2.0.14-20230420</h4>
+            <ul>
+                <li>修复书签分享和输出上限冲突的问题</li>
+                <li>[数据库更新]修复不同类型的模板目录名相同时存在窜数据的问题</li>
+            </ul>
+        </div>
+    </li>
+    <li class="layui-timeline-item">
+        <i class="layui-icon layui-timeline-axis"></i>
+        <div class="layui-timeline-content layui-text">
             <h4 class="layui-timeline-title">v2.0.13-20230418</h4>
             <ul>
                 <li>修复链接模式不受控的问题(上个版本造成)</li>

@@ -42,9 +42,9 @@ function other_upsys(){
     if($_POST['i'] == 2){
         if(!is_subscribe('bool')){
             msg(-1,'未检测到有效授权,请
-            <a href="https://gitee.com/tznb/OneNav/wikis/%E8%AE%A2%E9%98%85%E6%9C%8D%E5%8A%A1%E6%8C%87%E5%BC%95" target="_blank" style="color: #01AAED;">购买授权</a>
+            <a href="https://gitee.com/tznb/TwoNav/wikis/pages?sort_id=7968669&doc_id=3767990" target="_blank" style="color: #01AAED;">购买授权</a>
             或
-            <a href="https://gitee.com/tznb/TwoNav/releases" target="_blank" style="color: #01AAED;">手动更新</a>');
+            <a href="https://gitee.com/tznb/TwoNav/wikis/pages?sort_id=8013447&doc_id=3767990" target="_blank" style="color: #01AAED;">手动更新</a>');
         }
         //设置执行最长时间，0为无限制。单位秒!
         set_time_limit(5*60);

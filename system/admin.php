@@ -53,32 +53,8 @@ if ($page == 'home') {
         array_push($day_data[0]['data'],get_db('user_count','v',['uid'=>UID,'k'=>$date,'t'=>'index_Ymd'])??0);
         array_push($day_data[1]['data'],get_db('user_count','v',['uid'=>UID,'k'=>$date,'t'=>'click_Ymd'])??0);
     }
-    //var_dump(json_encode($day),$day_data);
 }
 
-//调试
-if( $page == 'test' ) {
-    $dirs = get_dir_list(DIR.'/templates/home');
-    //var_dump($dirs);
-    foreach ($dirs as $dir) {
-        $path = DIR.'/templates/home/'.$dir; //目录完整路径
-        //没有信息文件则跳过
-        if(!is_file($path.'/info.json') ) {continue;}
-        //读取主题信息
-        $themes[$dir]['info'] = json_decode(@file_get_contents($path.'/info.json'),true);
-        //是否支持配置
-        $themes[$dir]['info']['config'] = is_file($path.'/config.php') ? '1':'0';
-        //预览图优先顺序:png>jpg>info>default
-        if(is_file($dirs.'/screenshot.png')){
-            $themes[$dir]['info']['screenshot'] = "./templates/home/".$dir."/screenshot.png";
-        }elseif(is_file($dirs.'/screenshot.jpg')){
-            $themes[$dir]['info']['screenshot'] = "./templates/home/".$dir."/screenshot.jpg";
-        }elseif(empty($themes[$dir]['info']['screenshot'])){ 
-            $themes[$dir]['info']['screenshot'] = "./templates/admin/static/42ed3ef2c4a50f6d.png";
-        }
-        //var_dump($themes);
-    }
-}
 //载入主题配置
 if($page == 'config_home'){
     $theme = $_GET['theme'];
@@ -92,7 +68,10 @@ if($page == 'config_home'){
     $theme_config = empty($theme_config['config']) ? []:$theme_config['config'];
     
     //读取用户主题配置
-    $theme_config_db = get_db('user_config','v',['t'=>'theme','k'=>$theme,'uid'=>UID]);
+    if(!in_array($_GET['fn'],['home','login','register','transit'])){
+        msg(-1,"参数错误");
+    }
+    $theme_config_db = get_db('user_config','v',['t'=>'theme_'.$_GET['fn'],'k'=>$theme,'uid'=>UID]);
     $theme_config_db = unserialize($theme_config_db);
     
     //如果不为空则合并数据
@@ -103,7 +82,6 @@ if($page == 'config_home'){
     if(empty($theme_config)){
         exit("<h3>获取主题配置失败</h3>");
     }
-    //var_dump($theme_config);
     require $config_path;
     exit;
 }
@@ -129,7 +107,6 @@ if( $page == 'theme_home' || $page == 'theme_login' || $page == 'theme_transit' 
         }elseif(empty($themes[$dir]['info']['screenshot'])){ 
             $themes[$dir]['info']['screenshot'] = "./templates/admin/static/42ed3ef2c4a50f6d.png";
         }
-        //var_dump($themes);
     }
     
     //获取当前主题
@@ -191,7 +168,6 @@ if( $page == 'theme_home' || $page == 'theme_login' || $page == 'theme_transit' 
             define('referrer',$data['referrer']);
         }
     }
-    //var_dump($themes);exit;
 }
 
 
@@ -230,7 +206,6 @@ if ($page == 'menu') {
         array_push($menu,$extend);
     }
 
-    
     //如果是管理员则追加菜单
     if($USER_DB['UserGroup'] == 'root'){
         array_push($menu,
@@ -251,7 +226,6 @@ if ($page == 'menu') {
     exit(json_encode($init));
 }
 
-
 //不带参数是载入框架
 if(empty($page)){
     $site = unserialize(get_db('user_config','v',['uid'=>UID,'k'=>'s_site']));
@@ -270,7 +244,6 @@ if(!empty($page)){
         exit;
     }
 }
-
 
 //加载静态库
 function load_static($type){

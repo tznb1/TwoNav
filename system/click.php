@@ -113,7 +113,7 @@ update_db("user_links", ["click[+]"=>1],['uid'=>UID,'lid'=>$id]);
 
 
 //读取用户主题配置
-$theme_config_db = unserialize(get_db('user_config','v',['t'=>'theme','k'=>$s_templates['transit'],'uid'=>UID]));
+$theme_config_db = unserialize(get_db('user_config','v',['t'=>'theme_transit','k'=>$s_templates['transit'],'uid'=>UID]));
 
 //读取默认主题配置
 $theme_info = json_decode(@file_get_contents($dir_path.'/info.json'),true);

@@ -1231,10 +1231,22 @@ function write_theme(){
         if(empty($_POST)){
             msg(-1,"POST请求数据不能为空！");
         }
-        write_user_config($_GET['t'],$_POST,'theme','主题配置');
+        //20230420,修复同名窜数据的问题!由于保存主题不提交模板类型,只能从来路中提取
+        parse_str(parse_url($_SERVER['HTTP_REFERER'])['query'],$GET);
+        if(empty($GET['fn']) && empty($_GET['template_type']) ){
+            msg(-1,"获取模板类型错误");
+        }
+        $fn = empty($GET['fn']) ? $_GET['template_type'] : $GET['fn'];
+        if(!in_array($fn,['home','login','register','transit'])){
+            msg(-1,"参数错误");
+        }
+        //0420 END
+        write_user_config($_GET['t'],$_POST,'theme_' . $fn,'主题配置');
         msg(1,"保存成功！");
     }
 }
+
+
 //读登录信息
 function read_login_info(){
     $page   = empty(intval($_REQUEST['page'])) ? 1 : intval($_REQUEST['page']);

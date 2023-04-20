@@ -155,8 +155,7 @@ function get_db($table,$columns,$where,$rp = []){
 
 //写全局配置(存在则更新,不存在则创建)
 function write_global_config($key,$value,$d){
-    $re = get_db('global_config','k',['k'=>$key]);
-    if(empty($re)){
+    if(!has_db('global_config',['k'=>$key])){
         insert_db("global_config", ["k" => $key,"v" => $value,"d" => $d]);  
     }else{
         update_db("global_config", ["v" => $value],['k'=>$key]); 
@@ -165,17 +164,16 @@ function write_global_config($key,$value,$d){
 
 //写用户配置(存在则更新,不存在则创建)
 function write_user_config($key,$value,$t,$d){
-    $re = get_db('user_config','k',['uid'=>UID,'k'=>$key]);
-    if(empty($re)){
+    if(!has_db('user_config',['uid'=>UID,'k'=>$key,'t'=>$t])){
         insert_db("user_config", ['uid'=>UID,"k"=>$key,"v"=>$value,"t"=>$t,"d"=>$d]);  
     }else{
-        update_db("user_config", ["v"=>$value],['uid'=>UID,'k'=>$key]); 
+        update_db("user_config", ["v"=>$value],['uid'=>UID,'k'=>$key,'t'=>$t]); 
     }
 }
 
+//写用户统计
 function write_user_count($key,$t){
-    $re = get_db('user_count','k',['uid'=>UID,'t'=>$t,'k'=>$key]);
-    if(empty($re)){
+    if(!has_db('user_count',['uid'=>UID,'t'=>$t,'k'=>$key])){
         insert_db("user_count", ['uid'=>UID,"k"=>$key,"v"=>1,'t'=>$t]);  
     }else{
         update_db("user_count", ["v[+]"=>1],['uid'=>UID,'t'=>$t,'k'=>$key]); 

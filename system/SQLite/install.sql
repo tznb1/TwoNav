@@ -35,7 +35,8 @@ CREATE TABLE IF NOT EXISTS "updatadb_logs" (
   "extra" TEXT(512) NOT NULL DEFAULT "",
   CONSTRAINT "file_name" UNIQUE ("file_name" ASC)
 );
-INSERT INTO "updatadb_logs" ("id", "file_name", "update_time", "status", "extra") VALUES ('1', '20230417.php', '1681719049', 'TRUE', '');
+INSERT INTO "updatadb_logs" ("file_name", "update_time", "status", "extra") VALUES ('20230417.php', '1681719049', 'TRUE', '');
+INSERT INTO "updatadb_logs" ("file_name", "update_time", "status", "extra") VALUES ('20230420.php', '1681977368', 'TRUE', '');
 
 -- 创建用户表
 CREATE TABLE IF NOT EXISTS "global_user" (

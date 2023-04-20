@@ -43,7 +43,7 @@ $support_category_svg = $theme_info['support']['category_svg']??0; //0.不支持
 //主题配置(默认)
 $theme_config = empty($theme_info['config']) ? []:$theme_info['config'];
 //主题配置(用户)
-$theme_config_db = get_db('user_config','v',['t'=>'theme','k'=>$theme,'uid'=>UID]);
+$theme_config_db = get_db('user_config','v',['t'=>'theme_home','k'=>$theme,'uid'=>UID]);
 $theme_config_db = unserialize($theme_config_db);
 //合并配置数据
 $theme_config = empty($theme_config_db) ? $theme_config : array_merge ($theme_config,$theme_config_db);
@@ -132,10 +132,11 @@ function get_links($fid) {
             $where['LIMIT'] = $site['new_link'];
         }
         $where['ORDER']['lid'] = 'DESC';
-    //输出上限&不在子页面&例外主题
-    }elseif($site['max_link'] > 0 && empty(Get('oc')) && !$site['ex_theme']){
+    //输出上限&不在子页面&例外主题&书签分享
+    }elseif($site['max_link'] > 0 && empty(Get('oc')) && !$site['ex_theme'] && empty($_GET['share'])){
         $count = count_db('user_links',$where);
         $where['LIMIT'] = $site['max_link'];
+        $max_link = true;
     }
     $links = select_db('user_links',['lid(id)','fid','property','title','url(real_url)','url_standby','description','icon','click','pid'],$where);
     foreach ($links as $key => $link) {
@@ -172,7 +173,7 @@ function get_links($fid) {
         //获取图标链接
         $links[$key]['ico'] = $lock ? $GLOBALS['libs'].'/Other/lock.svg' : geticourl($site['link_icon'],$link);
     }
-    if($site['max_link'] > 0 && $count > $site['max_link'] && empty(Get('oc')) && !$site['ex_theme']){
+    if($max_link && $count > $site['max_link']){
         $oc_url = "./index.php?u={$u}&oc={$fid}" . (empty($_GET['theme']) ? '':"&theme={$_GET['theme']}");
         array_push($links,['id'=>0,'title'=>'查看全部','url'=>$oc_url,'real_url'=>$oc_url,'description'=>'该分类共有'.$count.'条数据','ico'=>'./favicon.ico']);
     }
