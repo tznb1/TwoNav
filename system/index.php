@@ -1,4 +1,4 @@
-<?php if(!defined('DIR')){header('HTTP/1.1 404 Not Found');header("status: 404 Not Found");exit;}
+<?php if(!defined('DIR')){header('HTTP/1.1 404 Not Found');header("status: 404 Not Found");exit;}AccessControl();
 //主页入口
 define('is_login',is_login());
 
@@ -12,7 +12,7 @@ if(!is_login && ($global_config['Privacy'] == 1 || !check_purview('Common_home',
 $site = unserialize(get_db('user_config','v',['uid'=>UID,'k'=>'s_site']));
 $site['Title']  =  $site['title'].(empty($site['subtitle'])?'':' - '.$site['subtitle']);
 //免费用户请保留版权,谢谢!
-$copyright = empty($global_config['copyright'])?'<a target="_blank" href="https://gitee.com/tznb/twonav">Copyright © TwoNav</a>':$global_config['copyright'];
+$copyright = empty($global_config['copyright'])?'<a target="_blank" href="https://gitee.com/tznb/TwoNav">Copyright © TwoNav</a>':$global_config['copyright'];
 $ICP = empty($global_config['ICP'])?'':'<a target="_blank" href="https://beian.miit.gov.cn">'.$global_config['ICP'].'</a>';
 $favicon = ( !empty($site['site_icon_file'])) ? $site['site_icon'] : './favicon.ico';
 //读取默认模板信息

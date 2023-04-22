@@ -73,6 +73,7 @@ if(empty($c) || $c == 'index'){
 }elseif(in_array($c,['admin','click','api','ico','verify'])){
     require "./system/{$c}.php";
 }elseif(in_array($c,['apply','guestbook'])){
+    if($global_config['Maintenance'] != 0){Amsg(-1,'网站正在进行维护,请稍后再试!');}
     require "./system/expand/{$c}.php";
 }else{
     Amsg(-1,'接口错误'.$c); 

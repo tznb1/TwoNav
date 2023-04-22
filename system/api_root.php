@@ -634,6 +634,22 @@ function other_root(){
         msg(1,'已释放 '.byteFormat($size).' 缓存');
     }elseif($_GET['type'] == 'import_data'){
         require DIR .'/system/UseFew/root_import_data.php';
+    }elseif($_GET['type'] == 'read_username_retain'){
+        $data = get_db("global_config", "v", ["k" => "username_retain"]);
+        msgA(['code'=>1,'msg'=>'获取成功','data'=>$data]);
+    }elseif($_GET['type'] == 'write_username_retain'){
+        //遍历检测语法
+        $patterns = explode("\n",$_POST['username_retain']);
+        foreach($patterns as $pattern){
+            if (@preg_match($pattern, '') === false) {
+                msg(-1,'正则表达式语法错误,请检查');
+            }
+        }
+        if(!is_subscribe('bool')){
+            msg(-1,'未检测到有效授权');
+        }
+        write_global_config('username_retain',$_POST['username_retain'],'账号保留');
+        msg(1,'保存成功');
     }
     
 }

@@ -5,6 +5,17 @@
     <li class="layui-timeline-item">
         <i class="layui-icon layui-timeline-axis"></i>
         <div class="layui-timeline-content layui-text">
+            <h4 class="layui-timeline-title">v2.0.15-20230422</h4>
+            <ul>
+                <li>修复默认版权链接错误的问题</li>
+                <li>修复维护模式未起作用</li>
+                <li>网站管理>用户管理>新增账号保留,方便公开注册的站长保留一些账号</li>
+            </ul>
+        </div>
+    </li>
+    <li class="layui-timeline-item">
+        <i class="layui-icon layui-timeline-axis"></i>
+        <div class="layui-timeline-content layui-text">
             <h4 class="layui-timeline-title">v2.0.14-20230420</h4>
             <ul>
                 <li>修复书签分享和输出上限冲突的问题</li>

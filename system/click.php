@@ -1,4 +1,4 @@
-<?php if(!defined('DIR')){Not_Found();}
+<?php if(!defined('DIR')){Not_Found();}AccessControl();
 //负责过渡页/跳转/隐私保护/密码访问
 $id = intval($_GET['id']);
 
@@ -18,7 +18,7 @@ if(empty($link)){Not_Found();}
 $site = unserialize(get_db('user_config','v',['uid'=>UID,'k'=>'s_site']));
 $site['Title']  =  $site['title'].(empty($site['subtitle'])?'':' - '.$site['subtitle']);
 //免费用户请保留版权,谢谢!
-$copyright = empty($global_config['copyright'])?'<a target="_blank" href="https://gitee.com/tznb/twonav">Copyright © TwoNav</a>':$global_config['copyright'];
+$copyright = empty($global_config['copyright'])?'<a target="_blank" href="https://gitee.com/tznb/TwoNav">Copyright © TwoNav</a>':$global_config['copyright'];
 $ICP = empty($global_config['ICP'])?'':'<a target="_blank" href="https://beian.miit.gov.cn">'.$global_config['ICP'].'</a>';
 $favicon = ( !empty($site['site_icon_file'])) ? $site['site_icon'] : './favicon.ico';
 

@@ -113,7 +113,7 @@ $title='留言管理';require dirname(__DIR__).'/header.php';
 <?php foreach ( $data as $value ) { ?>
             <div class="layui-colla-item">
                 <h2 class="layui-colla-title"><?php echo $value['id'] .'.&nbsp;[&nbsp;'. $value['type'] .'&nbsp;]&nbsp;[&nbsp;'. $value['title'].'&nbsp;]'; ?>&emsp;
-                    <a style="cursor:pointer;"  rel = "nofollow" onclick = "del('<?php echo $value['file'] ?>')">删除</a>
+                    <a class="click" style="cursor:pointer;"  rel = "nofollow" onclick = "del('<?php echo $value['file'] ?>')">删除</a> &emsp;
                 </h2>
                 <div class="layui-colla-content <?php  if( $value['id'] <= $show ){echo 'layui-show';} ?>">
                     <p><?php echo '提交时间: '. $value['time'] .'<br />终端地址: '. $value['ip'] .'<br />联系方式: '. $value['contact'] .'<br />  <br />'. str_replace("\n","<br />",str_replace(" ","&nbsp;",$value['content'])) ; ?></p>
@@ -132,6 +132,11 @@ $title='留言管理';require dirname(__DIR__).'/header.php';
 
 layui.use(['layer','element'], function(){
     var layer = layui.layer;
+});
+
+$('.click').click(function (event) {
+    event.preventDefault();
+    return false;
 });
 
 function del(name) {
@@ -154,6 +159,7 @@ function set(key){
         }
     });
 }
+
 </script>
 </body>
 </html>

@@ -22,7 +22,7 @@
   <div class="layui-container">
   <div class="layui-col-lg10 ">
   <form class="layui-form">
-  <fieldset class="layui-elem-field layui-field-title " style="margin-top: 30px;"><legend><a href="https://gitee.com/tznb/OneNav" target="_blank" rel="nofollow">TwoNav</a> 极简留言板</legend></fieldset>
+  <fieldset class="layui-elem-field layui-field-title " style="margin-top: 30px;"><legend><a href="https://gitee.com/tznb/TwoNav" target="_blank" rel="nofollow">TwoNav</a> 极简留言板</legend></fieldset>
   <div class="layui-form-item">
     <label class="layui-form-label">反馈类型</label>
     <div class="layui-input-inline">
@@ -59,7 +59,7 @@
   </div>
 </form>
 <fieldset class="layui-elem-field layui-field-title" style="margin-top: 30px;">
-  <legend>Powered by <a href="https://gitee.com/tznb/OneNav" target="_blank" rel="nofollow">lm21</a></legend>
+  <legend>Powered by <a href="https://gitee.com/tznb/TwoNav" target="_blank" rel="nofollow">lm21</a></legend>
   <!--非订阅用户请勿去除版权,谢谢-->
 </fieldset>
 </div>

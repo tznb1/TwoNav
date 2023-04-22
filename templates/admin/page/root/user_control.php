@@ -35,8 +35,9 @@ $user_groups = select_db('user_group',['id','code','name'],'');
 <script type="text/html" id="user_tool">
         <div class="layui-btn-group">
             <button class="layui-btn layui-btn-sm layui-btn-danger" lay-event="Del">删除</button>
-            <button class="layui-btn layui-btn-sm " lay-event="register" <?php  echo $global_config['RegOption'] == 0? 'style = "display:none;"':'' ?> >注册账号</button>
-            <button class="layui-btn layui-btn-sm " lay-event="set_UserGroup" >设用户组</button>
+            <button class="layui-btn layui-btn-sm" lay-event="register" <?php  echo $global_config['RegOption'] == 0? 'style = "display:none;"':'' ?> >注册账号</button>
+            <button class="layui-btn layui-btn-sm" lay-event="set_UserGroup">设用户组</button>
+            <button class="layui-btn layui-btn-sm" lay-event="username_retain">账号保留</button>
         </div>
 </script>
 <!-- 操作列 -->
@@ -122,6 +123,17 @@ layui.use(['table','layer','form'], function () {
         if (event == 'register') {
             window.open('./index.php?c=<?php echo $global_config['Register'];?>');
             return;
+        }else if(event == 'username_retain'){
+            index = layer.open({type: 1,scrollbar: false,shadeClose: true,title: '账号保留',area : ['100%', '100%'],content: $('.username_retain')});
+            
+            $.post(get_api('other_root','read_username_retain'),function(data,status){
+                if(data.code == 1) {
+                    form.val('username_retain', {"username_retain": data.data});
+                }else{
+                    layer.msg(data.msg, {icon: 5});
+                }
+            });
+            return;
         }
         
         var checkStatus = table.checkStatus(obj.config.id);
@@ -206,6 +218,20 @@ layui.use(['table','layer','form'], function () {
         });
         return false;
     });
+    //保存账号保留
+    form.on('submit(save_username_retain)', function (data) {
+        $.post(get_api('other_root','write_username_retain'),data.field,function(data,status){
+            if(data.code == 1) {
+                layer.msg(data.msg, {icon: 1});
+            }else{
+                layer.msg(data.msg, {icon: 5});
+            }
+        });
+        return false;
+    });
+    
+    
+    
 });
 </script>
 <ul class="set_UserGroup" style = "margin-top:18px;display:none;padding-right: 10px;" >
@@ -225,8 +251,47 @@ layui.use(['table','layer','form'], function () {
 
         <div class="layui-form-item">
             <div class="layui-input-block">
-                <button class="layui-btn layui-btn-normal" lay-submit lay-filter="save_UserGroup" id ='save_UserGroup'>保存</button>
                 <button class="layui-btn layui-btn-warm" type="button" id="close" >关闭</button>
+                <button class="layui-btn layui-btn-normal" lay-submit lay-filter="save_UserGroup" id ='save_UserGroup'>保存</button>
+            </div>
+        </div>
+  </form>
+</ul>
+
+<ul class="username_retain" style="margin-left: 10px;padding-right: 10px;margin-top:18px;display:none;" >
+    <form class="layui-form layuimini-form layui-form-pane" lay-filter="username_retain">
+        
+        <div class="layui-form-item layui-form-text">
+            <label class="layui-form-label required">账号保留 - 正则表达式匹配</label>
+            <div class="layui-input-block">
+                <textarea name="username_retain" class="layui-textarea"></textarea>
+            </div>
+        </div>
+        <pre class="layui-code" >
+使用举例:
+/^(root|data)$/ 匹配用户等于root或data 区分大小写!
+/^(root|data)$/i 匹配用户等于root或data 不区分大小写!
+/root|data/ 匹配用户含有root或data 区分大小写!
+/root|data/i 匹配用户含有root或data 不区分大小写!
+/^admin.+/ 匹配admin开头的任意用账号,但不匹配admin
+/^admin.*/ 同上,但匹配admin本身
+支持多行,一行一条规则!
+
+举例中的表达式解释:
+^ 匹配开头位置
+$ 匹配结尾位置
+| 或者
+. 匹配换行符以外的任何字符
++ 匹配前一个字符一次或多次
+* 匹配前一个字符零次或多次
+更多语法请自行百度
+
+注:错误的规则可能会造成程序异常,如需帮助请联系技术支持QQ:271152681或技术交流群695720839
+        </pre>
+        <div class="layui-form-item">
+            <div class="layui-input-block">
+                <button class="layui-btn layui-btn-warm" type="button" id="close" >关闭</button>
+                <button class="layui-btn layui-btn-normal" lay-submit lay-filter="save_username_retain" id ='save_username_retain'>保存</button>
             </div>
         </div>
   </form>

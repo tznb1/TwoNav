@@ -23,6 +23,6 @@ function Amsg($code,$msg){
         msg($code,$msg);
     }else{
         header("content-Type: text/html; charset=utf-8");
-        exit('<title>错误</title><font color="red">错误代码:'.$code.'<br />错误信息:'.$msg.'</font>');
+        exit('<title>错误</title><font color="red">代码:'.$code.'<br />信息:'.$msg.'</font>');
     }
 }

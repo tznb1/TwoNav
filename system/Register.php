@@ -1,4 +1,5 @@
 <?php if(!defined('DIR')||$global_config['RegOption']=='0'){header('HTTP/1.1 404 Not Found');header("status: 404 Not Found");exit;}
+if($global_config['Maintenance'] != 0){Amsg(-1,'网站正在进行维护,请稍后再试!');}
 //注册入口
 $global_templates = unserialize(get_db("global_config",'v', ["k" => "s_templates"]));
 //如果是Get请求则载入登录模板
@@ -14,7 +15,7 @@ if($_SERVER['REQUEST_METHOD'] === 'GET'){
         $global_templates['register'] = 'default';
         update_db("global_config", ["v" => $global_templates], ["k"=>"s_templates"]);
     }
-    $copyright = empty($global_config['copyright'])?'<a target="_blank" href="https://gitee.com/tznb/twonav">Copyright © TwoNav</a>':$global_config['copyright'];
+    $copyright = empty($global_config['copyright'])?'<a target="_blank" href="https://gitee.com/tznb/TwoNav">Copyright © TwoNav</a>':$global_config['copyright'];
     $ICP = empty($global_config['ICP'])?'':'<a target="_blank" href="https://beian.miit.gov.cn">'.$global_config['ICP'].'</a>';
     $reg_tips = get_db('global_config','v',['k'=>'reg_tips']);
     require $t_path;
@@ -55,16 +56,17 @@ if(!preg_match('/^[A-Za-z0-9]{4,13}$/', $user)){
     msg(-1,'邮箱长度超限');
 }elseif(strlen($pass)!=32){
     msg(-1,'POST提交的密码异常≠32!');
-}elseif(preg_match("/(class|controller|data|favicon|initial|static|templates|index|root|admin|cache|upload)/i",$user) ) {
-    msg(-1,'禁止注册保留用户名!');
+}elseif(preg_match("/^(system|data|static|templates|index|root|admin)$/i",$user) ) {
+    msg(-1,'改用户名已被系统保留!');
 }elseif(!empty(get_db('global_user','ID',['User'=>$user ]))){
     msg(-1,'该账号已被注册!');
 }elseif(!empty(get_db('global_user','ID',['Email'=>$Email ]))){
     msg(-1,'该邮箱已被使用!');
 }elseif(!preg_match("/\w+([-+.]\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*/i",$Email)){
     msg(-1,'邮箱错误!');
+}elseif(username_retain_verify($user)){
+    msg(-1,'该账号已被站长保留!');
 }
-
 
 //插入用户表和创建初始数据库
 $RegTime = time();
@@ -181,6 +183,22 @@ insert_db("user_config", ["uid"=>$USER_DB['ID'],"k"=>"link_id","v"=>$link_id,"t"
 $category_id = intval(max_db('user_categorys','cid',['uid'=>$USER_DB['ID']])) +1;
 insert_db("user_config", ["uid"=>$USER_DB['ID'],"k"=>"category_id","v"=>$category_id,"t"=>"max_id","d"=>'分类ID']);
 insert_db("user_config", ["uid"=>$USER_DB['ID'],"k"=>"pwd_group_id","v"=>1,"t"=>"max_id","d"=>'加密组ID']);
+
+
+//账号保留
+function username_retain_verify($username){
+    $list = get_db("global_config", "v", ["k" => "username_retain"]);
+    if(empty($list)){
+        return false;
+    }
+    $patterns = explode("\n", $list);
+    foreach($patterns as $pattern){
+        if (preg_match($pattern, $username)) {
+            return true;
+        }
+    }
+    return false;
+}
 
 //返回注册成功
 msg(1,'注册成功');

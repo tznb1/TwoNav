@@ -2,7 +2,7 @@
 //允许跨域访问
 header("Access-Control-Allow-Origin: *"); 
 header("Access-Control-Allow-Headers: Access-Control-Allow-Private-Network,Content-Type, AccessToken, X-CSRF-Token, Authorization, Token,X-Token,X-Cid");
-
+AccessControl();
 //鉴权验证 Cookie验证通过,验证二级密码,Cookie验证失败时尝试验证token
 
 //获取请求方法
