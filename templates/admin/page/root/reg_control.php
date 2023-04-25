@@ -78,7 +78,7 @@ layui.use(['table','layer','form'], function(){
     var table = layui.table;
     var form = layui.form;
     var layer = layui.layer;
-    var limit = localStorage.getItem(u + "_limit")??50;
+    var limit = localStorage.getItem(u + "_limit") || 50;
     
 
     var cols=[[ //表头

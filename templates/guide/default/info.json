@@ -1,0 +1,13 @@
+{
+	"name":	"默认",
+	"description":	"模板来自于html5up.net",
+	"homepage":	"https://gitee.com/tznb/TwoNav",
+	"version":	"2.0.0",
+	"update":	"2023/04/25",
+	"author":	"TwoNav",
+	"config": {
+        "title":"",
+        "p1":"",
+        "bg_img":""
+    }
+}

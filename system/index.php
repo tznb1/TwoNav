@@ -5,7 +5,7 @@ define('is_login',is_login());
 //判断用户组,是否允许未登录时访问主页
 if(!is_login && ($global_config['Privacy'] == 1 || !check_purview('Common_home',1))){
     header("HTTP/1.1 302 Moved Permanently");
-    header("Location: ./?c=admin");
+    header("Location: ./?c=admin&u=".U);
     exit;
 }
 //载入站点设置
@@ -15,11 +15,32 @@ $site['Title']  =  $site['title'].(empty($site['subtitle'])?'':' - '.$site['subt
 $copyright = empty($global_config['copyright'])?'<a target="_blank" href="https://gitee.com/tznb/TwoNav">Copyright © TwoNav</a>':$global_config['copyright'];
 $ICP = empty($global_config['ICP'])?'':'<a target="_blank" href="https://beian.miit.gov.cn">'.$global_config['ICP'].'</a>';
 $favicon = ( !empty($site['site_icon_file'])) ? $site['site_icon'] : './favicon.ico';
+
 //读取默认模板信息
 require DIR ."/system/templates.php";
+//引导页
+if(!empty($global_config['default_page']) && $global_config['default_page'] == 2){
+    if(empty(Get('u')) && empty($_COOKIE['Default_User'])){
+        $theme = $global_templates['guide'];
+        $dir_path = DIR.'/templates/guide/'.$global_templates['guide'];
+        $index_path = $dir_path.'/index.php';
+        if(!is_file($index_path)){
+            $dir_path= DIR.'/templates/guide/default';
+            $index_path = $dir_path.'/index.php';
+        }
+        $theme_dir = str_replace(DIR.'/templates/guide',"./templates/guide",$dir_path);
+        $theme_info = json_decode(@file_get_contents($dir_path.'/info.json'),true);
+        $theme_config = empty($theme_info['config']) ? []:$theme_info['config'];
+        $theme_config_db = get_db('user_config','v',['t'=>'theme_guide','k'=>$theme,'uid'=>UID]);
+        $theme_config_db = unserialize($theme_config_db);
+        $theme_config = empty($theme_config_db) ? $theme_config : array_merge ($theme_config,$theme_config_db);
+        require($index_path);
+        exit;
+    }
+}
 //参数指定主题优先
 $theme = trim(@$_GET['theme']);
-if ( !empty ($theme) ){
+if ( !empty ($theme) && check_purview('theme_in',1)){
     $dir_path = DIR.'/templates/home/'.$theme;
     $index_path = $dir_path.'/index.php';
 }else{

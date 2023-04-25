@@ -18,7 +18,7 @@ layui.use(['form','table'], function () {
    var table = layui.table;
    var form = layui.form;
    var api = get_api('read_login_info'); //列表接口
-   var limit = localStorage.getItem(u + "_limit")??50; //尝试读取本地记忆数据,没有就默认50
+   var limit = localStorage.getItem(u + "_limit") || 50; //尝试读取本地记忆数据,没有就默认50
    
    var cols=[[ //表头
        {field: 'id', title: 'ID', width:60, sort: true,hide:true}

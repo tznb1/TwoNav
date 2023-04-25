@@ -43,7 +43,7 @@
             <div class="tip">
 <?php
     //若为默认值则显示注册入口
-    if($global_config['Register'] == 'register' && $global_config['RegOption'] == 1){
+    if($global_config['Register'] == 'register' && $global_config['RegOption'] > 0){
         echo '<a href="./?c=register" class="forget">没有账号？立即注册</a>';
     } 
 ?>
@@ -91,7 +91,7 @@
             data.Password = $.md5(data.Password);
             $.post('./index.php?c=<?php echo $c; ?>&u='+data.User,data,function(re,status){
                 if(re.code == 1) {
-                    window.location.href = re.url ?? './index.php?c=admin&u='+ data.User;
+                    window.location.href = re.url;
                 }else{
                     layer.msg(re.msg, {icon: 5});
                 }

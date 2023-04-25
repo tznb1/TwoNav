@@ -47,7 +47,7 @@ layui.define(['table', 'jquery', 'form'], function (exports) {
             //判断是否多搜索条件
             if(opt.searchType == 'more'){
                 $.each(opt.searchList, function (index, item) {
-                    tableBox += '<input style="display:inline-block;width:'+(item.width ?? '190px') +';height:30px;vertical-align:middle;margin-right:-1px;border: 1px solid #C9C9C9;" type="text" name="'+item.searchKey+'" placeholder="'+item.searchPlaceholder+'" autocomplete="off" class="layui-input">';
+                    tableBox += '<input style="display:inline-block;width:'+(item.width || '190px') +';height:30px;vertical-align:middle;margin-right:-1px;border: 1px solid #C9C9C9;" type="text" name="'+item.searchKey+'" placeholder="'+item.searchPlaceholder+'" autocomplete="off" class="layui-input">';
                 });
             }else{
                 tableBox += '<input style="display:inline-block;width:190px;height:30px;vertical-align:middle;margin-right:-1px;border: 1px solid #C9C9C9;" type="text" name="'+opt.searchKey+'" placeholder="'+opt.searchPlaceholder+'" autocomplete="off" class="layui-input">';

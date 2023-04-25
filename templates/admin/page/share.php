@@ -149,7 +149,7 @@
 layui.use(['form','table','laydate','tableSelect'], function () {
     var $ = layui.jquery,table = layui.table,form = layui.form,laydate = layui.laydate,tableSelect = layui.tableSelect;
     var api = get_api('read_share','share_list');
-    var limit = localStorage.getItem(u + "_limit")??50;
+    var limit = localStorage.getItem(u + "_limit") || 50;
     var index,temp_date,type='category';
     var isSupported = ClipboardJS.isSupported();
     var baseUrl = Get_baseUrl();

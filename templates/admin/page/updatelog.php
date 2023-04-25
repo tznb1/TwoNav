@@ -5,6 +5,24 @@
     <li class="layui-timeline-item">
         <i class="layui-icon layui-timeline-axis"></i>
         <div class="layui-timeline-content layui-text">
+            <h4 class="layui-timeline-title">v2.0.16-20230425</h4>
+            <ul>
+                <li>[优化] 调整部分代码,使其能够兼容一些老旧的浏览器(如2345加速浏览器,都2023年了居然还在用2018年的内核)</li>
+                <li>[优化] 调整书签导出临时数据的存放路径为自身的temp,避免部分环境无法在/tmp写入数据造成导出异常</li>
+                <li>[优化] 默认过渡页</li>
+                <li>[优化] 默认登录模板(注册码注册时显示注册入口)</li>
+                <li>[新增] 主题商城新增引导页模板</li>
+                <li>[新增] 网站管理>系统设置>默认页面 (公开使用可以选择引导页面)</li>
+                <li>[修复] 站点设置>设为默认主页关闭浏览器后失效的问题</li>
+                <li>[修复] 站点设置在表单输入按回车弹出帮助页面的问题</li>
+                <li>[修复] 用户组主题设置权限问题</li>
+                <li>[修复] 其他已知问题</li>
+            </ul>
+        </div>
+    </li>
+    <li class="layui-timeline-item">
+        <i class="layui-icon layui-timeline-axis"></i>
+        <div class="layui-timeline-content layui-text">
             <h4 class="layui-timeline-title">v2.0.15-20230422</h4>
             <ul>
                 <li>修复默认版权链接错误的问题</li>

@@ -7,7 +7,7 @@ layui.use(['form','table','dropdown','miniTab'], function () {
     var categorys = [];
     var IDs = [];
     var api = get_api('read_link_list'); //列表接口
-    var limit = localStorage.getItem(u + "_limit")??50; //尝试读取本地记忆数据,没有就默认50
+    var limit = localStorage.getItem(u + "_limit") || 50; //尝试读取本地记忆数据,没有就默认50
     var pwds = [];
     miniTab.listen();
     //渲染表格

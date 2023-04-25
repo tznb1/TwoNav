@@ -21,8 +21,8 @@ if($_GET['type'] == 'create' ){
                 msg(-1,'导出失败');
             }
         }
-        $_SESSION['download'][$key] = $tempnam;
-        msgA(['code'=>1,'msg'=>'success','key'=>$key,'name'=>$tempnam]);
+        $_SESSION['download']["$key"] = $tempnam;
+        msgA(['code'=>1,'msg'=>'success','key'=>$key]);
     }else{
         msg(-1,'密码错误');
     }
@@ -30,7 +30,7 @@ if($_GET['type'] == 'create' ){
 
 //验证Key
 if(!is_file($_SESSION['download'][$_GET['key']])){
-    exit("Key错误,请在后台重新导出!");
+    exit("Key错误,请在后台重新导出!".$_SESSION['download']["{$_GET['key']}"]);
 }else{
     if($_GET['type'] == 'html' ){
         header("Cache-Control: public");
@@ -59,7 +59,8 @@ if(!is_file($_SESSION['download'][$_GET['key']])){
 //生成数据
 function create_data(){
     if($_POST['type'] == 'html' ){
-        $tempnam = tempnam(null,'export_html_');
+        $key = md5(uniqid().Get_Rand_Str(8));
+        $tempnam = DIR ."/data/temp/export_html_{$key}.html";
         $file = fopen($tempnam, "w") or msg(-1,'载入临时文件失败');
         fwrite($file,base64_decode("PCFET0NUWVBFIE5FVFNDQVBFLUJvb2ttYXJrLWZpbGUtMT4NCjwhLS0gVGhpcyBpcyBhbiBhdXRvbWF0aWNhbGx5IGdlbmVyYXRlZCBmaWxlLg0KICAgICBJdCB3aWxsIGJlIHJlYWQgYW5kIG92ZXJ3cml0dGVuLg0KICAgICBETyBOT1QgRURJVCEgLS0+DQo8TUVUQSBIVFRQLUVRVUlWPSJDb250ZW50LVR5cGUiIENPTlRFTlQ9InRleHQvaHRtbDsgY2hhcnNldD1VVEYtOCI+DQo8VElUTEU+T25lTmF2IEV4dGVuZCBCb29rbWFya3M8L1RJVExFPg0KPEgxPk9uZU5hdiBFeHRlbmQgQm9va21hcmtzPC9IMT4NCjxETD48cD4NCg=="));
         fwrite($file,'    <DT><H3 ADD_DATE="1677783783" LAST_MODIFIED="1677783783" PERSONAL_TOOLBAR_FOLDER="true">书签栏</H3>'."\n");
@@ -94,7 +95,8 @@ function create_data(){
     }
     
     if($_POST['type'] == 'db3'){
-        $tempnam = tempnam(null,'export_db3_');
+        $key = md5(uniqid().Get_Rand_Str(8));
+        $tempnam = DIR ."/data/temp/export_db3_{$key}.db3";
         try {  //初始化数据库
             class MyDB extends SQLite3 {function __construct() {} } 
             $MyDB = new MyDB();

@@ -179,7 +179,7 @@ layui.use(['element','table','layer','form','util','dropdown'], function(){
     var form = layui.form;
     var dropdown = layui.dropdown;
     var layer = layui.layer;
-    var limit = localStorage.getItem(u + "_limit")??50;
+    var limit = localStorage.getItem(u + "_limit") || 50;
     
     form.val('conf', <?php echo json_encode($data);?>);
 //表头

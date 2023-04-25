@@ -500,6 +500,7 @@ function write_sys_settings(){
         'Maintenance'=>['int'=>true,'min'=>0,'max'=>1,'msg'=>'维护模式参数错误'],
         'Sub_domain'=>['int'=>true,'min'=>0,'max'=>1,'msg'=>'二级域名参数错误'],
         'Privacy'=>['int'=>true,'min'=>0,'max'=>1,'msg'=>'强制私有参数错误'],
+        'default_page'=>['int'=>true,'min'=>0,'max'=>2,'msg'=>'默认页面参数错误'],
         'copyright'=>['empty'=>true],
         'global_header'=>['empty'=>true],
         'global_footer'=>['empty'=>true],

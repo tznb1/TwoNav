@@ -68,7 +68,7 @@ if($page == 'config_home'){
     $theme_config = empty($theme_config['config']) ? []:$theme_config['config'];
     
     //读取用户主题配置
-    if(!in_array($_GET['fn'],['home','login','register','transit'])){
+    if(!in_array($_GET['fn'],['home','login','register','transit','guide'])){
         msg(-1,"参数错误");
     }
     $theme_config_db = get_db('user_config','v',['t'=>'theme_'.$_GET['fn'],'k'=>$theme,'uid'=>UID]);
@@ -79,7 +79,7 @@ if($page == 'config_home'){
         $theme_config = array_merge ($theme_config,$theme_config_db);
     }
     //配置为空
-    if(empty($theme_config)){
+    if(empty($theme_config) || !check_purview('theme_in',1) || !check_purview('theme_set',1)){
         exit("<h3>获取主题配置失败</h3>");
     }
     require $config_path;
@@ -87,7 +87,11 @@ if($page == 'config_home'){
 }
 
 //主题设置页面
-if( $page == 'theme_home' || $page == 'theme_login' || $page == 'theme_transit' || $page == 'theme_register') {
+if( $page == 'theme_home' || $page == 'theme_login' || $page == 'theme_transit' || $page == 'theme_register' || $page == 'theme_guide') {
+    if(!check_purview('theme_in',1)){
+        require(DIR.'/templates/admin/page/404.php');
+        exit;
+    }
     $fn = str_replace('theme_','',$page);
     $dirs = get_dir_list(DIR.'/templates/'.$fn);
     

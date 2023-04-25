@@ -1104,7 +1104,7 @@ function other_testing_link(){
 //主题下载/更新/删除
 function write_theme(){
     global $global_config;
-    $fn = $_POST['fn'];if($_GET['type'] != 'config' && !in_array($fn,['home','login','transit','register'])){msg(-1,'fn参数错误');}
+    $fn = $_POST['fn'];if($_GET['type'] != 'config' && !in_array($fn,['home','login','transit','register','guide'])){msg(-1,'fn参数错误');}
     if($_GET['type'] == 'download'){
         is_root();
         if($global_config['offline']){msg(-1,"离线模式禁止下载主题!");} //离线模式
@@ -1191,13 +1191,16 @@ function write_theme(){
         $type = $_POST['type'];
         $name = $_POST['name'];
         //如果是注册模板则必须是root权限
-        if($fn == 'register'){is_root();}
+        if($fn == 'register' || $fn == 'guide'){is_root();}
         //相关检测
         if ( !preg_match("/^[a-zA-Z0-9_-]{1,64}$/",$name) ) { 
             msg(-1,"主题名称不合法！");
         }elseif(!is_dir(DIR."/templates/$fn/".$name)){
             msg(-1,'主题不存在');
+        }elseif(!check_purview('theme_in',1)){
+            msg(-1,'无权限');
         }
+        
         //读取用户模板配置
         require DIR."/system/templates.php";
         //判断设置的类型
@@ -1219,6 +1222,9 @@ function write_theme(){
         }elseif($fn == 'register'){
             $global_templates['register'] = $name;
             update_db('global_config',['v'=>$global_templates],['k'=>'s_templates'],[1,'注册模板设置成功']);
+        }elseif($fn == 'guide'){
+            $global_templates['guide'] = $name;
+            update_db('global_config',['v'=>$global_templates],['k'=>'s_templates'],[1,'引导页模板设置成功']);
         }
         //更新数据
         update_db('user_config',['v'=>$s_templates],['uid'=>UID,'k'=>'s_templates'],[1,'设置成功']);
@@ -1237,7 +1243,7 @@ function write_theme(){
             msg(-1,"获取模板类型错误");
         }
         $fn = empty($GET['fn']) ? $_GET['template_type'] : $GET['fn'];
-        if(!in_array($fn,['home','login','register','transit'])){
+        if(!in_array($fn,['home','login','register','transit','guide'])){
             msg(-1,"参数错误");
         }
         //0420 END

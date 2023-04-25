@@ -38,7 +38,7 @@ define('libs',$global_config['Libs']);
 define('SysVer',Get_Version());
 define('Debug',$global_config['Debug'] == 1);
 
-if($c !== $global_config["Register"]){
+if($c != $global_config["Register"]){
     $u = Get('u');
     if(empty($u) && $global_config['Sub_domain'] == 1 && is_subscribe('bool')){
         $cut = explode('.',$_SERVER["HTTP_HOST"]);

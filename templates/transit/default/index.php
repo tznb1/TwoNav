@@ -11,12 +11,6 @@
 	<!--<script src="<?php echo $libs?>/jquery/jquery-2.2.4.min.js"></script>-->
 	<!--<script src="<?php echo $libs?>/bootstrap4/js/bootstrap.min.js"></script>-->
 	<style>
-		.prevent-overflow{
-			width:260px;
-			overflow: hidden;
-			white-space: nowrap;
-			text-overflow:ellipsis;
-		}
 		.a_d img{
 			max-width:100%;
 			padding-top:1em;
@@ -26,6 +20,26 @@
 			width:100%;
 			background-color: #343a40!important;
 		}
+		.list-group-item {
+            background-color: #bee5eb;
+        }
+        .badge-pill-2{
+            margin-right: 10px;
+            padding-right: 0.6em;
+            padding-left: 0.6em;
+            width: 60px;
+        }
+        .badge {
+            font-size: 100%; 
+        }
+        a {
+            display: block;
+            overflow: hidden;
+            white-space: nowrap;
+            text-overflow: ellipsis;
+        }
+ 
+ 
 	</style>
     <?php echo $site['custom_header'].PHP_EOL?>
     <?php echo $global_config['global_header'].PHP_EOL?>
@@ -40,7 +54,7 @@ if( empty($link['url_standby']) ) {
 		<div class = "row">
 			<div class="col-sm-8 offset-sm-2">
 				<nav class="navbar navbar-expand-md bg-dark navbar-dark">
-				<a class="navbar-brand" href="/"><?php echo $site['title']; ?></a>
+				<a class="navbar-brand" href="./?u=<?php echo U; ?>"><?php echo $site['title']; ?></a>
 				<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#collapsibleNavbar">
 					<span class="navbar-toggler-icon"></span>
 				</button>
@@ -64,25 +78,17 @@ if( empty($link['url_standby']) ) {
 		</div>
 		<div class="row">
 			<div class="col-sm-8 offset-sm-2">
-				<h2>链接信息：</h2>
-				<table class="table">
-					<tbody>
-					<tr class="table-info">
-						<td width="100">标题</td>
-						<td><?php echo $link['title']; ?></td>
-					</tr>
-					<tr class="table-info">
-						<td>描述</td>
-						<td><?php echo $link['description']; ?></td>
-					</tr>
-					<tr class="table-info">
-						<td>链接</td>
-						<td>
-							<div class = "prevent-overflow">
-								<a href="<?php echo $link['url']; ?>" rel = "nofollow" title = "<?php echo $link['title']; ?>"><?php echo $link['url']; ?></a>
-							</div>
-						</td>
-					</tr>
+				<h3>链接信息：</h3>
+				<ul class="list-group">
+				    <li class="list-group-item" >
+                        <span class="badge badge-primary badge-pill-2">标 题 </span><?php echo $link['title']; ?>
+                    </li>
+				    <li class="list-group-item" >
+                        <span class="badge badge-primary badge-pill-2">描 述 </span><?php echo $link['description']; ?>
+                    </li>
+				    <li class="list-group-item" >
+                        <a href="<?php echo $link['url']; ?>" rel = "nofollow" title = "<?php echo $link['title']; ?>"><span class="badge badge-primary badge-pill-2"> 链 接 </span><?php echo $link['url']; ?></a>
+                    </li>
 <?php 
 $i = 0;
 foreach ($link['url_standby'] as $key => $url_standby){
@@ -95,21 +101,18 @@ foreach ($link['url_standby'] as $key => $url_standby){
         $url = $url_standby;
     }
     ?>
-					<tr class="table-info">
-						<td>备用链接<?php echo $i;?></td>
-						<td>
-							<div class = "prevent-overflow">
-								<a href="<?php echo $url; ?>" rel = "nofollow" title = "<?php echo $link['title']; ?>"><?php echo $title; ?></a>
-							</div>
-						</td>
-					</tr>
+				    <li class="list-group-item" >
+				        <a href="<?php echo $url; ?>" rel = "nofollow" title = "<?php echo $link['title']; ?>"><span class="badge badge-primary badge-pill-2">备用<?php echo $i;?></span><?php echo $title; ?></a>
+                    </li>
+					
 <?php } ?>
-					</tbody>
-				</table>
+				</ul>
+
 <?php if( empty($link['url_standby']) ) { ?>
+
 				<div class="spinner-border"></div> 即将打开，请稍等...
 <?php }else{ ?>
-				<div class="alert alert-primary">
+				<div class="alert alert-primary" style="margin-top: 16px;">
 					<strong>存在备用链接，请手动点击您要打开的链接！</strong>
 				</div>
 <?php } ?>

@@ -48,6 +48,10 @@ if(Get_MD5_Password($Password,$USER_DB["RegTime"]) === $USER_DB["Password"]){
     }else{
         $url = preg_match('/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i',$_SERVER['HTTP_USER_AGENT']) ? "./?c=index&u={$USER_DB['User']}" : "./?c=admin&u={$USER_DB['User']}";
     }
+    //默认页面
+    if(!empty($global_config['default_page'])){
+        setcookie('Default_User', $User, strtotime("+360 day"),"/",'',false,false);
+    }
     msgA(['code'=>1,'msg'=>'登录成功','url'=>$url]);
 }else{
     update_db("user_log", ["description" => "请求登录>账户或密码错误"], ["id"=>$log_id]);

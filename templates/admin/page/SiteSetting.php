@@ -134,9 +134,9 @@
 
 <?php } ?>
             <div class="layui-form-item">
-                <button class="layui-btn layui-btn-primary layui-border-black" id="help" sort_id="7968924">帮助</button>
+                <button type="button" class="layui-btn layui-btn-primary layui-border-black" id="help" sort_id="7968924">帮助</button>
 <?php if($global_config['Default_User'] != U ){ ?>
-                <button class="layui-btn layui-btn-primary layui-border-black" id="sdhp" data=>设为默认主页</button>
+                <button type="button" class="layui-btn layui-btn-primary layui-border-black" id="sdhp" data=>设为默认主页</button>
 <?php } ?>
                 <button class="layui-btn layui-btn-normal" lay-submit lay-filter="save">保存</button>
             </div>
@@ -184,7 +184,7 @@ layui.use(['jquery','form','upload'], function () {
             $.removeCookie("Default_User");
             $("#sdhp").text('设为默认主页')
         }else{
-            $.cookie("Default_User",u);
+            $.cookie("Default_User",u,{expires: 360});
             $("#sdhp").text('取消默认主页')
         }
         layer.msg("设置成功", {icon: 1});

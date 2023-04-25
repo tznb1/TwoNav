@@ -3,7 +3,7 @@ layui.use(['form','table'], function () {
     var table = layui.table;
     var data_tr,table_page;
     var api = get_api('read_link_list'); //列表接口
-    var limit = localStorage.getItem(u + "_limit")??50; //尝试读取本地记忆数据,没有就默认50
+    var limit = localStorage.getItem(u + "_limit") || 50; //尝试读取本地记忆数据,没有就默认50
 
     var cols=[[ //表头
       {type:'radio'} //开启单选框

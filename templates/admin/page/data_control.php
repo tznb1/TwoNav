@@ -303,7 +303,7 @@ layui.use(['layer','element','upload','form','table'], function(){
             if(res.code == 1){
                 $("#imp_link button").removeClass("layui-btn-disabled");
             }else{
-                layer.alert(res.msg ?? "上传异常,请刷新重试<br />若无法解决请联系技术支持",{icon:5,title:'上传失败',anim: 2,closeBtn: 0,btn: ['刷新页面']},function () {location.reload();});
+                layer.alert(res.msg || "上传异常,请刷新重试<br />若无法解决请联系技术支持",{icon:5,title:'上传失败',anim: 2,closeBtn: 0,btn: ['刷新页面']},function () {location.reload();});
             }
         },error: function(){
             layer.alert("上传异常,请刷新重试<br />若无法解决请联系技术支持",{icon:5,title:'错误',anim: 2,closeBtn: 0,btn: ['刷新页面']},function () {location.reload();});

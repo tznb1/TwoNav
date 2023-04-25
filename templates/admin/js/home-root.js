@@ -48,7 +48,7 @@ layui.use(['layer','miniTab'], function(){
                 //如果失败
                 if(up_info.code != 1){
                     layer.closeAll();
-                    layer.alert(up_info.msg ?? "错误代码：404",{icon:2,title:'更新失败',anim: 2,shadeClose: false,closeBtn: 0,btn: ['知道了']});
+                    layer.alert(up_info.msg || "错误代码：404",{icon:2,title:'更新失败',anim: 2,shadeClose: false,closeBtn: 0,btn: ['知道了']});
                     return;
                 }
                 //设为异步模式
@@ -70,7 +70,7 @@ layui.use(['layer','miniTab'], function(){
                             request_update();
                         }else{
                             layer.closeAll();
-                            layer.alert(data.msg ?? "未知错误,请联系开发者!",{icon:5,title:up_info.info[i-1],anim: 2,shadeClose: false,closeBtn: 0,btn: ['知道了']});
+                            layer.alert(data.msg || "未知错误,请联系开发者!",{icon:5,title:up_info.info[i-1],anim: 2,shadeClose: false,closeBtn: 0,btn: ['知道了']});
                         } 
                     });
                 }

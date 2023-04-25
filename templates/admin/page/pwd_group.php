@@ -29,7 +29,7 @@ layui.use(['form','table'], function () {
     var table = layui.table;
     var form = layui.form;
     var api = get_api('read_pwd_group_list'); //列表接口
-    var limit = localStorage.getItem(u + "_limit")??50;
+    var limit = localStorage.getItem(u + "_limit") || 50;
     
     var load_list = function () {
         table.render({

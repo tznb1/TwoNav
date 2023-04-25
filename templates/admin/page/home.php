@@ -171,12 +171,14 @@ require 'header.php';
                                                 <cite>站点设置</cite>
                                             </a>
                                         </div>
+<?php if(check_purview('theme_in',1)){ ?> 
                                         <div class="layui-col-xs3 layuimini-qiuck-module">
                                             <a href="javascript:;" layuimini-content-href="theme_home" data-title="主题设置" data-icon="fa fa-magic">
                                                 <i class="fa fa-magic"></i>
                                                 <cite>主题设置</cite>
                                             </a>
                                         </div>
+<?php }?> 
                                         <div class="layui-col-xs3 layuimini-qiuck-module">
                                             <a href="javascript:;" layuimini-content-href="category_list" data-title="分类管理" data-icon="fa fa-list-ul">
                                                 <i class="fa fa-list-ul"></i>

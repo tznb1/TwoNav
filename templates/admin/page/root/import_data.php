@@ -94,7 +94,7 @@ layui.use(['layer','form','miniTab'], function () {
                         layer.msg('导入完毕', {icon: 1});
                     }else{
                         layer.closeAll();
-                        layer.alert(data.msg ?? "未知错误,请联系开发者!",{icon:5,title:'导入失败',anim: 2,shadeClose: false,closeBtn: 0,btn: ['知道了']});
+                        layer.alert(data.msg || "未知错误,请联系开发者!",{icon:5,title:'导入失败',anim: 2,shadeClose: false,closeBtn: 0,btn: ['知道了']});
                     } 
                 });
                 return;
@@ -110,7 +110,7 @@ layui.use(['layer','form','miniTab'], function () {
                     request_import();
                 }else{
                     layer.closeAll();
-                    layer.alert(data.msg ?? "未知错误,请联系开发者!",{icon:5,title:'导入失败',anim: 2,shadeClose: false,closeBtn: 0,btn: ['知道了']});
+                    layer.alert(data.msg || "未知错误,请联系开发者!",{icon:5,title:'导入失败',anim: 2,shadeClose: false,closeBtn: 0,btn: ['知道了']});
                 } 
             });
         }

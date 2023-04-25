@@ -16,7 +16,19 @@ $title='系统设置';require(dirname(__DIR__).'/header.php');
                 </div>
                 <div class="layui-form-mid layui-word-aux">默认主页的账号,优先级:Get>Cookie/Host>默认用户>admin</div>
             </div>
-            
+
+            <div class="layui-form-item">
+                <label class="layui-form-label">默认页面</label>
+                <div class="layui-input-inline" >
+                    <select name="default_page">
+                        <option value="0" selected="">默认用户主页</option>
+                        <option value="1" >登录用户主页</option>
+                        <option value="2" >引导页面</option>
+                    </select>
+                </div>
+                <div class="layui-form-mid layui-word-aux">直接访问域名不带任何参数时显示的页面</div>
+            </div>
+
             <div class="layui-form-item">
                 <label class="layui-form-label required">默认分组</label>
                 <div class="layui-input-inline">

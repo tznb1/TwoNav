@@ -79,7 +79,7 @@ layui.use(['form','upload','miniTab'], function () {
                 form_data.icon = res.icon;
                 $("#icon").val(res.icon);
             }else{
-                layer.msg(res.msg ?? '上传失败', {icon: 5});
+                layer.msg(res.msg || '上传失败', {icon: 5});
             }
 
         },error: function(){

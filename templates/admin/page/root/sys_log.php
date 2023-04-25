@@ -49,7 +49,7 @@ layui.use(['table','layer','form'], function () {
     var form = layui.form;
     var table = layui.table;
     var layer = layui.layer;
-    var limit = localStorage.getItem(u + "_limit")??50;
+    var limit = localStorage.getItem(u + "_limit") || 50;
     var api = get_api('read_log');
     var IDs = [];
     
