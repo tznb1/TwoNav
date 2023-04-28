@@ -179,6 +179,16 @@ $title='系统设置';require(dirname(__DIR__).'/header.php');
                     <textarea name="global_footer" class="layui-textarea" placeholder='例如备案号,统计代码等,支持HTML,JS,CSS'></textarea>
                 </div>
             </div>
+
+            <div class="layui-form-item" id="api_extend" style="display:none;">
+                <label class="layui-form-label required">api_extend</label>
+                <div class="layui-input-inline">
+                    <select name="api_extend">
+                        <option value="0" selected="">关闭</option>
+                        <option value="1" >开启</option>
+                    </select>
+                </div>
+            </div>
             
             <fieldset class="layui-elem-field layui-field-title" style="margin-top: 30px;"><legend>扩展功能</legend></fieldset>
              <blockquote class="layui-elem-quote layui-text" style="">注:开关后请刷新整个页面</blockquote>
@@ -244,6 +254,18 @@ layui.use(['jquery','form'], function () {
         });
         return false;
     }); 
+    
+    //开启隐藏功能
+    $('.layui-elem-field').click(function () {
+        if(Number( $(this).attr('click')) >= 6){
+            $("#api_extend").show();
+        }else{
+            let click = $(this).attr('click') ? Number($(this).attr('click')) + 1 : 0;
+            $(this).attr('click',click)
+        }
+        
+    }); 
+    
 });
 </script>
 </body>

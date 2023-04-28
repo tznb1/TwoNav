@@ -321,10 +321,25 @@ function write_user_info(){
     //删除
     case "Del":
         $uids = json_decode($_POST['ID']);
+        $USER_S = select_db('global_user','User',['ID'=>$uids]);
+        foreach($USER_S as $USER){
+            if(is_dir(DIR.'/data/user/'.$USER)){
+                deldir(DIR.'/data/user/'.$USER);
+                if(is_dir(DIR.'/data/user/'.$USER)){
+                    msg(1,'删除用户数据目录失败,用户名:'.$USER);
+                }
+            }
+            if(is_dir(DIR.'/data/backup/'.$USER)){
+                deldir(DIR.'/data/backup/'.$USER);
+                if(is_dir(DIR.'/data/backup/'.$USER)){
+                    msg(1,'删除用户备份目录失败,用户名:'.$USER);
+                }
+            }
+        }
         foreach (['regcode_list','user_categorys','user_config','user_count','user_links','user_log','user_login_info'] as $table){
             delete_db($table,[ "uid" => $uids ]);
         }
-        delete_db('global_user',["ID" => json_decode($_POST['ID']) ]);
+        delete_db('global_user',["ID" => $uids]);
         msg(1,'删除成功');
         break;
     //设用户组
@@ -504,6 +519,7 @@ function write_sys_settings(){
         'copyright'=>['empty'=>true],
         'global_header'=>['empty'=>true],
         'global_footer'=>['empty'=>true],
+        'api_extend'=>['empty'=>true],
         //扩展功能-(全局开关)
         'apply'=>['int'=>true,'min'=>0,'max'=>1,'msg'=>'收录管理参数错误'],
         'guestbook'=>['int'=>true,'min'=>0,'max'=>1,'msg'=>'留言管理参数错误'],
@@ -609,6 +625,7 @@ function read_log(){
     $count = count_db('user_log',$where);
     //分页
     $where['LIMIT'] = [$offset,$limit];
+    $where['ORDER']['id'] = 'DESC';
     //查询
     $datas = select_db('user_log','*',$where);
     //返回
@@ -651,6 +668,38 @@ function other_root(){
         }
         write_global_config('username_retain',$_POST['username_retain'],'账号保留');
         msg(1,'保存成功');
+    }elseif($_GET['type'] == 'write_mail_config'){
+        if($GLOBALS['global_config']['offline'] == '1'){msg(-1,"离线模式无法使用此功能");}
+        if(!is_subscribe('bool')){msg(-1,"未检测到有效授权,无法使用该功能!");}
+        //检测PHPMailer是否存在
+        clearstatcache();
+        if(!is_file(DIR.'/system/PHPMailer/PHPMailer.php')){
+            $filePath = "./data/temp/PHPMailer_6.8.0.tar.gz";
+            if(downFile('https://update.lm21.top/TwoNav/updata/PHPMailer_6.8.0.tar.gz','PHPMailer_6.8.0.tar.gz','./data/temp/')){
+                $file_md5 = md5_file($filePath);
+                if($file_md5 != "07251997fb7ebf3bf2d296d4214ccf0a"){
+                    unlink($filePath); 
+                    msg(-1,'效验PHPMailer失败<br/>!');
+                }
+            }else{
+                msg(-1,'下载PHPMailer失败,请重试!<br/>如需手动安装可联系技术支持!');
+            }
+            try {
+                $phar = new PharData($filePath);
+                $phar->extractTo('./system/', null, true);
+                unlink($filePath);
+                clearstatcache();
+            } catch (Exception $e) {
+                msg(-1,'安装PHPMailer失败');
+            }
+        }
+        write_global_config('mail_config',$_POST,'账号保留');
+        msg(1,'保存成功');
+    }elseif($_GET['type'] == 'write_mail_test'){
+        $_POST['Subject'] = 'TwoNav 测试邮件' . time();
+        $_POST['Body'] = '<h1>TwoNav 测试邮件</h1>' . date('Y-m-d H:i:s');
+        send_email($_POST);
     }
-    
 }
+
+

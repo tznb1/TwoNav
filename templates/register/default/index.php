@@ -1,4 +1,10 @@
-<?php if(!defined('DIR')){header('HTTP/1.1 404 Not Found');header("status: 404 Not Found");exit;}?>
+<?php if(!defined('DIR')){header('HTTP/1.1 404 Not Found');header("status: 404 Not Found");exit;}
+
+$mail_config = get_db("global_config","v",["k"=>"mail_config"]);
+if(!empty($mail_config)){
+    $mail_config = unserialize($mail_config);
+}
+?>
 <!DOCTYPE html>
 <html>
 <head>
@@ -34,16 +40,25 @@
                 </div>
 
                 <div class="item">
-                    <span class="icon layui-icon layui-icon-release"></span>
-                    <input type="text" name="Email" lay-verify="required|email"  placeholder="请输入邮箱">
-                </div>
-
-                <div class="item">
                     <span class="icon layui-icon layui-icon-password"></span>
                     <input type="password" name="Password" lay-verify="required"  placeholder="请输入密码">
                     <span class="bind-password icon icon-4"></span>
                 </div>
                 
+                <div class="item">
+                    <span class="icon layui-icon layui-icon-email"></span>
+                    <input type="text" name="Email" lay-verify="required|email"  placeholder="请输入邮箱">
+                </div>   
+                
+<?php if($mail_config['verify_email'] == 1){ ?> 
+                <div class="item" style="width: 150px;">
+                    <span class="icon layui-icon layui-icon-auz"></span>
+                    <input type="text" name="code"   placeholder="请输入验证码">
+                    <div style="display: inline-block;position: absolute;right: 0px;">
+                        <span><a class="layui-btn layui-btn-normal"  lay-submit="" lay-filter="getcode" id="getcode">获取验证码</a></span>
+                    </div>
+                </div>
+<?php }?> 
                 <div class="item" <?php echo $global_config['RegOption'] == 2 ?'':'style = "display:none;"'?>>
                     <span class="icon layui-icon layui-icon-fonts-code"></span>
                     <input type="text" name="regcode"  placeholder="请输入注册码" value="<?php echo $_GET['key'];?>">
@@ -88,8 +103,27 @@
                 $("input[name='Password']").attr('type', 'text');
             }
         });
-
-
+        
+        //获取验证码
+        form.on('submit(getcode)', function (data) {
+            data = data.field;
+            data.Password = $.md5(data.Password);
+            if( /^([a-zA-Z0-9_\.\-])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/.test(data.Email)){
+                layer.load(1, {shade:[0.3,'#fff']});
+                layer.msg('正在发送中..', {icon: 16,time: 1000*300});
+                $.post('./index.php?c=<?php echo $c; ?>&u='+data.User+"&type=getcode",data,function(re,status){
+                    layer.closeAll();
+                    if(re.code == 1) {
+                        layer.msg("发送成功", {icon: 1});
+                    }else{
+                        layer.msg(re.msg, {icon: 5});
+                    }
+                });
+            }else{
+                layer.msg('请输入正确的邮箱', {icon: 5});
+            }
+        }); 
+        
         // 进行注册操作
         form.on('submit(login)', function (data) {
             $("*").blur();
@@ -119,7 +153,6 @@ function Get_Invitation($base64) {
     var content =decodeURIComponent(escape(window.atob($base64)));
     if (content.substr(0,4) =='http'){
         window.open(content);
-        //window.location.href = content;
     }else{
         layer.open({title:'获取注册码',content:content});
     }

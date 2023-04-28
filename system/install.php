@@ -7,7 +7,7 @@ session_start();
 
 //判断请求类型
 if($_SERVER['REQUEST_METHOD'] === 'POST'){
-    if( !$_SESSION['initial'] ){ msg(-1,'当前环境无法满足程序运行条件!'); }
+    if(empty($_SESSION['initial'])){ msg(-1,'当前环境无法满足程序运行条件!'); }
     define('Debug',TRUE);
     $db = null;
     $USER_DB =null;
@@ -51,7 +51,7 @@ function diagnosis() {
         $log='';
         $log .= "服务器时间：" . date("Y-m-d H:i:s") ."<br />"; 
         $log .= "系统信息：" . php_uname('s').','.php_uname('r') ."<br />";
-        $log .= "当前版本：" . SysVer . "<br />";
+        $log .= "当前版本：" . file_get_contents('./system/version.txt') . "<br />";
         
         //检查PHP版本，需要大于5.6小于8.0
         $php_version = floatval(PHP_VERSION);
@@ -76,7 +76,7 @@ function diagnosis() {
         if(function_exists("opcache_reset")){
             $log = $log ."opcache: 已安装<br />";
         }
-        $log .= "脚本权限:" . get_current_user()."/".substr(sprintf("%o",fileperms("index.php")),-4)."\n";
+        $log .= "脚本权限:" . get_current_user()."/".substr(sprintf("%o",fileperms("index.php")),-4)."<br />";
         $log .= in_array("pdo_sqlite",$ext) ? "PDO_Sqlite：支持<br />" : "PDO_Sqlite：不支持 (导入db3)<br />";
         $log .= in_array("curl",$ext) ? "curl：支持<br />" : "curl：不支持 (链接识别/在线更新/主题下载/订阅等)<br />";
         $log .= in_array("mbstring",$ext) ? "mbstring：支持<br />" : "mbstring：不支持 (链接识别)<br />";

@@ -27,7 +27,7 @@ require(dirname(__DIR__).'/header.php');
             <button type="button" class="layui-btn" layuimini-content-href="root/sys_log" data-title="系统日志">系统日志</button>
             <button type="button" class="layui-btn" layuimini-content-href="updatelog" data-title="更新日志">更新日志</button>
             <button type="button" class="layui-btn" layuimini-content-href="root/import_data" data-title="导入数据">导入数据</button>
-
+            <button type="button" class="layui-btn" layuimini-content-href="root/mail_set" data-title="邮件配置">邮件配置</button>
         </div>
         <pre class="layui-code" id="console_log" >
 1.功能都集中在上方的按钮了,需要那个就点击那个!

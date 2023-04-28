@@ -119,7 +119,54 @@ if(!empty($_GET['type'])){
             opcache_reset(); //清理PHP缓存
         }
         msgA(['code'=>1,'msg'=>'操作成功']);
+    //改账号
+    }elseif($_GET['type'] == 'set_user_name'){
+        //新用户名是否合规
+        if(empty($_POST['new_user_name'])){
+            msgA(['code'=>-1,'msg'=>'用户名不能为空']);
+        }elseif(empty($_POST['ID'])){
+            msgA(['code'=>-1,'msg'=>'ID不能为空']);
+        }elseif(!preg_match('/^[A-Za-z0-9]{4,13}$/',$_POST['new_user_name'])){
+            msg(-1,'账号只能是4到13位的数字和字母!');
+        }
+        
+        //检测是否冲突
+        if(file_exists(DIR."/data/user/".$_POST['new_user_name'])){
+            msgA(['code'=>-1,'msg'=>'data/user/存在同名文件夹']);
+        }
+        if(file_exists(DIR."/data/backup/".$_POST['new_user_name'])){
+            msgA(['code'=>-1,'msg'=>'data/backup/存在同名文件夹']);
+        }
+        //读取用户信息
+        $USER = get_db("global_user", "*", ["ID" => $_POST['ID']]);
+        if(empty($USER)){
+            msgA(['code'=>-1,'msg'=>'用户ID不存在']);
+        }elseif($USER['User'] == $_POST['new_user_name']){
+            msgA(['code'=>-1,'msg'=>'新用户名不能和旧的一样']);
+        }elseif(has_db('global_user',['User'=>$_POST['new_user_name']])){
+            msgA(['code'=>-1,'msg'=>'新账号已存在,请核对后再试!']);
+        }
+        //移动数据目录
+        $Path = DIR.'/data/user/'.$USER['User'];
+        if(is_dir($Path)){
+            $New_Path = DIR.'/data/user/'.$_POST['new_user_name'];
+            if(!rename($Path,$New_Path)){
+                msgA(['code'=>-1,'msg'=>'移动数据目录失败']);
+            }
+        }
+        //移动备份目录
+        $Path = DIR.'/data/backup/'.$USER['User'];
+        if(is_dir($Path)){
+            $New_Path = DIR.'/data/backup/'.$_POST['new_user_name'];
+            if(!rename($Path,$New_Path)){
+                msgA(['code'=>-1,'msg'=>'移动备份目录失败']);
+            }
+        }
+        update_db("user_login_info", ["user" => $_POST['new_user_name']], ["user" => $USER['User']]);
+        update_db("user_log", ["user" => $_POST['new_user_name']], ["user" => $USER['User']]);
+        update_db("global_user", ["User" => $_POST['new_user_name']], ["ID" => $_POST['ID']],[1,'操作成功']);
     }
+    
     msgA(['code'=>-1,'msg'=>'请求类型错误']);
 }else{
     //判断是否已验证
@@ -174,7 +221,7 @@ function echo_Atool(){
     <link rel="stylesheet" href="../static/Layui/v2.6.8/css/layui.css">
     <style>
         html, body {min-width: 1200px;background-color: #fff;position: relative;}
-        .page-wrapper {width: 900px;margin: 0 auto;padding: 0 15px;}
+        .page-wrapper {width: 1200px;margin: 0 auto;padding: 0 15px;}
     </style>
 </head>
 <body>
@@ -219,6 +266,7 @@ function echo_Atool(){
     <div class="layui-btn-group">
         <a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="set_pwd">改密码</a>
         <a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="set_root">设站长</a>
+        <a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="set_user_name">改账号</a>
     </div>
 </script>
 <script src="../static/Layui/v2.6.8/layui.js"></script>
@@ -232,7 +280,7 @@ function echo_Atool(){
         var table = layui.table;
         var cols = [[
             {field:'ID',title:'ID',width:60,sort:true}
-            ,{title:'操作',toolbar:'#tablebar',width:130}
+            ,{title:'操作',toolbar:'#tablebar',width:175}
             ,{field:'User',title:'账号',minWidth:120,templet:function(d){
                 return '<a style="color:#3c78d8" title="打开用户主页" target="_blank" href="../?u='+d.User+'">'+d.User+'</a>'
             }}
@@ -298,6 +346,18 @@ function echo_Atool(){
                     }else{
                         layer.msg(data.msg, {icon: 5});
                     }
+                });
+            }else if(obj.event == 'set_user_name'){
+                layer.prompt({formType: 3,value: '',title:'请输入新账号 (原账号:'+data.User+')'}, function(value, index, elem){
+                    $.post('./ATool.php?type=set_user_name',{ID:data.ID,new_user_name:value},function(data,status){
+                        if(data.code == 1) {
+                            layer.close(index);
+                            table.reload('table');
+                            layer.msg(data.msg, {icon: 1});
+                        }else{
+                            layer.msg(data.msg, {icon: 5});
+                        }
+                    });
                 });
             }
         });

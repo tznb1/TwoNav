@@ -480,6 +480,7 @@ function get_http_code($url) {
     curl_setopt($curl, CURLOPT_NOBODY, true);
     curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
     curl_setopt($curl, CURLOPT_TIMEOUT, 10);
+    curl_setopt($curl, CURLOPT_USERAGENT, 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/95.0.4638.69 Safari/537.36');
     $data = curl_exec($curl);
     $return = curl_getinfo($curl, CURLINFO_HTTP_CODE);
     curl_close($curl);
@@ -495,6 +496,7 @@ function ccurl($url,$overtime = 3){
         curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
         curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, false);
+        curl_setopt($curl, CURLOPT_USERAGENT, 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/95.0.4638.69 Safari/537.36');
         $Res["content"] = curl_exec   ( $curl ) ;
         $Res["code"] = curl_getinfo($curl, CURLINFO_HTTP_CODE);
         curl_close  ( $curl ) ;
@@ -635,4 +637,52 @@ function Get_Rand_Str( $length = 8 ,$extend = false){
         $str .= $chars[$keys[$i]];
     }
     return $str;
+}
+//发送邮件
+function send_email($config){
+    if(!is_file(DIR.'/system/PHPMailer/PHPMailer.php')){
+        msg(-1,'未安装PHPMailer!');
+    }
+
+    require DIR.'/system/PHPMailer/Exception.php';
+    require DIR.'/system/PHPMailer/PHPMailer.php';
+    require DIR.'/system/PHPMailer/SMTP.php';
+    $mail = new PHPMailer\PHPMailer\PHPMailer(true);
+    try {
+        $mail->CharSet ="UTF-8";
+        $mail->SMTPDebug = 0;
+        $mail->isSMTP();
+        $mail->Host = $config['host'];
+        $mail->SMTPAuth = true;
+        $mail->Username = $config['user'];
+        $mail->Password = $config['pwd'];
+        $mail->SMTPSecure = $config['secure'];
+        $mail->Port = intval($config['port']);
+        
+        if(preg_match('/(.+)<(.+)>/', $config['sender'], $match)){
+            $mail->setFrom($match[2],$match[1]);
+        }else{
+            $mail->setFrom($config['sender']);
+        }
+        
+        $mail->addAddress($config['addressee']); //收件人
+    
+        $mail->isHTML(true);
+        $mail->Subject = $config['Subject'];
+        $mail->Body    = $config['Body'];
+        $mail->send();
+        if(!empty($config['return']) && $config['return'] == 'bool'){
+            return true;
+        }
+        msg(1,'邮件发送成功');
+    } catch (Exception $e) {
+        if(!empty($config['return']) && $config['return'] == 'bool'){
+            return false;
+        }
+        if(Debug){
+            msgA(['code'=>-1,'msg'=>'发送失败:'.$mail->ErrorInfo]);
+        }else{
+            msg(-1,'发送失败');
+        }
+    }
 }

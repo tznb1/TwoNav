@@ -5,6 +5,20 @@
     <li class="layui-timeline-item">
         <i class="layui-icon layui-timeline-axis"></i>
         <div class="layui-timeline-content layui-text">
+            <h4 class="layui-timeline-title">v2.0.17-20230428</h4>
+            <ul>
+                <li>[优化] 删除用户时支持同时删除用户文件夹 ( 图标/留言等数据 ) 和备份数据</li>
+                <li>[优化] 链接列表 > 检测功能的准确性</li>
+                <li>[优化] 系统日志按新旧排序,支持记录邮件发送日志</li>
+                <li>[修复] 用户注册初始数据可能复制失败</li>
+                <li>[新增] <a href="https://gitee.com/tznb/TwoNav/wikis/pages?sort_id=7993451&doc_id=3767990" target="_blank">ATool工具箱</a>支持修改用户名  ( 建议修改前先备份数据 ) </li>
+                <li>[新增] 网站管理 > 站长工具 > 邮件配置 ( 用于配置注册时发送验证码 )</li>
+            </ul>
+        </div>
+    </li>
+    <li class="layui-timeline-item">
+        <i class="layui-icon layui-timeline-axis"></i>
+        <div class="layui-timeline-content layui-text">
             <h4 class="layui-timeline-title">v2.0.16-20230425</h4>
             <ul>
                 <li>[优化] 调整部分代码,使其能够兼容一些老旧的浏览器(如2345加速浏览器,都2023年了居然还在用2018年的内核)</li>

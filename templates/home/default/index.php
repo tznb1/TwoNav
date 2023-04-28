@@ -36,7 +36,7 @@ if ($DescrRowNumber <= 0 ){
 <link rel='stylesheet' href='<?php echo $libs?>/ContextMenu/2.9.2/jquery.contextMenu.min.css'>
 <link rel="stylesheet" href="<?php echo $libs?>/Font-awesome/4.7.0/css/font-awesome.css">
 <link rel="stylesheet" href="<?php echo $libs?>/Layui/v2.6.8/css/layui-icon.css">
-<link rel="stylesheet" href="<?php echo $theme_dir?>/static/style<?php echo $theme_config['CardNum'];?>.css?v=<?php echo $version; ?>">
+<link rel="stylesheet" href="<?php echo $theme_dir?>/static/style<?php echo $theme_config['CardNum'];?>.css?v=<?php echo $theme_ver; ?>">
 <link rel="shortcut icon" href="<?php echo $favicon;?>">
 <style>
 <?php  $SBC = $theme_config['SidebarBackgroundColor']; if( empty($night)  ) {?>
@@ -242,7 +242,7 @@ var is_login = <?php echo is_login?'true':'false'; ?>;
 <script src = "<?php echo $libs?>/MDUI/v1.0.1/js/mdui.min.js"></script>
 <script src = "<?php echo $libs?>/Other/holmes.js"></script>
 <script src = "<?php echo $libs; ?>/jquery/jquery.qrcode.min.js"></script>
-<script src = "<?php echo $theme_dir?>/static/embed.js?v=<?php echo $version.time(); ?>"></script>
+<script src = "<?php echo $theme_dir?>/static/embed.js?v=<?php echo $theme_ver;?>"></script>
 <?php 
 // 如果Key不为空,则加载天气插件!
 if ($WeatherPosition != 0){

@@ -44,8 +44,10 @@ if(!is_login()){
 }else{
     msg(-1,'请先验证二级密码!');
 }
-
-
+//是否加载扩展API
+if($global_config['api_extend'] == 1 && is_file('./system/api_extend.php')){
+    require './system/api_extend.php';
+}
 
 //站长相关方法名
 $root = ['write_subscribe','write_sys_settings','write_default_settings','read_user_list','write_user_info','read_purview_list','read_users_list','write_users','read_regcode_list','write_regcode','other_upsys','read_log','other_root'];
@@ -1098,6 +1100,9 @@ function other_testing_link(){
     global $global_config;
     if ( $global_config['offline'] == '1'){ msg(-1,"离线模式无法使用此功能"); }
     $code = get_http_code($_POST['url']);
+    if($code != 200 && $code != 302 && $code != 301){
+        $code = ccurl($_POST['url'])['code'];
+    }
     msgA(['code' => 0 ,'StatusCode'=> $code]);
 }
 

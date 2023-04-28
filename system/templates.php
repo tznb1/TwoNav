@@ -69,7 +69,10 @@ if(empty($c) || in_array($c,['index','click'])){
         }//如果参数错误则使用本地服务器
     }
     //取分类图标(六零系主题在用)
-    function get_category($content){
+    function get_category($content){ //抽风的命名..过度几个版本后删除
+        return get_category_icon($content);
+    }
+    function get_category_icon($content){
         if(empty($content)){
             return '';
         }

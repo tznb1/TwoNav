@@ -13,6 +13,7 @@ require(dirname(__DIR__).'/header.php');
                     <option value="" selected>全部</option>
                     <option value="login">登录</option>
                     <option value="register">注册</option>
+                    <option value="send_email">邮件</option>
                 </select>
             </div>
         </div>
@@ -57,6 +58,9 @@ layui.use(['table','layer','form'], function () {
       //{type:'checkbox'} //开启复选框
       {field:'id',title:'ID',width:60}
       ,{field:'user',title:'账号',width:120,templet:function(d){
+          if(d.type == 'send_email'){
+              return d.user;
+          }
           return '<a style="color:#3c78d8" title="用户ID:' + d.uid + ',点击打开用户主页" target="_blank" href="./?u='+d.user+'">'+d.user+'</a>'
       }}
       ,{field:'ip',title:'请求IP',width:140,templet:function(d){
