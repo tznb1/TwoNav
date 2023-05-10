@@ -131,15 +131,26 @@ if($global_config['link_extend'] == 1 && check_purview('link_extend',1) && in_ar
 //如果存在备用链接,则强制载入过渡页
 if(!empty($link['url_standby'])) {
     $link['url_standby'] = unserialize($link['url_standby']);
-    require $transit_path;
-    exit;
+    //主链优先模式
+    if($site['main_link_priority'] == 1){
+        $code = get_http_code($link['url'],3); 
+        if(in_array(intval($code),[200,301,302]) ){ 
+            $site['link_model'] =  $site['link_model'] == 'direct' ? '302' : $site['link_model'];
+        }else{
+            require $transit_path;
+            exit;
+        }
+    }else{
+        require $transit_path;
+        exit;
+    }
 }
 
-if ($site['link_model'] == '302'){ //302重定向
+if ($site['link_model'] == '302'){ //302重定向(临时)
     header("HTTP/1.1 302 Moved Permanently");
     header("Location: ".$link['url']);
     exit;
-}elseif($site['link_model'] == '301'){  //301重定向
+}elseif($site['link_model'] == '301'){  //301重定向(永久)
     header("HTTP/1.1 301 Moved Permanently");
     header("Location: ".$link['url']);
     exit;

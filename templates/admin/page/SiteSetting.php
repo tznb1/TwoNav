@@ -53,12 +53,23 @@
             </div>
             
             <div class="layui-form-item">
+                <label class="layui-form-label" title="存在备用链接并且链接模式为隐私保护或302重定向时生效">主链优先</label>
+                <div class="layui-input-inline" >
+                    <select name="main_link_priority" >
+                        <option value="0" selected>关闭</option>
+                        <option value="1">开启</option>
+                    </select>
+                </div>
+                <div class="layui-form-mid layui-word-aux">特定条件下生效,主链接可用则直接跳转反之进入过渡页,用法参照帮助文档</div>
+            </div>
+            
+            <div class="layui-form-item">
                 <label class="layui-form-label">链接图标</label>
                 <div class="layui-input-inline" >
                     <select name="link_icon">
                         <option value="0" selected>离线图标</option>
                         <!--<option value="1" >本地服务(支持缓存)</option>-->
-                        <option value="2" >favicon.rss.ink (小图标)</option>
+                        <option value="2" >favicon.png.pub (小图标)</option>
                         <option value="4" >api.15777.cn</option>
                         <option value="5" >favicon.cccyun.cc</option>
                         <option value="6" >api.iowen.cn</option>
@@ -98,11 +109,11 @@
             </div>
             
            <div class="layui-form-item">
-                <label class="layui-form-label">输出上限</label>
+                <label class="layui-form-label">链接数量</label>
                 <div class="layui-input-inline">
                     <input type="number" name="max_link" class="layui-input" value="0" placeholder="输入范围: 0-100" lay-verify="required">
                 </div>
-                <div class="layui-form-mid layui-word-aux">限制每个分类下显示多少链接,0表示不限制</div>
+                <div class="layui-form-mid layui-word-aux">限制首页每个分类下显示多少链接,0表示不限制</div>
             </div>
             
            <div class="layui-form-item">

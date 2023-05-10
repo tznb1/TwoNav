@@ -159,8 +159,14 @@ function write_category(){
             msg(-1,'加密组不存在');
         }
         
+        //长度检测
+        if(strlen(htmlspecialchars($_POST['name'],ENT_QUOTES)) > 128 ){
+            msg(-1,'分类名称长度超限');
+        }
+        if(strlen(htmlspecialchars($_POST['description'],ENT_QUOTES)) > 128 ){
+            msg(-1,'分类描述长度超限');
+        }
         //取最大CID
-        //$cid = intval(max_db('user_categorys','cid',['uid'=>UID])) +1; 
         $cid = get_maxid('category_id');
         //插入数据库
         insert_db('user_categorys',[
@@ -186,17 +192,14 @@ function write_category(){
         if($_POST['cid'] == $_POST['fid']){
             msg(-1,'父分类不能是自己');
         }
-        
         //查CID是否存在
         if(!get_db('user_categorys','cid',['uid'=>UID ,"cid" => intval($_POST['cid'])])){
             msg(-1,'分类不存在');
         }
-        
         //分类名查重(排除自身)
         if(get_db('user_categorys','cid',['uid'=>UID,'cid[!]'=>intval($_POST['cid']),"name" => $_POST['name']])){
             msg(-1,'分类名称已存在');
         }
-        
         //父分类不能是二级分类
         if(intval($_POST['fid']) !=0 && get_db('user_categorys','fid',['uid'=>UID ,"cid" => intval($_POST['fid']) ]) !=0  ){
             msg(-1,'父分类不能是二级分类');
@@ -205,16 +208,22 @@ function write_category(){
         if( $_POST['fid']!=0  && count_db('user_categorys',['uid'=>UID,'fid'=>$_POST['cid']])>0){
             msg(-1,'该分类下已存在子分类！');
         }
-        
         //查父分类是否存在
         if( $_POST['fid'] !=0  && !get_db('user_categorys','cid',['uid'=>UID ,"cid" => intval($_POST['fid'])])){
             msg(-1,'父分类不存在');
         }
-        
         //加密组pid是否存在
         if(intval($_POST['pwd_id']) !=0  && empty(get_db('user_pwd_group','pid',['uid'=>UID ,"pid" => intval($_POST['pwd_id'])]))){
             msg(-1,'加密组不存在');
         }
+        //长度检测
+        if(strlen(htmlspecialchars($_POST['name'],ENT_QUOTES)) > 128 ){
+            msg(-1,'分类名称长度超限');
+        }
+        if(strlen(htmlspecialchars($_POST['description'],ENT_QUOTES)) > 128 ){
+            msg(-1,'分类描述长度超限');
+        }
+        
         //更新数据
         $data = [
             'fid'=>$_POST['fid'],
@@ -363,22 +372,16 @@ function write_link(){
         $description = empty($_POST['description']) ? '' : $_POST['description'];
         $property = empty($_POST['property']) ? 0 : 1;
         //检测链接是否合法
-        check_link($fid,$title,$url); 
+        check_link($fid,$title,$url,$_POST['url_standby']); 
         //检查链接是否已存在
         if(get_db('user_links','lid',['uid'=>UID ,"url" => $url])){
             msg(-1,'链接已存在!');
         }
-        //备用链接检测
-        if(!empty($_POST['url_standby'])){
-            foreach ($_POST['url_standby'] as $key => $url_standby){
-                //尝试匹配Markdown语法的URL,如果没有则认为直接输入
-                if(preg_match('/\[(.*?)\]\((.*?)\)/', $url_standby, $match)){
-                    check_link($fid,$title,$match[2]);
-                }else{
-                    check_link($fid,$title,$url_standby); 
-                }
-            }
+        //描述长度检测
+        if(strlen($description) > 128 || strlen(htmlspecialchars($description,ENT_QUOTES)) > 128 ){
+            msg(-1,'描述长度超限');
         }
+        
         //取最大链接ID
         $lid = get_maxid('link_id');
         //图标处理
@@ -526,22 +529,15 @@ function write_link(){
         $description = empty($_POST['description']) ? '' : $_POST['description'];
         $property = empty($_POST['property']) ? 0 : 1;
         //检测链接是否合法
-        check_link($fid,$title,$url); 
-        //检查链接是否已存在
-        if(get_db('user_links','lid',['uid'=>UID ,'lid[!]'=>$lid, "url" => $url])){msg(-1,'链接已存在!');}
-        //检查链接ID是否存在
-        if(!get_db('user_links','lid',['uid'=>UID ,'lid'=>$lid])){msg(-1,'链接ID不存在!');}
-        //备用链接检测
-        if(!empty($_POST['url_standby'])){
-            foreach ($_POST['url_standby'] as $key => $url_standby){
-                //尝试匹配Markdown语法的URL,如果没有则认为直接输入
-                if(preg_match('/\[(.*?)\]\((.*?)\)/', $url_standby, $match)){
-                    check_link($fid,$title,$match[2]);
-                }else{
-                    check_link($fid,$title,$url_standby); 
-                }
-            }
+        check_link($fid,$title,$url,$_POST['url_standby']); 
+        //描述长度检测
+        if(strlen($description) > 128 || strlen(htmlspecialchars($description,ENT_QUOTES)) > 128 ){
+            msg(-1,'描述长度超限');
         }
+        //检查链接是否已存在
+        if(has_db('user_links',['uid'=>UID ,'lid[!]'=>$lid, "url" => $url])){msg(-1,'链接已存在!');}
+        //检查链接ID是否存在
+        if(!has_db('user_links',['uid'=>UID ,'lid'=>$lid])){msg(-1,'链接ID不存在!');}
 
         $data = [
             'fid'           =>  $fid,
@@ -948,6 +944,7 @@ function write_site_setting(){
         'keywords'=>['empty'=>true],
         'description'=>['empty'=>true],
         'link_model'=>['v'=>['direct','Privacy','Privacy_js','Privacy_meta','301','302','Transition'],'msg'=>'链接模式参数错误'],
+        'main_link_priority'=>['int'=>true,'min'=>0,'max'=>1,'msg'=>'主链优先参数错误'],
         'link_icon'=>['int'=>true,'min'=>0,'max'=>10,'msg'=>'链接图标参数错误'],
         'site_icon'=>['empty'=>true],
         'top_link'=>['int'=>true,'min'=>0,'max'=>20,'msg'=>'热门链接参数错误'],
@@ -1454,8 +1451,8 @@ function read_data(){
         $php_version = floatval(PHP_VERSION);
         $log .= "PHP版本：{$php_version}\n";
         $log .= "Web版本：{$_SERVER['SERVER_SOFTWARE']}\n";
-        if( ( $php_version < 7.3 ) || ( $php_version > 8.1 ) ) {
-            $log .= "PHP版本：不满足要求,需要7.3 <= PHP <= 8.1 )\n";
+        if( ( $php_version < 7.3 ) || ( $php_version > 8.2 ) ) {
+            $log .= "PHP版本：不满足要求,支持范围7.3 - 8.2 )\n";
         }
         //获取加载的模块
         $ext = get_loaded_extensions(); 

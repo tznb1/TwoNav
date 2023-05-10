@@ -5,6 +5,20 @@
     <li class="layui-timeline-item">
         <i class="layui-icon layui-timeline-axis"></i>
         <div class="layui-timeline-content layui-text">
+            <h4 class="layui-timeline-title">v2.0.18-20230510</h4>
+            <ul>
+                <li>[新增] 限制链接和分类的名称描述长度为128个字符 ( 注:一个汉字≈3个字符,数字/字母=1个字符 )</li>
+                <li>[新增] 站点设置 > 主链优先 ( 对存在备用链接的书签有效,主链接可用则直接跳转反之进入过渡页,具体用法参照文档 )</li>
+                <li>[修复] PHP8.2安装时提示不支持 ( 实际支持 )</li>
+                <li>[优化] 链接列表选择分类时按分类层级显示</li>
+                <li>[变更] 链接图标域名由favicon.rss.ink更换为favicon.png.pub ( 由xiaoz.me提供 )</li>
+                <li>[变更] 站点设置 > 输出上限改为链接数量</li>
+            </ul>
+        </div>
+    </li>
+    <li class="layui-timeline-item">
+        <i class="layui-icon layui-timeline-axis"></i>
+        <div class="layui-timeline-content layui-text">
             <h4 class="layui-timeline-title">v2.0.17-20230428</h4>
             <ul>
                 <li>[优化] 删除用户时支持同时删除用户文件夹 ( 图标/留言等数据 ) 和备份数据</li>

@@ -32,7 +32,7 @@ function check_env() {
     $php_version = floatval(PHP_VERSION); //获取PHP版本
     
     if( ( $php_version < 7.3 ) || ( $php_version > 8.2 ) ) {
-        exit("当前PHP版本{$php_version}不满足要求，需要7.3 <= PHP <= 8.2");
+        exit("当前PHP版本{$php_version}不满足要求,支持范围7.3 - 8.2");
     }
     
     //检查是否支持pdo_sqlite

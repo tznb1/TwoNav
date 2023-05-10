@@ -19,26 +19,11 @@ layui.use(['form','table','dropdown','miniTab'], function () {
                 layer.alert("获取分类数据失败,请刷新重试",{icon:5,title:'错误',anim: 2,closeBtn: 0,btn: ['刷新页面']},function () {location.reload();});
                 return;
             }else{
-                $("#fid").empty();
-                $("#fid").append('<option value="0" selected="">全部</option>');
-                $("#fid").append('<optgroup label="用户分类">');
-                for( key in data.data ){
-                    if(data.data[key].fid == 0){
-                        $("#fid").append("<option value=\""+key+"\">"+data.data[key].name+"</option>");
-                        $("#batch_category_fid").append("<option value=\""+key+"\">"+data.data[key].name+"</option>");
-                    }else{
-                        $("#fid").append("<option value=\""+key+"\">&emsp;"+data.data[key].name+"</option>");
-                        $("#batch_category_fid").append("<option value=\""+key+"\">&emsp;"+data.data[key].name+"</option>");
-                    }
-                }
-                $("#fid").append('</optgroup>');
-                layui.form.render("select");
                 categorys = data.data;//赋值分类数据
                 renderTable2();//开始渲染表格
             }
         });
     }
-
 
     var cols=[[ //表头
       {type:'checkbox'} //开启复选框

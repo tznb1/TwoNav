@@ -51,7 +51,7 @@ if(empty($c) || in_array($c,['index','click'])){
         }elseif ($icon ==1){
             return('./favicon/index2.php?url='.$link['real_url']);
         }elseif($icon ==2){
-            return('//favicon.rss.ink/v1/'.base64($link['real_url']));
+            return('//favicon.png.pub/v1/'.base64($link['real_url']));
         }elseif($icon ==4){
             return('//api.15777.cn/get.php?url='.$link['real_url']);
         }elseif($icon ==5){

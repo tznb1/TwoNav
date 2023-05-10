@@ -233,18 +233,42 @@ function echo_pwds(){
     }
 }
 //检查链接
-function check_link($fid,$title,$url,$url_standby=''){
-    global $db;
+function check_link($fid,$title,$url,$url_standby_s=''){
     $pattern = "/^(http:\/\/|https:\/\/|ftp:\/\/|ftps:\/\/|sftp:\/\/|magnet:?|ed2k:\/\/|thunder:\/\/|tcp:\/\/|udp:\/\/|rtsp:\/\/).+/";
+    if (empty($fid)) msg(-1,'分类id(fid)不能为空');
+    if (empty($title)) msg(-1,'名称不能为空');
+    if (strlen($title) > 64 ) msg(-1,'名称长度超限');
+    if (strlen(htmlspecialchars($title,ENT_QUOTES)) > 128 ) msg(-1,'名称长度超限-2'); 
+    if (!has_db('user_categorys',['uid'=>UID ,"cid" => $fid])) msg(-1,'分类不存在');
+    //主链接检测
+    if (empty($url)) msg(-1,'URL不能为空');
+    if (!preg_match($pattern,$url)) msg(-1,'URL无效');
+    if (strlen($url) > 1024 ) msg(-1,'URL长度超限');
+    if (check_xss($url)) msg(-1,'URL存在非法字符');
     
-    if(empty($fid)) {msg(-1007,'分类id(fid)不能为空！');}
-    if(!get_db('user_categorys','cid',['uid'=>UID ,"cid" => $fid])){msg(-1,'分类不存在');}
-    if (empty($title)){msg(-1008,'标题不能为空！');}
-    if (empty($url)){msg(-1009,'URL不能为空！');}
-    if (check_xss($url)){msg(-1010,'URL存在非法字符！');}
-    if (check_xss($url_standby)){msg(-1010,'备用URL存在非法字符！');}
-    if (!preg_match($pattern,$url)){msg(-1010,'URL无效！');}
-    if ( ( !empty($url_standby) ) && ( !preg_match($pattern,$url_standby) ) ) {msg(-1010,'备选URL无效！');}
+    //备用链接检测
+    if(!empty($url_standby_s)){
+        foreach ($url_standby_s as $key => $url_standby){
+            //尝试匹配Markdown语法的URL,如果没有则认为直接输入
+            if(preg_match('/\[(.*?)\]\((.*?)\)/', $url_standby, $match)){
+                if (empty($match[1])) msg(-1,'备用链接名称不能为空,若不需要名称请直接输入URL');
+                if (strlen($match[1]) > 64 ) msg(-1,'备用链接名称长度超限');
+                if (strlen(htmlspecialchars($match[1],ENT_QUOTES)) > 128 ) msg(-1,'备用链接名称长度超限-2');
+                $url = $match[2];
+            }else{
+                $url = $url_standby;
+            }
+            
+            if(!preg_match($pattern,$url)){
+                msg(-1,'备选URL无效');
+            }elseif(strlen($url) > 1024){
+                msg(-1,'备选URL长度超限');
+            }elseif(check_xss($url)){
+                msg(-1,'备用URL存在非法字符');
+            }
+        }
+    }
+    
     return true;
 }
 //获取版本号
@@ -473,13 +497,13 @@ function Get_IP() {
 }
 
 //获取URL状态码
-function get_http_code($url) { 
+function get_http_code($url,$TIMEOUT = 10) { 
     $curl = curl_init(); 
     curl_setopt($curl, CURLOPT_URL, $url);
     curl_setopt($curl, CURLOPT_HEADER, 1);
     curl_setopt($curl, CURLOPT_NOBODY, true);
     curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
-    curl_setopt($curl, CURLOPT_TIMEOUT, 10);
+    curl_setopt($curl, CURLOPT_TIMEOUT, $TIMEOUT);
     curl_setopt($curl, CURLOPT_USERAGENT, 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/95.0.4638.69 Safari/537.36');
     $data = curl_exec($curl);
     $return = curl_getinfo($curl, CURLINFO_HTTP_CODE);

@@ -10,6 +10,7 @@
             <label class="layui-form-label " style="width:60px;padding-left: 5px;padding-right: 5px;">分类筛选:</label>
             <div class="layui-input-inline">
                 <select id="fid" lay-filter="fid" name="categorys" lay-search>
+                    <?php echo_category(true); ?>
                 </select>
             </div>
         </div>
@@ -84,6 +85,7 @@
             <label class="layui-form-label">父级分类</label>
             <div class="layui-input-block">
                 <select id="batch_category_fid">
+                    <?php echo_category(true); ?>
                 </select> 
             </div>
         </div>
