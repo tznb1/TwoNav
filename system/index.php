@@ -164,7 +164,7 @@ function get_links($fid) {
         $click = false; $lock = false;
         
         //直连模式,但存在备用链接
-        if ($site['link_model'] == 'direct' && !empty($link['url_standby'])){
+        if ($site['link_model'] == 'direct' && $site['main_link_priority'] != '3' && !empty($link['url_standby'])){
             $click = true;
         }
         

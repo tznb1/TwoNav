@@ -40,13 +40,20 @@ layui.use(['form','upload','miniTab'], function () {
                     }
                     return false;
                 }
-                layer.msg('添加成功！', {icon: 1,time: 600,
+                layer.msg('添加成功！', {icon: 1,time: 700,
 				    end: function() {
 				        if(_GET('source') == 'tpl'){ //第三方调用时刷新父页面
 				            parent.location.reload();
 				        }else if(_GET('source')=='link_list'){ // 链接列表调用
 				            parent.layui.table.reload('table');//刷新父页面的表格
 				            $('#close').click();//关闭子页面
+				        }else{
+				            if($("#continuity").is(":checked")){
+				                location.reload();
+				            }else{
+				                $('#close').click();
+				            }
+				            
 				        }
 				    }
                 });
@@ -181,6 +188,10 @@ layui.use(['form','upload','miniTab'], function () {
         $("#reset").click();
         //加载预览图
         preview_icon(form_data.icon);
+    }else{
+        if(_GET('fid') > 0){
+            form.val('form',{"fid":_GET('fid')});
+        }
     }
     
 //layui>end

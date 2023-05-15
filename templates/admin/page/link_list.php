@@ -10,7 +10,10 @@
             <label class="layui-form-label " style="width:60px;padding-left: 5px;padding-right: 5px;">分类筛选:</label>
             <div class="layui-input-inline">
                 <select id="fid" lay-filter="fid" name="categorys" lay-search>
+                    <option value="0" selected="">全部</option>
+                    <optgroup label="用户分类">
                     <?php echo_category(true); ?>
+                    </optgroup>
                 </select>
             </div>
         </div>

@@ -497,11 +497,11 @@ function Get_IP() {
 }
 
 //获取URL状态码
-function get_http_code($url,$TIMEOUT = 10) { 
+function get_http_code($url,$TIMEOUT = 10 ,$NOBODY = true) { 
     $curl = curl_init(); 
     curl_setopt($curl, CURLOPT_URL, $url);
     curl_setopt($curl, CURLOPT_HEADER, 1);
-    curl_setopt($curl, CURLOPT_NOBODY, true);
+    curl_setopt($curl, CURLOPT_NOBODY, $NOBODY);
     curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
     curl_setopt($curl, CURLOPT_TIMEOUT, $TIMEOUT);
     curl_setopt($curl, CURLOPT_USERAGENT, 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/95.0.4638.69 Safari/537.36');

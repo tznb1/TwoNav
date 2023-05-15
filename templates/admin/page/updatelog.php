@@ -5,6 +5,18 @@
     <li class="layui-timeline-item">
         <i class="layui-icon layui-timeline-axis"></i>
         <div class="layui-timeline-content layui-text">
+            <h4 class="layui-timeline-title">v2.0.19-20230515</h4>
+            <ul>
+                <li>[修复] 链接列表分类筛选不能选择全部 (上个版本造成)</li>
+                <li>[新增] 主链优先功能,新增检测方法的选择 ( 常规检测比快速检测准,但相对会慢一点 )</li>
+                <li>[优化] 主链优先检测将401视为可用 ( 兼容需要BasicAuth认证的网页 )</li>
+                <li>[优化] 在链接列表点击添加链接时自动选择当前分类(筛选不为全部时),其他细节调整</li>
+            </ul>
+        </div>
+    </li>
+    <li class="layui-timeline-item">
+        <i class="layui-icon layui-timeline-axis"></i>
+        <div class="layui-timeline-content layui-text">
             <h4 class="layui-timeline-title">v2.0.18-20230510</h4>
             <ul>
                 <li>[新增] 限制链接和分类的名称描述长度为128个字符 ( 注:一个汉字≈3个字符,数字/字母=1个字符 )</li>

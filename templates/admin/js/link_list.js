@@ -143,7 +143,7 @@ layui.use(['form','table','dropdown','miniTab'], function () {
                     maxmin:false,
                     shadeClose: true,
                     area: ['100%', '100%'],
-                    content: './index.php?c=admin&page=link_add&source=link_list&u=' + u,
+                    content: './index.php?c=admin&page=link_add&source=link_list&u=' + u +"&fid=" + $('#fid').val(),
                 });
             //做一个关闭时检查是否需要刷新数据?
             return;

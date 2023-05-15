@@ -57,7 +57,9 @@
                 <div class="layui-input-inline" >
                     <select name="main_link_priority" >
                         <option value="0" selected>关闭</option>
-                        <option value="1">开启</option>
+                        <option value="1">开启 (快速检测)</option>
+                        <option value="2">开启 (常规检测)</option>
+                        <option value="3">开启 (强制优先)</option>
                     </select>
                 </div>
                 <div class="layui-form-mid layui-word-aux">特定条件下生效,主链接可用则直接跳转反之进入过渡页,用法参照帮助文档</div>

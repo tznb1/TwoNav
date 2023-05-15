@@ -944,7 +944,7 @@ function write_site_setting(){
         'keywords'=>['empty'=>true],
         'description'=>['empty'=>true],
         'link_model'=>['v'=>['direct','Privacy','Privacy_js','Privacy_meta','301','302','Transition'],'msg'=>'链接模式参数错误'],
-        'main_link_priority'=>['int'=>true,'min'=>0,'max'=>1,'msg'=>'主链优先参数错误'],
+        'main_link_priority'=>['int'=>true,'min'=>0,'max'=>3,'msg'=>'主链优先参数错误'],
         'link_icon'=>['int'=>true,'min'=>0,'max'=>10,'msg'=>'链接图标参数错误'],
         'site_icon'=>['empty'=>true],
         'top_link'=>['int'=>true,'min'=>0,'max'=>20,'msg'=>'热门链接参数错误'],

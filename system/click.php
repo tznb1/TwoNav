@@ -132,9 +132,9 @@ if($global_config['link_extend'] == 1 && check_purview('link_extend',1) && in_ar
 if(!empty($link['url_standby'])) {
     $link['url_standby'] = unserialize($link['url_standby']);
     //主链优先模式
-    if($site['main_link_priority'] == 1){
-        $code = get_http_code($link['url'],3); 
-        if(in_array(intval($code),[200,301,302]) ){ 
+    if(!empty($site['main_link_priority']) && $site['link_model'] != 'Transition'){
+        $code = get_http_code($link['url'],3,($site['main_link_priority'] == 1)); 
+        if(in_array(intval($code),[200,301,302,401]) ){ 
             $site['link_model'] =  $site['link_model'] == 'direct' ? '302' : $site['link_model'];
         }else{
             require $transit_path;
