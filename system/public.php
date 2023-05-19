@@ -235,25 +235,30 @@ function echo_pwds(){
 //检查链接
 function check_link($fid,$title,$url,$url_standby_s=''){
     $pattern = "/^(http:\/\/|https:\/\/|ftp:\/\/|ftps:\/\/|sftp:\/\/|magnet:?|ed2k:\/\/|thunder:\/\/|tcp:\/\/|udp:\/\/|rtsp:\/\/).+/";
+    $length_limit = unserialize(get_db("global_config","v",["k"=>"length_limit"]));
     if (empty($fid)) msg(-1,'分类id(fid)不能为空');
     if (empty($title)) msg(-1,'名称不能为空');
-    if (strlen($title) > 64 ) msg(-1,'名称长度超限');
-    if (strlen(htmlspecialchars($title,ENT_QUOTES)) > 128 ) msg(-1,'名称长度超限-2'); 
     if (!has_db('user_categorys',['uid'=>UID ,"cid" => $fid])) msg(-1,'分类不存在');
+    if($length_limit['l_name'] > 0 && strlen($title) > $length_limit['l_name'] ){
+        msg(-1,'链接名称长度不能大于'.$length_limit['l_name'].'个字节');
+    }
+    
     //主链接检测
     if (empty($url)) msg(-1,'URL不能为空');
     if (!preg_match($pattern,$url)) msg(-1,'URL无效');
-    if (strlen($url) > 1024 ) msg(-1,'URL长度超限');
     if (check_xss($url)) msg(-1,'URL存在非法字符');
-    
+    if($length_limit['l_url'] > 0 && strlen($url) > $length_limit['l_url'] ){
+        msg(-1,'主链接长度不能大于'.$length_limit['l_url'].'个字节');
+    }
     //备用链接检测
     if(!empty($url_standby_s)){
         foreach ($url_standby_s as $key => $url_standby){
             //尝试匹配Markdown语法的URL,如果没有则认为直接输入
             if(preg_match('/\[(.*?)\]\((.*?)\)/', $url_standby, $match)){
                 if (empty($match[1])) msg(-1,'备用链接名称不能为空,若不需要名称请直接输入URL');
-                if (strlen($match[1]) > 64 ) msg(-1,'备用链接名称长度超限');
-                if (strlen(htmlspecialchars($match[1],ENT_QUOTES)) > 128 ) msg(-1,'备用链接名称长度超限-2');
+                if($length_limit['l_url'] > 0 && strlen($match[1]) > $length_limit['l_url'] ){
+                    msg(-1,'备用链接长度不能大于'.$length_limit['l_url'].'个字节');
+                }
                 $url = $match[2];
             }else{
                 $url = $url_standby;
@@ -261,7 +266,7 @@ function check_link($fid,$title,$url,$url_standby_s=''){
             
             if(!preg_match($pattern,$url)){
                 msg(-1,'备选URL无效');
-            }elseif(strlen($url) > 1024){
+            }elseif($length_limit['l_url'] > 0 && strlen($url) > $length_limit['l_url']){
                 msg(-1,'备选URL长度超限');
             }elseif(check_xss($url)){
                 msg(-1,'备用URL存在非法字符');

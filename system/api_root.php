@@ -498,8 +498,25 @@ function write_sys_settings(){
         msg(-1,'默认账号不存在');
     }elseif(!empty($_POST['default_UserGroup']) && empty(get_db('user_group','code',['code' => $_POST['default_UserGroup']]))){
         msg(-1,'默认分组代号不存在');
+    }elseif($_POST['Sub_domain'] == 1){
+        if(preg_match('/\.(com|net|org|gov|edu)\.cn$/', $_SERVER["HTTP_HOST"])){
+            msg(-1,'不支持此类域名');
+        }
+        if(filter_var($_SERVER["HTTP_HOST"], FILTER_VALIDATE_IP) != false){
+            msg(-1,'不支持IP访问开启二级域名');
+        }
+        if(preg_match('/\.(\d+|:\d+)$/', preg_replace('/:\d+$/','',$_SERVER['HTTP_HOST'])) || substr_count($_SERVER["HTTP_HOST"],':') > 2){
+            msg(-1,'不支持IP访问开启二级域名,如有误判请联系技术支持!');
+        }
     }
     
+    //长度限制
+    foreach (['c_name','c_desc','l_name','l_url','l_desc'] as $name){
+        $length_limit[$name] = is_subscribe('bool') ? intval($_POST[$name]) : 0;
+    }
+    write_global_config("length_limit",$length_limit,'长度限制');
+    
+    //全局配置
     $datas = [
         'Login'=>['empty'=>false,'msg'=>'登录入口不能为空'],
         'Register'=>['empty'=>false,'msg'=>'注册入口不能为空'],
@@ -546,6 +563,8 @@ function write_sys_settings(){
         if($_POST['link_extend'] == 1){$o_config['link_extend'] = 0;$filter = true;}
     }
     
+
+
     update_db("global_config", ["v" => $o_config], ["k" => "o_config"],[1,($filter ?"保存成功,未检测到有效授权,带*号的配置无法为你保存":"保存成功")]);
 }
 

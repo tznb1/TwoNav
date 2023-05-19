@@ -5,7 +5,7 @@
 		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 		<title>
 			<?php echo $theme;?> - 主题配置</title>
-		<link rel='stylesheet' href='<?php echo $libs?>/Layui/v2.6.8/css/layui.css'>
+		<link rel='stylesheet' href='<?php echo $libs?>/Layui/v2.8.3/css/layui.css'>
 		<style>
 			.layui-form-item {
                 margin-bottom: 5px;
@@ -280,7 +280,7 @@
 			</div>
 		</div>
 <script src = '<?php echo $libs?>/jquery/jquery-3.6.0.min.js'></script>
-<script src="<?php echo $libs?>/Layui/v2.6.8/layui.js"></script>
+<script src="<?php echo $libs?>/Layui/v2.8.3/layui.js"></script>
 <script src="./templates/admin/js/public.js?v=<?php echo $Ver;?>"></script>
 <script src="./templates/admin/js/lay-config.js?v=<?php echo $Ver;?>" charset="utf-8"></script>
 <script>

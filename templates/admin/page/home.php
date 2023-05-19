@@ -54,6 +54,22 @@ function echo_message($data){
     echo '</div></div>';
 }
 
+//专属地址优先使用二级域名
+if( $global_config['Sub_domain'] == 1 && check_purview('Sub_domain',1)){
+    $host = explode('.',$_SERVER["HTTP_HOST"]);
+    $count = count($host);
+    if($count >= 2){
+        $_h = "//{$u}.{$host[$count-2]}.{$host[$count-1]}";
+        $_l = "{$_h}/?c={$USER_DB['Login']}";
+    }
+}
+if(!isset($_h)){
+    $_h = './?u='.U;
+    $_l = './?c='.$USER_DB['Login'].'&u='.U;
+}
+
+
+
 require 'header.php'; 
 ?>
 <style>
@@ -262,9 +278,9 @@ require 'header.php';
                             <tr>
                                 <td>专属地址</td>
                                 <td>
-                                    <a href="<?php echo './?u='.U;?>" target="_blank">我的主页</a>
+                                    <a href="<?php echo $_h;?>" target="_blank">我的主页</a>
                                     &nbsp;
-                                    <a href="<?php echo './?c='.$USER_DB['Login'].'&u='.U;?>" target="_blank">TwoNav - 登录</a>
+                                    <a href="<?php echo $_l;?>" target="_blank">TwoNav - 登录</a>
                                     &nbsp;
                                     <i class="fa fa-arrow-left layui-hide-xs" style="color: #ff5722;">&nbsp;<span style="color: #ff5722;" title="收藏专属入口可避免无法登录后台的情况">建议收藏</span></i>
                                 </td>

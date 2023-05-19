@@ -1,4 +1,17 @@
 <?php
+/**
+ * Medoo Database Framework.
+ *
+ * The Lightweight PHP Database Framework to Accelerate Development.
+ *
+ * @version 2.1.8
+ * @author Angel Lai
+ * @package Medoo
+ * @copyright Copyright 2023 Medoo Project, Angel Lai.
+ * @license https://opensource.org/licenses/MIT
+ * @link https://medoo.in
+ */
+
 declare(strict_types=1);
 namespace Medoo;
 use PDO;
@@ -58,13 +71,13 @@ class Medoo
         $commands = [];
         switch ($this->type) {
             case 'mysql':
-                // Make MySQL using standard quoted identifier.
+
                 $commands[] = 'SET SQL_MODE=ANSI_QUOTES';
                 break;
             case 'mssql':
-                // Keep MSSQL QUOTED_IDENTIFIER is ON for standard quoting.
+
                 $commands[] = 'SET QUOTED_IDENTIFIER ON';
-                // Make ANSI_NULLS is ON for NULL value.
+
                 $commands[] = 'SET ANSI_NULLS ON';
                 break;
         }
@@ -798,7 +811,7 @@ class Medoo
             if (is_string($relation)) {
                 $relation = 'USING ("' . $relation . '")';
             } elseif (is_array($relation)) {
-                // For ['column1', 'column2']
+
                 if (isset($relation[0])) {
                     $relation = 'USING ("' . implode('", "', $relation) . '")';
                 } else {
@@ -810,9 +823,9 @@ class Medoo
                         }
                         $joins[] = (
                             strpos($key, '.') > 0 ?
-                                // For ['tableB.column' => 'column']
+
                                 $this->columnQuote($key) :
-                                // For ['column1' => 'column2']
+
                                 $table . '.' . $this->columnQuote($key)
                         ) .
                         ' = ' .
@@ -951,7 +964,7 @@ class Medoo
                     ' INTO ' .
                     implode(', ', array_keys($data));
         return $this->exec($query, $map, function ($statement) use (&$data) {
-            // @codeCoverageIgnoreStart
+
             foreach ($data as $key => $return) {
                 if (isset($return[3])) {
                     $statement->bindParam($key, $data[$key][1], $return[2], $return[3]);
@@ -959,7 +972,7 @@ class Medoo
                     $statement->bindParam($key, $data[$key][1], $return[2]);
                 }
             }
-            // @codeCoverageIgnoreEnd
+
         });
     }
     public function create(string $table, $columns, $options = null): ?PDOStatement
@@ -1014,7 +1027,7 @@ class Medoo
         if (!$this->statement) {
             return $result;
         }
-        // @codeCoverageIgnoreStart
+
         if ($columns === '*') {
             if (isset($callback)) {
                 while ($data = $statement->fetch(PDO::FETCH_ASSOC)) {
@@ -1050,7 +1063,7 @@ class Medoo
         }
         return $result;
     }
-    // @codeCoverageIgnoreEnd
+
     public function insert(string $table, array $values, string $primaryKey = null): ?PDOStatement
     {
         $stack = [];
@@ -1226,7 +1239,7 @@ class Medoo
         if (!$this->statement) {
             return false;
         }
-        // @codeCoverageIgnoreStart
+
         $data = $query->fetchAll(PDO::FETCH_ASSOC);
         if (isset($data[0])) {
             if ($column === '*') {
@@ -1240,7 +1253,7 @@ class Medoo
             return $result[0];
         }
     }
-    // @codeCoverageIgnoreEnd
+
     public function has(string $table, $join, $where = null): bool
     {
         $map = [];
@@ -1254,11 +1267,11 @@ class Medoo
         if (!$this->statement) {
             return false;
         }
-        // @codeCoverageIgnoreStart
+
         $result = $query->fetchColumn();
         return $result === '1' || $result === 1 || $result === true;
     }
-    // @codeCoverageIgnoreEnd
+
     public function rand(string $table, $join = null, $columns = null, $where = null): array
     {
         $orderRaw = $this->raw(
@@ -1284,10 +1297,10 @@ class Medoo
         if (!$this->statement) {
             return null;
         }
-        // @codeCoverageIgnoreStart
+
         return (string) $query->fetchColumn();
     }
-    // @codeCoverageIgnoreEnd
+
     public function count(string $table, $join = null, $column = null, $where = null): ?int
     {
         return (int) $this->aggregate('COUNT', $table, $join, $column, $where);

@@ -44,6 +44,7 @@ CREATE TABLE IF NOT EXISTS `updatadb_logs` (
 
 INSERT INTO "updatadb_logs" ("file_name", "update_time", "status", "extra") VALUES ('20230417.php', '1681719049', 'TRUE', '');
 INSERT INTO "updatadb_logs" ("file_name", "update_time", "status", "extra") VALUES ('20230420.php', '1681977368', 'TRUE', '');
+INSERT INTO "updatadb_logs" ("file_name", "update_time", "status", "extra") VALUES ('20230518.php', '1684393068', 'TRUE', '');
 
 -- 创建用户表
 DROP TABLE IF EXISTS `global_user`;
@@ -78,11 +79,11 @@ CREATE TABLE IF NOT EXISTS `user_categorys` (
   `pid` int(10) UNSIGNED NOT NULL COMMENT '加密组id',
   `status` int(1) NOT NULL COMMENT '状态',
   `property` int(1) NOT NULL COMMENT '私有',
-  `name` varchar(128) NOT NULL COMMENT '名称',
+  `name` text NOT NULL COMMENT '名称',
   `add_time` int(10) UNSIGNED NOT NULL COMMENT '添加时间',
   `up_time` int(10) UNSIGNED NOT NULL COMMENT '更新时间',
   `weight` int(10) NOT NULL COMMENT '权重',
-  `description` varchar(128) NOT NULL DEFAULT '' COMMENT '描述',
+  `description` text NOT NULL DEFAULT '' COMMENT '描述',
   `font_icon` text NOT NULL COMMENT '字体图标',
   `icon` text NOT NULL DEFAULT '' COMMENT '个性图标',
   `extend` text NOT NULL COMMENT '扩展',
@@ -103,11 +104,11 @@ CREATE TABLE IF NOT EXISTS `user_links` (
   `pid` int(10) UNSIGNED NOT NULL DEFAULT '0' COMMENT '加密组id',
   `status` int(1) NOT NULL DEFAULT '1' COMMENT '状态',
   `property` int(1) NOT NULL DEFAULT '0' COMMENT '私有',
-  `title` varchar(128) NOT NULL COMMENT '标题',
-  `url` varchar(1024) NOT NULL COMMENT '主链接',
+  `title` text NOT NULL COMMENT '标题',
+  `url` text NOT NULL COMMENT '主链接',
   `url_standby` text NOT NULL COMMENT '备用链接',
   `weight` int(11) NOT NULL DEFAULT '0' COMMENT '权重',
-  `description` varchar(128) NOT NULL DEFAULT '' COMMENT '描述',
+  `description` text NOT NULL DEFAULT '' COMMENT '描述',
   `icon` text NOT NULL DEFAULT '' COMMENT '图标',
   `click` int(10) UNSIGNED NOT NULL DEFAULT '0' COMMENT '点击数',
   `add_time` int(10) UNSIGNED NOT NULL DEFAULT '0' COMMENT '添加时间',

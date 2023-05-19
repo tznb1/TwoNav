@@ -160,11 +160,12 @@ function write_category(){
         }
         
         //长度检测
-        if(strlen(htmlspecialchars($_POST['name'],ENT_QUOTES)) > 128 ){
-            msg(-1,'分类名称长度超限');
+        $length_limit = unserialize(get_db("global_config","v",["k"=>"length_limit"]));
+        if($length_limit['c_name'] > 0 && strlen($_POST['name']) > $length_limit['c_name'] ){
+            msg(-1,'名称长度不能大于'.$length_limit['c_name'].'个字节');
         }
-        if(strlen(htmlspecialchars($_POST['description'],ENT_QUOTES)) > 128 ){
-            msg(-1,'分类描述长度超限');
+        if($length_limit['c_desc'] > 0 && strlen($_POST['description']) > $length_limit['c_desc'] ){
+            msg(-1,'名称长度不能大于'.$length_limit['c_desc'].'个字节');
         }
         //取最大CID
         $cid = get_maxid('category_id');
@@ -217,11 +218,12 @@ function write_category(){
             msg(-1,'加密组不存在');
         }
         //长度检测
-        if(strlen(htmlspecialchars($_POST['name'],ENT_QUOTES)) > 128 ){
-            msg(-1,'分类名称长度超限');
+        $length_limit = unserialize(get_db("global_config","v",["k"=>"length_limit"]));
+        if($length_limit['c_name'] > 0 && strlen($_POST['name']) > $length_limit['c_name'] ){
+            msg(-1,'名称长度不能大于'.$length_limit['c_name'].'个字节');
         }
-        if(strlen(htmlspecialchars($_POST['description'],ENT_QUOTES)) > 128 ){
-            msg(-1,'分类描述长度超限');
+        if($length_limit['c_desc'] > 0 && strlen($_POST['description']) > $length_limit['c_desc'] ){
+            msg(-1,'名称长度不能大于'.$length_limit['c_desc'].'个字节');
         }
         
         //更新数据
@@ -378,8 +380,9 @@ function write_link(){
             msg(-1,'链接已存在!');
         }
         //描述长度检测
-        if(strlen($description) > 128 || strlen(htmlspecialchars($description,ENT_QUOTES)) > 128 ){
-            msg(-1,'描述长度超限');
+        $length_limit = unserialize(get_db("global_config","v",["k"=>"length_limit"]));
+        if($length_limit['l_desc'] > 0 && strlen($description) > $length_limit['l_desc'] ){
+            msg(-1,'描述长度不能大于'.$length_limit['l_desc'].'个字节');
         }
         
         //取最大链接ID
@@ -531,8 +534,9 @@ function write_link(){
         //检测链接是否合法
         check_link($fid,$title,$url,$_POST['url_standby']); 
         //描述长度检测
-        if(strlen($description) > 128 || strlen(htmlspecialchars($description,ENT_QUOTES)) > 128 ){
-            msg(-1,'描述长度超限');
+        $length_limit = unserialize(get_db("global_config","v",["k"=>"length_limit"]));
+        if($length_limit['l_desc'] > 0 && strlen($description) > $length_limit['l_desc'] ){
+            msg(-1,'描述长度不能大于'.$length_limit['l_desc'].'个字节');
         }
         //检查链接是否已存在
         if(has_db('user_links',['uid'=>UID ,'lid[!]'=>$lid, "url" => $url])){msg(-1,'链接已存在!');}
@@ -601,7 +605,6 @@ function write_link(){
         if(!empty($link['icon']) && preg_match("/^\.\/data\/user\/{$u}\/favicon\//",$link['icon']) && is_file($link['icon'])){
             @unlink($link['icon']);
         }
-            
         //删除数据
         delete_db('user_links',['uid'=>UID ,"lid" => intval($_POST['lid'])],[1,'删除成功']);
     

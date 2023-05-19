@@ -879,4 +879,4 @@
 .layui-layout-admin .layui-logo {width: 155px;}
 .layui-body {left: 155px;}
 .layuimini-tool {left: 190px;}
-.layui-nav-tree {width: 155px;}
+.layui-nav-tree {width: 155px!important;}

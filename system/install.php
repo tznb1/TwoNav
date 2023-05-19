@@ -339,7 +339,7 @@ function Write_Config(){
 	<meta charset="utf-8" />
 	<title>TwoNav 安装引导</title>
 	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-	<link rel='stylesheet' href='<?php echo $libs?>/Layui/v2.6.8/css/layui.css'>
+	<link rel='stylesheet' href='<?php echo $libs?>/Layui/v2.8.3/css/layui.css'>
 	<style>
 	    body{ background-color:rgba(0, 0, 51, 0.8); }
 	    .login-logo h1 { color:#FFFFFF; text-align: center; }
@@ -433,7 +433,7 @@ function Write_Config(){
 </div>
 </div>
 <script src = '<?php echo $libs?>/jquery/jquery-3.6.0.min.js'></script>
-<script src = '<?php echo $libs?>/Layui/v2.6.8/layui.js'></script>
+<script src = '<?php echo $libs?>/Layui/v2.8.3/layui.js'></script>
 <script>
 
 var file = "data_" + Date.now() + '_' + getRandomString(20) + ".db3" //生成文件名

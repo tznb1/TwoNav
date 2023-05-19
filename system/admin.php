@@ -4,7 +4,7 @@
 $page = trim($_GET['page']);
 
 //layui版本路径,方便后期切换版本
-$layui['js']  = $libs.'/Layui/v2.6.8/layui.js';$layui['css'] = $libs.'/Layui/v2.6.8/css/layui.css';
+$layui['js']  = $libs.'/Layui/v2.8.3/layui.js';$layui['css'] = $libs.'/Layui/v2.8.3/css/layui.css';
 $Ver = !Debug?SysVer:SysVer.'.'.time();
 $LoginConfig = unserialize($USER_DB['LoginConfig']);
 define('offline',$global_config['offline'] == 1);
@@ -253,18 +253,18 @@ if(!empty($page)){
 function load_static($type){
     if($type == 'css'){
         echo 
-'<link rel="stylesheet" href="'.$GLOBALS['libs'].'/Layui/v2.6.8/css/layui.css" media="all">
+'<link rel="stylesheet" href="'.$GLOBALS['libs'].'/Layui/v2.8.3/css/layui.css" media="all">
     <link rel="stylesheet" href="./templates/admin/css/public.css?v='.$GLOBALS['Ver'].'" media="all">
 ';
     }elseif($type == 'js'){
         echo 
-'<script src="'.$GLOBALS['libs'].'/Layui/v2.6.8/layui.js" charset="utf-8"></script>
+'<script src="'.$GLOBALS['libs'].'/Layui/v2.8.3/layui.js" charset="utf-8"></script>
 <script src="./templates/admin/js/lay-config.js?v='.$GLOBALS['Ver'].'" charset="utf-8"></script>
 <script>layui.config({version:"'.$GLOBALS['Ver'].'"})</script>
 ';
     }elseif($type == 'js.layui'){
         echo 
-'<script src="'.$GLOBALS['libs'].'/Layui/v2.6.8/layui.js" charset="utf-8"></script>
+'<script src="'.$GLOBALS['libs'].'/Layui/v2.8.3/layui.js" charset="utf-8"></script>
 <script>layui.config({version:"'.$GLOBALS['Ver'].'"})</script>
 ';
     }

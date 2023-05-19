@@ -155,7 +155,7 @@ $title='系统设置';require(dirname(__DIR__).'/header.php');
                         <option value="1" >开启</option>
                     </select>
                 </div>
-                <div class="layui-form-mid layui-word-aux">以二级域名的形式直接进入用户主页,需配置域名泛解析和服务器泛域名绑定</div>
+                <div class="layui-form-mid layui-word-aux" title="不支持IP和双后缀域名,如: com.cn / net.cn / org.cn">以二级域名的形式直接进入用户主页,需配置域名泛解析和服务器泛域名绑定</div>
             </div>
 
             <div class="layui-form-item">
@@ -200,7 +200,7 @@ $title='系统设置';require(dirname(__DIR__).'/header.php');
                         <option value="1" >开启</option>
                     </select>
                 </div>
-                <div class="layui-form-mid layui-word-aux">此处关闭时即使用户组允许也无法使用!</div>
+                <div class="layui-form-mid layui-word-aux">此处为全局开关,用户默认为关闭,需自行开启!</div>
             </div>
             <div class="layui-form-item">
                 <label class="layui-form-label required">留言管理</label>
@@ -210,7 +210,7 @@ $title='系统设置';require(dirname(__DIR__).'/header.php');
                         <option value="1" >开启</option>
                     </select>
                 </div>
-                <div class="layui-form-mid layui-word-aux">此处关闭时即使用户组允许也无法使用!</div>
+                <div class="layui-form-mid layui-word-aux">此处为全局开关,用户默认为关闭,需自行开启!</div>
             </div>
             <div class="layui-form-item">
                 <label class="layui-form-label required">链接扩展</label>
@@ -222,6 +222,45 @@ $title='系统设置';require(dirname(__DIR__).'/header.php');
                 </div>
                 <div class="layui-form-mid layui-word-aux">自定义链接的扩展信息(需自行添加字段,目前仅用于自定义过渡页)</div>
             </div>
+            
+            <fieldset class="layui-elem-field layui-field-title" style="margin-top: 30px;"><legend>长度限制</legend></fieldset>
+            <blockquote class="layui-elem-quote layui-text" style="">程序采用UTF8编码,一个汉字约占用3个字节!英文字母和数组占用1个字节!值为0表示不限制!</blockquote>
+            <div class="layui-form-item">
+                <label class="layui-form-label required">分类名称</label>
+                <div class="layui-input-inline">
+                    <input type="number" name="c_name" autocomplete="off" value="0" class="layui-input">
+                </div>
+                <div class="layui-form-mid layui-word-aux">单位:字节。</div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label required">分类描述</label>
+                <div class="layui-input-inline">
+                    <input type="number" name="c_desc" autocomplete="off" value="0" class="layui-input">
+                </div>
+                <div class="layui-form-mid layui-word-aux">单位:字节。</div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label required">链接名称</label>
+                <div class="layui-input-inline">
+                    <input type="number" name="l_name" autocomplete="off" value="0" class="layui-input">
+                </div>
+                <div class="layui-form-mid layui-word-aux">单位:字节。</div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label required">链接地址</label>
+                <div class="layui-input-inline">
+                    <input type="number" name="l_url" autocomplete="off" value="0" class="layui-input">
+                </div>
+                <div class="layui-form-mid layui-word-aux">单位:字节。</div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label required">链接描述</label>
+                <div class="layui-input-inline">
+                    <input type="number" name="l_desc" autocomplete="off" value="0" class="layui-input">
+                </div>
+                <div class="layui-form-mid layui-word-aux">单位:字节。</div>
+            </div>
+            
             <div class="layui-form-item">
                 <div class="layui-input-block"><button class="layui-btn layui-btn-normal" lay-submit lay-filter="save">确认保存</button></div>
             </div>
@@ -238,6 +277,9 @@ layui.use(['jquery','form'], function () {
     
     //表单赋值
     form.val('form', <?php echo json_encode($global_config);?>);
+    form.val('form', <?php echo json_encode(unserialize( get_db("global_config", "v", ["k" => "length_limit"])));?>);
+
+
 
     //监听提交
     form.on('submit(save)', function (data) {

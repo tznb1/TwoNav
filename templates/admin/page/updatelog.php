@@ -5,6 +5,21 @@
     <li class="layui-timeline-item">
         <i class="layui-icon layui-timeline-axis"></i>
         <div class="layui-timeline-content layui-text">
+            <h4 class="layui-timeline-title">v2.0.20-20230520</h4>
+            <ul>
+                <li>[升级] Layui v2.6.8 升级到 v2.8.3</li>
+                <li>[升级] Medoo v2.1.6 升级到 v2.1.8</li>
+                <li>[优化] MySQL数据库: 分类表名称/描述字段类型改为text</li>
+                <li>[优化] MySQL数据库: 链接表名称/URL/描述字段类型改为text</li>
+                <li>[优化] 分类/链接的名称和描述等长度限制可由站长在系统设置中自定义 (默认不限制)</li>
+                <li>[优化] 站长在开启二级域名时检测是否符合开启条件</li>
+                <li>[变更] 概要页专属地址若开启二级域名时URL使用二级域名且不带u=xxx</li>
+            </ul>
+        </div>
+    </li>
+    <li class="layui-timeline-item">
+        <i class="layui-icon layui-timeline-axis"></i>
+        <div class="layui-timeline-content layui-text">
             <h4 class="layui-timeline-title">v2.0.19-20230515</h4>
             <ul>
                 <li>[修复] 链接列表分类筛选不能选择全部 (上个版本造成)</li>

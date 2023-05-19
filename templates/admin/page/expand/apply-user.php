@@ -4,7 +4,7 @@
 	<meta charset="utf-8" />
 	<title>申请收录</title>
 	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-	<link rel='stylesheet' href='<?php echo $libs?>/Layui/v2.6.8/css/layui.css'>
+	<link rel='stylesheet' href='<?php echo $libs?>/Layui/v2.8.3/css/layui.css'>
 	<style>
 	    /*body {*/
 	    /*    background:url(<?php echo $libs;?>/Other/bg.png) 0% 0% / cover no-repeat;*/
@@ -80,7 +80,7 @@
 </div>
 <script src = '<?php echo $libs?>/jquery/jquery-3.6.0.min.js'></script>
 <script src = '<?php echo $libs?>/jquery/jquery.md5.js'></script>
-<script src = '<?php echo $libs?>/Layui/v2.6.8/layui.js'></script>
+<script src = '<?php echo $libs?>/Layui/v2.8.3/layui.js'></script>
 <script>
 layui.use(['form'], function(){
     var form = layui.form;
