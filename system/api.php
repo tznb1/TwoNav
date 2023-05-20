@@ -514,7 +514,9 @@ function write_link(){
             }
             //删除图标(如果是本地图标则同时删除文件)
             if(preg_match("/^\.\/data\/user\/{$u}\/favicon\//",$link['icon']) && is_file($link['icon'])){
-                @unlink($link['icon']);
+                if(!has_db('user_links',['uid'=>UID,'lid[!]'=>$link['lid'],'icon'=>$link['icon'] ])){ //判断是否共用
+                    @unlink($link['icon']);
+                }
             }
             //更新记录
             update_db('user_links',['icon'=>''],['uid'=>UID,'lid'=>$_POST['link_id']],[1,'删除成功']);
@@ -603,7 +605,9 @@ function write_link(){
             
         //如果存在本地图标,则先删除
         if(!empty($link['icon']) && preg_match("/^\.\/data\/user\/{$u}\/favicon\//",$link['icon']) && is_file($link['icon'])){
-            @unlink($link['icon']);
+            if(!has_db('user_links',['uid'=>UID,'lid[!]'=>$link['lid'],'icon'=>$link['icon'] ])){ //判断是否共用
+                @unlink($link['icon']);
+            }
         }
         //删除数据
         delete_db('user_links',['uid'=>UID ,"lid" => intval($_POST['lid'])],[1,'删除成功']);

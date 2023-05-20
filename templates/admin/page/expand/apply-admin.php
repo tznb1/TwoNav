@@ -183,7 +183,7 @@ layui.use(['element','table','layer','form','util','dropdown'], function(){
     
     form.val('conf', <?php echo json_encode($data);?>);
 //表头
-var cols=[[
+var cols=[
       //{type:'checkbox'}, //开启复选框
       {field:'id',title:'ID',width:60,sort:true}
       ,{field:'iconurl',title:'图标',width:60,templet:function(d){
@@ -220,7 +220,14 @@ var cols=[[
           }
       }} 
       ,{title:'操作',toolbar:'#link_operate',width:130}
-    ]]
+    ]
+    //读取列筛选
+    var local = layui.data('table-filter-apply-list'); 
+    layui.each(cols, function(index, item){
+        if(item.field in local){
+            item.hide = local[item.field];
+        }
+    });
 //表渲染
 table.render({
     elem: '#apply_list'
@@ -232,7 +239,7 @@ table.render({
     ,loading:true
     ,toolbar: '#user_tool'
     ,id:'apply_list'
-    ,cols: cols
+    ,cols: [cols]
     ,response: {statusCode: 1 } 
     ,done: function (res, curr, count) {
         var temp_limit = $(".layui-laypage-limits option:selected").val();
@@ -240,6 +247,14 @@ table.render({
             localStorage.setItem(u + "_limit",temp_limit);
         }
         $(".layui-table-tool-self").addClass('layui-hide-xs');//手机端隐藏defaultToolbar
+        //记忆列筛选
+        var that = this;
+        that.elem.next().on('mousedown', 'input[lay-filter="LAY_TABLE_TOOL_COLS"]+', function(){
+            var input = $(this).prev()[0];
+            layui.data('table-filter-apply-list', {
+                key: input.name,value: input.checked
+            });
+        });
     }
 });
 

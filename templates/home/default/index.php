@@ -35,7 +35,6 @@ if ($DescrRowNumber <= 0 ){
 <link rel='stylesheet' href='<?php echo $libs?>/MDUI/v1.0.1/css/mdui.min.css'>
 <link rel='stylesheet' href='<?php echo $libs?>/ContextMenu/2.9.2/jquery.contextMenu.min.css'>
 <link rel="stylesheet" href="<?php echo $libs?>/Font-awesome/4.7.0/css/font-awesome.css">
-<link rel="stylesheet" href="<?php echo $libs?>/Layui/v2.8.3/css/layui-icon.css">
 <link rel="stylesheet" href="<?php echo $theme_dir?>/static/style<?php echo $theme_config['CardNum'];?>.css?v=<?php echo $theme_ver; ?>">
 <link rel="shortcut icon" href="<?php echo $favicon;?>">
 <style>

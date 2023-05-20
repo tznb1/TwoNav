@@ -25,9 +25,9 @@ layui.use(['form','table','dropdown','miniTab'], function () {
         });
     }
 
-    var cols=[[ //表头
+    var cols=[ //表头
       {type:'checkbox'} //开启复选框
-      ,{field: 'lid', title: 'ID', width:80, sort: true,hide:false}
+      ,{field: 'lid', title: 'ID', width:80, sort: true,hide:true}
       ,{field: 'category_name', title: '所属分类',sort:true,width:140,event: 'edit_category',templet:function(d){
           //检查是否存在,避免特殊情况报错
           if (categorys && categorys[d.fid] && categorys[d.fid].font_icon && categorys[d.fid].name) { 
@@ -58,8 +58,15 @@ layui.use(['form','table','dropdown','miniTab'], function () {
       ,{field: 'up_time', title: '修改时间', width:160,sort:true,templet:function(d){
           return d.up_time == null ?'':timestampToTime(d.up_time);
       }}
-    ]];
-    
+    ];
+    //读取列筛选
+    var local = layui.data('table-filter-link-list'); 
+    layui.each(cols, function(index, item){
+        if(item.field in local){
+            item.hide = local[item.field];
+        }
+    });
+
     //渲染表格函数
     var renderTable2 = function () {
         table.render({
@@ -74,7 +81,7 @@ layui.use(['form','table','dropdown','miniTab'], function () {
             //,defaultToolbar:false
             ,toolbar: '#toolbar'
             ,id:'table'
-            ,cols: cols
+            ,cols: [cols]
             ,method: 'post'
             ,response: {statusCode: 1 } 
             ,done: function (res, curr, count) {
@@ -104,6 +111,14 @@ layui.use(['form','table','dropdown','miniTab'], function () {
                             pwds['pid_'+data.data[i].pid] = {'pwd':data.data[i].password,'name':data.data[i].name};
                         }
                     }
+                });
+                //记忆列筛选
+                var that = this;
+                that.elem.next().on('mousedown', 'input[lay-filter="LAY_TABLE_TOOL_COLS"]+', function(){
+                    var input = $(this).prev()[0];
+                    layui.data('table-filter-link-list', {
+                        key: input.name,value: input.checked
+                    });
                 });
             }
         });

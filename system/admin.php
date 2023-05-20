@@ -1,14 +1,10 @@
 <?php if(!defined('DIR')){header('HTTP/1.1 404 Not Found');header("status: 404 Not Found");exit;}AccessControl();
 
-//获取请求参数
-$page = trim($_GET['page']);
-
-//layui版本路径,方便后期切换版本
-$layui['js']  = $libs.'/Layui/v2.8.3/layui.js';$layui['css'] = $libs.'/Layui/v2.8.3/css/layui.css';
-$Ver = !Debug?SysVer:SysVer.'.'.time();
-$LoginConfig = unserialize($USER_DB['LoginConfig']);
-define('offline',$global_config['offline'] == 1);
-define('is_login',is_login());
+$page = trim($_GET['page']); //获取请求参数
+$Ver = !Debug?SysVer:SysVer.'.'.time(); //版本
+$LoginConfig = unserialize($USER_DB['LoginConfig']); //登录配置
+define('offline',$global_config['offline'] == 1); //是否离线模式
+define('is_login',is_login()); //是否已登录
 //未登录,载入登录提示页
 if(!is_login){
     require(DIR.'/templates/admin/page/LoginPrompt.php');
@@ -253,18 +249,18 @@ if(!empty($page)){
 function load_static($type){
     if($type == 'css'){
         echo 
-'<link rel="stylesheet" href="'.$GLOBALS['libs'].'/Layui/v2.8.3/css/layui.css" media="all">
+'<link rel="stylesheet" href="'.$GLOBALS['layui']['css'].'" media="all">
     <link rel="stylesheet" href="./templates/admin/css/public.css?v='.$GLOBALS['Ver'].'" media="all">
 ';
     }elseif($type == 'js'){
         echo 
-'<script src="'.$GLOBALS['libs'].'/Layui/v2.8.3/layui.js" charset="utf-8"></script>
+'<script src="'.$GLOBALS['layui']['js'].'" charset="utf-8"></script>
 <script src="./templates/admin/js/lay-config.js?v='.$GLOBALS['Ver'].'" charset="utf-8"></script>
 <script>layui.config({version:"'.$GLOBALS['Ver'].'"})</script>
 ';
     }elseif($type == 'js.layui'){
         echo 
-'<script src="'.$GLOBALS['libs'].'/Layui/v2.8.3/layui.js" charset="utf-8"></script>
+'<script src="'.$GLOBALS['layui']['js'].'" charset="utf-8"></script>
 <script>layui.config({version:"'.$GLOBALS['Ver'].'"})</script>
 ';
     }

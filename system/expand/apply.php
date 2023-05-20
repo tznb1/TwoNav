@@ -1,6 +1,5 @@
 <?php 
 $apply = $global_config['apply'];
-
 // 如果管理了收录功能则返回404
 if ($apply != 1 ){
     load_tip();

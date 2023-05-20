@@ -92,7 +92,7 @@
     //行点击事件
     table.on('row(table)', function(obj) {
 	    obj.tr.addClass('layui-bg-black').siblings().removeClass('layui-bg-black');
-	    obj.tr.find('i[class="layui-anim layui-icon"]').trigger("click");
+	    obj.tr.find('i[class="layui-anim layui-icon layui-icon-circle"]').trigger("click");
         $("#Tips").text('当前选中: ' + obj.data.name);
     });
     

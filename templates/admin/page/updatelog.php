@@ -5,6 +5,18 @@
     <li class="layui-timeline-item">
         <i class="layui-icon layui-timeline-axis"></i>
         <div class="layui-timeline-content layui-text">
+            <h4 class="layui-timeline-title">v2.0.21-20230521</h4>
+            <ul>
+                <li>[修复] 升级Layui导致的分类/链接排序功能异常</li>
+                <li>[修复] 升级Layui导致的主题设置异常,请更新主题 (影响范围:全新安装≥2.0.20)</li>
+                <li>[优化] 删除链接/图标时若存在本地图标共用的情况则不删除图标</li>
+                <li>[优化] 链接/收录列表,支持记忆筛选列 (浏览器本地储存)</li>
+            </ul>
+        </div>
+    </li>
+    <li class="layui-timeline-item">
+        <i class="layui-icon layui-timeline-axis"></i>
+        <div class="layui-timeline-content layui-text">
             <h4 class="layui-timeline-title">v2.0.20-20230520</h4>
             <ul>
                 <li>[升级] Layui v2.6.8 升级到 v2.8.3</li>

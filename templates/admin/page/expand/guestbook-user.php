@@ -5,7 +5,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
   <title>极简留言板</title>
-  <link rel='stylesheet' href='<?php echo $libs?>/Layui/v2.8.3/css/layui.css'>
+  <link rel='stylesheet' href='<?php echo $layui['css']; ?>'>
   <style>    
     .layui-form-item {
         margin-bottom: 10px;
@@ -66,7 +66,7 @@
 <!-- 内容主题区域END -->
 </div>
 <script src = '<?php echo $libs?>/jquery/jquery-3.6.0.min.js'></script>
-<script src = '<?php echo $libs?>/Layui/v2.8.3/layui.js'></script>
+<script src = '<?php echo $layui['js']; ?>'></script>
 <script>
 layui.use(['form'], function(){
     var form = layui.form;

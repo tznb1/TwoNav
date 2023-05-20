@@ -12,7 +12,7 @@ $tip = $verify_type == 'link_pwd'?'请输入链接密码':'请输入分类密码
     <meta name="apple-mobile-web-app-status-bar-style" content="black">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="format-detection" content="telephone=no">
-    <link rel="stylesheet" href="<?php echo $libs?>/Layui/v2.8.3/css/layui.css">
+    <link rel="stylesheet" href="<?php echo $layui['css']; ?>">
     <link rel="stylesheet" href="<?php echo $libs?>/Other/login.css">
     <!--[if lt IE 9]>
     <script src="<?php echo $libs?>/Other/html5.min.js"></script>
@@ -45,7 +45,7 @@ $tip = $verify_type == 'link_pwd'?'请输入链接密码':'请输入分类密码
      <?php echo $copyright.( !empty($ICP)?'<span class="padding-5">|</span>':'').$ICP; ?>
 </div>
 <script src = "<?php echo $libs?>/jquery/jquery-3.6.0.min.js"></script>
-<script src = "<?php echo $libs?>/Layui/v2.8.3/layui.js"></script>
+<script src = "<?php echo $layui['js']; ?>"></script>
 <script src = '<?php echo $libs?>/jquery/jquery.md5.js'></script>
 <script>
     layui.use(['form','jquery'], function () {
