@@ -70,7 +70,8 @@
                 <div class="layui-input-inline" >
                     <select name="link_icon">
                         <option value="0" selected>离线图标</option>
-                        <!--<option value="1" >本地服务(支持缓存)</option>-->
+                        <option value="20" >本地服务</option>
+                        <option value="21" >本地服务(伪静态)</option>
                         <option value="2" >favicon.png.pub (小图标)</option>
                         <option value="4" >api.15777.cn</option>
                         <option value="5" >favicon.cccyun.cc</option>

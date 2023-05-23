@@ -536,17 +536,19 @@ function ccurl($url,$overtime = 3){
     return $Res;
 }
 
-function downFile($url, $file = '', $savePath = './data/temp/'){
+function downFile($url, $file = '', $savePath = './data/temp/',$referer = '',$TIMEOUT = 60){
     $ch = curl_init();
     curl_setopt($ch, CURLOPT_URL, $url);
-    curl_setopt($ch, CURLOPT_TIMEOUT, 60); //超时/秒
+    curl_setopt($ch, CURLOPT_TIMEOUT, $TIMEOUT); //超时/秒
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1); //不直接输出
     curl_setopt($ch, CURLOPT_HEADER, FALSE);  //不需要response header
     curl_setopt($ch, CURLOPT_NOBODY, FALSE);  //需要response body
     curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
     curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
     curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 1); //允许重定向(适应网盘下载)
-    
+    if(!empty($referer)){
+        curl_setopt($ch, CURLOPT_REFERER, $referer);
+    }
     try{
         $res = curl_exec($ch);
     }finally{

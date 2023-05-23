@@ -110,7 +110,8 @@
                 <button class="layui-btn layui-btn-disabled" lay-submit lay-filter="imp_link">开始导入</button>
             </div>
         </form>
-        
+
+<?php if(!preg_match('/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i',$_SERVER['HTTP_USER_AGENT'])){ ?>
         <fieldset class="layui-elem-field layui-field-title" style="margin-top: 30px;"><legend>一键添加</legend></fieldset> 
         <blockquote class="layui-elem-quote" style="margin-top: 10px;border-left: 5px solid #5FB878; color: #333;">1.按需选择参数 > 将下方蓝色的「一键添加」拖拽到浏览器书签栏(收藏夹)<br />2.点击书签栏中的一键添加,即可将正在浏览的页面快速添加到TwoNav</blockquote>
         <form class="layui-form layui-form-pane" id="one">
@@ -163,6 +164,7 @@
                 <a class="layui-btn layui-btn-primary layui-border-blue" style="cursor:pointer;color: #1e9fff;" title="将此链接拖拽到书签栏" id="one-click-add" href=''>一键添加</a>
             </div>
         </form>
+<?php }?> 
         <!--书签导出-->
         <fieldset class="layui-elem-field layui-field-title" style="margin-top: 30px;"><legend>书签导出</legend></fieldset> 
         <blockquote class="layui-elem-quote" style="margin-top: 30px;">
@@ -226,13 +228,13 @@
                 </blockquote>
                 <div class="layui-form-item">
                     <div class="layui-input-block" style="margin-left: 32px;">
-                        <input type="checkbox" name="TABLE[user_categorys]" title="分类" checked="">
-                        <input type="checkbox" name="TABLE[user_links]" title="链接" checked="">
-                        <input type="checkbox" name="TABLE[user_pwd_group]" title="加密" checked="">
-                        <input type="checkbox" name="TABLE[user_share]" title="分享" checked="">
-                        <input type="checkbox" name="TABLE[user_apply]" title="收录" checked="">
-                        <input type="checkbox" name="FILE[MessageBoard]" title="留言" checked="">
-                        <input type="checkbox" name="FILE[favicon]" title="图标" checked="">
+                        <input type="checkbox" name="TABLE[user_categorys]" title="分类" checked>
+                        <input type="checkbox" name="TABLE[user_links]" title="链接" checked>
+                        <input type="checkbox" name="TABLE[user_pwd_group]" title="加密" checked>
+                        <input type="checkbox" name="TABLE[user_share]" title="分享" checked>
+                        <input type="checkbox" name="TABLE[user_apply]" title="收录" checked>
+                        <input type="checkbox" name="FILE[MessageBoard]" title="留言" checked>
+                        <input type="checkbox" name="FILE[favicon]" title="图标" checked>
                     </div>
                 </div>
                 <div class="layui-form-item">
@@ -386,7 +388,7 @@ layui.use(['layer','element','upload','form','table'], function(){
     
     //数据清空>弹窗
     $('#data_empty').on('click', function(){
-        index = layer.open({type: 1,scrollbar: false,shadeClose: true,title: '数据清空',area : ['500px', '300px'],content: $('.data_empty')});
+        index = layer.open({type: 1,scrollbar: false,shadeClose: true,title: '数据清空',area : ['auto', '300px'],content: $('.data_empty')});
     });
     //数据清空>确定
     form.on('submit(define_data_empty)', function(data){
@@ -465,7 +467,7 @@ layui.use(['layer','element','upload','form','table'], function(){
         ,response: {statusCode: 1 } 
         ,cols: [[
             {width:60, type:'numbers', title: '序号'}
-            ,{field:'name', title:'数据库文件名 / 备注',templet:function(d){
+            ,{field:'name', title:'数据库文件名 / 备注',minWidth:400,templet:function(d){
                 if(d.desc != '' && d.desc != null){
                     return d.name + '&emsp;&emsp;[&nbsp;' + d.desc+'&nbsp;]';
                 }else{
@@ -475,7 +477,7 @@ layui.use(['layer','element','upload','form','table'], function(){
             ,{ width:180, title: '备份时间',templet:function(d){
                 return timestampToTime(d.backup_time);
             }}  
-            ,{field:'size', width:80, title: '大小',templet:function(d){return bytesToSize(d.db_size + d.tar_size);}}
+            ,{field:'size', width:100, title: '大小',templet:function(d){return bytesToSize(d.db_size + d.tar_size);}}
             ,{width:70, title: '分类',templet:function(d){return d.user_categorys.count;}}
             ,{width:80, title: '链接',templet:function(d){return d.user_links.count;}}
             ,{width:160, title:'操作', toolbar: '#tooloption'}

@@ -718,6 +718,11 @@ function other_root(){
         $_POST['Subject'] = 'TwoNav 测试邮件' . time();
         $_POST['Body'] = '<h1>TwoNav 测试邮件</h1>' . date('Y-m-d H:i:s');
         send_email($_POST);
+    }elseif($_GET['type'] == 'write_icon_config'){
+        if($GLOBALS['global_config']['offline'] == '1'){msg(-1,"离线模式无法使用此功能");}
+        if(!is_subscribe('bool')){msg(-1,"未检测到有效授权,无法使用该功能!");}
+        write_global_config('icon_config',$_POST,'图标配置');
+        msg(1,'保存成功');
     }
 }
 

@@ -129,7 +129,7 @@ layui.define(['table', 'jquery', 'form'], function (exports) {
                     for (var j=0;j<checkedData.length;j++) {
                         if(res.data[i][opt.checkedKey] == checkedData[j][opt.checkedKey]){
                             res.data[i].LAY_CHECKED = true;
-                            var index= res.data[i]['LAY_TABLE_INDEX'];
+                            var index= res.data[i]['LAY_INDEX'];
                             var checkbox = $('#'+tableName+'').next().find('tr[data-index=' + index + '] input[type="checkbox"]');
                             checkbox.prop('checked', true).next().addClass('layui-form-checked');
                             var radio  = $('#'+tableName+'').next().find('tr[data-index=' + index + '] input[type="radio"]');

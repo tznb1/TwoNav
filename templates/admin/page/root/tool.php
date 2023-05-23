@@ -28,6 +28,7 @@ require(dirname(__DIR__).'/header.php');
             <button type="button" class="layui-btn" layuimini-content-href="updatelog" data-title="更新日志">更新日志</button>
             <button type="button" class="layui-btn" layuimini-content-href="root/import_data" data-title="导入数据">导入数据</button>
             <button type="button" class="layui-btn" layuimini-content-href="root/mail_set" data-title="邮件配置">邮件配置</button>
+            <button type="button" class="layui-btn" layuimini-content-href="root/icon_set" data-title="图标配置">图标配置</button>
         </div>
         <pre class="layui-code" id="console_log" >
 1.功能都集中在上方的按钮了,需要那个就点击那个!
@@ -96,9 +97,11 @@ layui.use(['layer','form','miniTab'], function () {
         $("#console_log").append(`#伪静态\n`);
         $("#console_log").append(`rewrite ^${pathname}login$ ${pathname}index.php?c=login break;\n`);
         $("#console_log").append(`rewrite ^${pathname}admin$ ${pathname}index.php?c=admin break;\n`);
+        $("#console_log").append(`rewrite ^${pathname}ico/(.+) ${pathname}index.php?c=icon&url=$1 break;\n`);
         $("#console_log").append(`rewrite ^${pathname}([A-Za-z0-9]+)$ ${pathname}index.php?u=$1 break; #HOST/USER\n`);
         $("#console_log").append(`rewrite ^${pathname}(.+)/(click)/([A-Za-z0-9]+)$ ${pathname}index.php?c=$2&id=$3&u=$1 break;\n`);
         $("#console_log").append(`rewrite ^${pathname}(.+)/(click)/(.+) ${pathname}$3 break; #static\n`);
+
     });
     //清理缓存
     $('.CleanCache').on('click', function(){

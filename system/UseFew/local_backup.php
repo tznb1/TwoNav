@@ -330,6 +330,10 @@ if(!defined('DIR')){
             deldir($temp_dir);
             msg(-1,'tar文件效验失败');
         }
+        //检查目录
+        if(!Check_Path(DIR."/data/backup/".U)){
+            msg(-1,'创建backup目录失败,请检查权限');
+        }
         //复制到用户数据
         try {
             $backup_dir = DIR."/data/backup/".U."/";

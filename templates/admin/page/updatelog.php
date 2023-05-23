@@ -5,6 +5,21 @@
     <li class="layui-timeline-item">
         <i class="layui-icon layui-timeline-axis"></i>
         <div class="layui-timeline-content layui-text">
+            <h4 class="layui-timeline-title">v2.0.22-20230523</h4>
+            <ul>
+                <li>[升级] 更新数据库,增加图标缓存记录/用户组权限列表增加图标拉取</li>
+                <li>[新增] 本地获取链接图标功能,功能在网站管理>站长工具>图标配置,开启并设置参数 [ 需授权 ]</li>
+                <li>[新增] 链接列表新增图标拉取,用于下载链接图标到本地储存 [ 需授权 ]</li>
+                <li>[修复] v2.0.21 安装页面异常导致无法安装的问题</li>
+                <li>[修复] 本地备份在未使用过备份时导入,因未自动创建目录造成导入失败</li>
+                <li>[修复] 升级layui导致的链接检测无法标记异常数据/扩展字段无法保存/用户组权限/书签分享等异常</li>
+                <li>[优化] 导出导入页面自适应能力,移动端访问时不显示一键添加(因为不支持)</li>
+            </ul>
+        </div>
+    </li>
+    <li class="layui-timeline-item">
+        <i class="layui-icon layui-timeline-axis"></i>
+        <div class="layui-timeline-content layui-text">
             <h4 class="layui-timeline-title">v2.0.21-20230521</h4>
             <ul>
                 <li>[修复] 升级Layui导致的分类/链接排序功能异常</li>

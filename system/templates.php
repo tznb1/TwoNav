@@ -48,8 +48,10 @@ if(empty($c) || in_array($c,['index','click'])){
         }
         if ($site['link_icon'] == 'default'){
             return($GLOBALS['libs'].'/Other/default.ico');
-        }elseif ($icon ==1){
-            return('./favicon/index2.php?url='.$link['real_url']);
+        }elseif ($icon ==20){
+            return('./index.php?c=icon&url='.base64_encode($link['real_url']));
+        }elseif ($icon ==21){
+            return('./ico/'.base64_encode($link['real_url']));
         }elseif($icon ==2){
             return('//favicon.png.pub/v1/'.base64($link['real_url']));
         }elseif($icon ==4){

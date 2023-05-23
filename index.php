@@ -40,7 +40,7 @@ define('libs',$global_config['Libs']);
 define('SysVer',Get_Version());
 define('Debug',$global_config['Debug'] == 1);
 
-if($c != $global_config["Register"]){
+if(!in_array($c,[$global_config["Register"],'ico','icon'])){
     $u = Get('u');
     if(empty($u) && $global_config['Sub_domain'] == 1 && is_subscribe('bool')){
         $cut = explode('.',$_SERVER["HTTP_HOST"]);
@@ -72,7 +72,7 @@ if(empty($c) || $c == 'index'){
     require "./system/Register.php";//注册
 }elseif($c == $global_config['Login']  || $c == $USER_DB['Login']){
     require "./system/login.php";//登陆
-}elseif(in_array($c,['admin','click','api','ico','verify'])){
+}elseif(in_array($c,['admin','click','api','ico','icon','verify'])){
     require "./system/{$c}.php";
 }elseif(in_array($c,['apply','guestbook'])){
     if($global_config['Maintenance'] != 0){Amsg(-1,'网站正在进行维护,请稍后再试!');}

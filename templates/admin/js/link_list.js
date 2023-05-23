@@ -201,7 +201,8 @@ layui.use(['form','table','dropdown','miniTab'], function () {
                 var current = 0 ,fail = 0 ,INDEX = 0;
                 var testapi = get_api('other_testing_link');
                 var div = "div[lay-id='table'] .layui-table-main table tbody tr";
-                layer.load(2, {shade: [0.1,'#fff']});//加载层
+                layer.load(1, {shade: [0.5,'#fff']});//加载层
+                layer.msg('正在检测死链接中,请稍后...', {icon: 16,time: 1000*300});
                 $("#testing_tip").show();//显示进度提示
                 layer.close(open_index); //关闭小窗口
                 layer.tips("正在检测中,请勿操作页面...","#testing_tip",{tips: [3, "#3595CC"],time: 9000});
@@ -210,7 +211,7 @@ layui.use(['form','table','dropdown','miniTab'], function () {
                     //未勾选的跳过
                     if(trs[i].LAY_CHECKED != true){continue;}
                     $.post(testapi,{url:trs[i].url},function(re,status){
-                        INDEX = trs[i].LAY_TABLE_INDEX; //行索引
+                        INDEX = trs[i].LAY_INDEX; //行索引
                         if(re.StatusCode == 200 || re.StatusCode == 301 ||  re.StatusCode == 302  ){
                             $("div[lay-id='table'] td .layui-form-checkbox").eq(INDEX).click();//正常的取消勾选
                             if (re.StatusCode  == 200){
@@ -249,27 +250,39 @@ layui.use(['form','table','dropdown','miniTab'], function () {
             }
           })
         }else if(event === 'icon_pull'){
-            let i = 0;
-            let total = checkStatus.data.length;
-            layer.load(1, {shade:[0.3,'#fff']});//加载层
-            let msg_id = layer.msg('正在拉取中', {icon: 16,time: 1000*300});
-            icon_pull(i);
-            function icon_pull(id){
-                if(i >= total){
-                    layer.closeAll();
-                    layer.alert('拉取完毕',{icon:1,title:'信息',anim: 2,shadeClose: false,closeBtn: 0});
-                    return true;
-                }
-                $("#layui-layer"+ msg_id+" .layui-layer-padding").html('<i class="layui-layer-ico layui-layer-ico16"></i>[ ' + i + ' / ' + total + ' ] 正在拉取图标');
-                $.post(get_api('write_link','icon_pull'),{id:checkStatus.data[i].lid},function(data,status){
-                    if(data.code == 1){
+            layer.alert('存在链接图标时如何处理 ?', {icon: 3, title:'请选择',btn: ['保持原样', '重新拉取', '取消'],
+              btnAlign: 'c', 
+              btn1: function(){icon_pull_test('0')}, //跳过
+              btn2: function(){icon_pull_test('1')} //覆盖
+            });
+            function icon_pull_test(cover){
+                let i = 0;
+                let success = 0;
+                let skip = 0;
+                let fail = 0;
+                let total = checkStatus.data.length;
+                layer.load(1, {shade:[0.5,'#fff']});//加载层
+                let msg_id = layer.msg('正在拉取中', {icon: 16,time: 1000*300});
+                icon_pull(i);
+                function icon_pull(id){
+                    if(i >= total){
+                        layer.closeAll();
+                        layer.alert('总计:' + total +',成功:' + success + ',失败:'+ fail + (skip > 0 ? (',跳过:' + skip):'' ),{icon:1,title:'信息',anim: 2,shadeClose: false,closeBtn: 0});
+                        return true;
+                    }
+                    $("#layui-layer"+ msg_id+" .layui-layer-padding").html('<i class="layui-layer-face layui-icon layui-icon layui-icon-loading layui-anim layui-anim-rotate layui-anim-loop"></i>[ ' + i + ' / ' + total + ' ]     正在拉取图标');
+                    $.post(get_api('write_link','icon_pull'),{id:checkStatus.data[i].lid,cover:cover},function(data,status){
+                        if(data.msg == 'success'){
+                            success ++;
+                        }else if(data.msg == 'fail'){
+                            fail ++;
+                        }else if(data.msg == 'skip'){
+                            skip ++;
+                        }
                         i ++;
                         icon_pull(i);
-                    } else{
-                        layer.closeAll();
-                        layer.alert(data.msg,{icon:5,title:'信息',anim: 2,shadeClose: false,closeBtn: 0});
-                    }
-                });
+                    });
+                }
             }
         }else if(event === 'link_extend'){
             extend_data = '';
@@ -468,7 +481,7 @@ layui.use(['form','table','dropdown','miniTab'], function () {
         var tableBak = table.cache.link_extend_list; 
         for (var i = 0; i < tableBak.length; i++) {
             //过滤掉被删除的空数据
-            if(typeof tableBak[i].LAY_TABLE_INDEX == 'number'){
+            if(typeof tableBak[i].LAY_INDEX == 'number'){
                 data.push(tableBak[i]);
             }
         }

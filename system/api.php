@@ -674,40 +674,40 @@ function write_link(){
         if(empty($fid)){msg(-1,'分类ID错误');}
         //加一个查找分类是否存在
         update_db('user_links',['fid'=>$fid],['uid'=>UID ,"lid" => json_decode($_POST['lid']) ],[1,'设置成功']);
-    //图标拉取(不完善,未开放使用)
+    //图标拉取
     }elseif($_GET['type'] === 'icon_pull'){
-        $link = get_db('user_links','url',['uid'=>UID,'lid'=>$_POST['id']]);
+        if($global_config['offline']){
+            msg(-1,"离线模式禁止下载主题!");
+        } 
+        if(!is_subscribe('bool')){
+            msg(-1,"未检测到有效授权,无法使用该功能!");
+        }
+        if(!check_purview('icon_pull',1)){
+            msg(-1,'无权限');
+        }
+        $link = get_db('user_links','*',['uid'=>UID,'lid'=>$_POST['id']]);
         if(empty($link)){
             msg(-1,'请求的链接id不存在');
         }
-        $s_site = unserialize(get_db("user_config","v",["k"=>"s_site","uid"=>UID]));
-        if(empty($s_site['link_icon']) || $s_site['link_icon'] == 0){
-            msg(-1,'站点设置链接图标不能是离线图标!请先修改配置!');
+        if(empty($_POST['cover']) && !empty($link['icon'])){
+            msg(1,'skip');//跳过存在图标的链接
         }
-        $icon = $s_site['link_icon'];
-        if($icon ==2){
-            function base64($url){
-                $urls = parse_url($url);
-                $scheme = empty( $urls['scheme'] ) ? 'http://' : $urls['scheme'].'://'; //获取请求协议
-                $host = $urls['host']; //获取主机名
-                $port = empty( $urls['port'] ) ? '' : ':'.$urls['port']; //获取端口
-                $new_url = $scheme.$host.$port;
-                return base64_encode($new_url);
-            }
-            $api = 'https://favicon.rss.ink/v1/'.base64($link);
-        }elseif($icon ==4){
-            $api = 'https://api.15777.cn/get.php?url='.$link;
-        }elseif($icon ==5){
-            $api = 'https://favicon.cccyun.cc/'.$link;
-        }elseif($icon ==6){
-            $api = 'https://api.iowen.cn/favicon/'.parse_url($link)['host'].'.png';
-        }elseif($icon ==7){
-            $api = 'https://toolb.cn/favicon/'.parse_url($link)['host'];
+        $path = DIR ."/data/user/".U."/favicon";
+        if(!Check_Path($path)){
+            msg(-1,'创建目录失败,请检查权限');
         }
-        if(downFile($api,$_POST['id'].'.ico',DIR ."/data/user/".U."/favicon/")){
-            update_db('user_links',['icon'=>"./data/user/".U.'/favicon/'.$_POST['id'].'.ico'],['uid'=>UID ,"lid" => $_POST['id'] ],[1,'获取成功']);
+        $api = Get_Index_URL().'?c=icon&url='.base64_encode($link['url']);
+        $res = ccurl($api);
+        $data = get_db('global_icon','*',['url_md5'=>md5($link['url'])]);
+        if(empty($data)){
+            msg(-1,'fail');
         }
-        msg(-1,'获取失败');
+        $new_path = "./data/user/".U.'/favicon/'.$data['file_name'];
+        if(copy("./data/icon/{$data['file_name']}",$new_path)){
+            update_db('user_links',['icon'=>$new_path],['uid'=>UID ,"lid" => $_POST['id'] ],[1,'success']);
+        }
+        
+        msg(-1,'fail');
 
     }elseif($_GET['type'] == 'extend_list'){
         if($GLOBALS['global_config']['link_extend'] != 1 ||!check_purview('link_extend',1)){
@@ -952,7 +952,7 @@ function write_site_setting(){
         'description'=>['empty'=>true],
         'link_model'=>['v'=>['direct','Privacy','Privacy_js','Privacy_meta','301','302','Transition'],'msg'=>'链接模式参数错误'],
         'main_link_priority'=>['int'=>true,'min'=>0,'max'=>3,'msg'=>'主链优先参数错误'],
-        'link_icon'=>['int'=>true,'min'=>0,'max'=>10,'msg'=>'链接图标参数错误'],
+        'link_icon'=>['int'=>true,'min'=>0,'max'=>30,'msg'=>'链接图标参数错误'],
         'site_icon'=>['empty'=>true],
         'top_link'=>['int'=>true,'min'=>0,'max'=>20,'msg'=>'热门链接参数错误'],
         'new_link'=>['int'=>true,'min'=>0,'max'=>20,'msg'=>'最新链接参数错误'],
