@@ -74,8 +74,10 @@
 <?php }?> 
 <?php if($global_config['offline']  != 1 ){ ?> 
         <button class="layui-btn layui-btn-sm layui-btn-normal layui-btn-danger layui-hide-xs" lay-event="testing" id="testing">检测</button>
-        <button class="layui-btn layui-btn-sm layui-btn-normal layui-btn-danger layui-hide-xs" lay-event="icon_pull" id="icon_pull">图标拉取</button>
 <?php }?> 
+<?php if($global_config['offline']  != 1 && check_purview('icon_pull',1)){ ?> 
+        <button class="layui-btn layui-btn-sm layui-btn-normal layui-btn-danger layui-hide-xs" lay-event="icon_pull" id="icon_pull">图标拉取</button>
+<?php }?>
         <button class="layui-btn layui-btn-sm layui-btn-normal layui-btn-danger" layuimini-content-href="link_sort" data-title="链接排序">排序模式</button>
     </div>
 </script>

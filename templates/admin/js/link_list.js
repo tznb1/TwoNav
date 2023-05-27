@@ -278,6 +278,10 @@ layui.use(['form','table','dropdown','miniTab'], function () {
                             fail ++;
                         }else if(data.msg == 'skip'){
                             skip ++;
+                        }else{
+                            layer.closeAll();
+                            layer.alert(data.msg,{icon:2,title:'信息',anim: 2,shadeClose: false,closeBtn: 0});
+                            return true;
                         }
                         i ++;
                         icon_pull(i);

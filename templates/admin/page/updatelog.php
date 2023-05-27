@@ -5,6 +5,18 @@
     <li class="layui-timeline-item">
         <i class="layui-icon layui-timeline-axis"></i>
         <div class="layui-timeline-content layui-text">
+            <h4 class="layui-timeline-title">v2.0.23-20230527</h4>
+            <ul>
+                <li>[优化] 本地获取链接图标的成功率</li>
+                <li>[优化] 链接列表图标拉取时检测是否符合拉取条件并提醒用户/无权限时不显示按钮</li>
+                <li>[优化] 收录管理设置允许用户自定义提交限制</li>
+                <li>[修复] 收录管理设为无需审核时无法自动通过</li>
+            </ul>
+        </div>
+    </li>
+    <li class="layui-timeline-item">
+        <i class="layui-icon layui-timeline-axis"></i>
+        <div class="layui-timeline-content layui-text">
             <h4 class="layui-timeline-title">v2.0.22-20230523</h4>
             <ul>
                 <li>[升级] 更新数据库,增加图标缓存记录/用户组权限列表增加图标拉取</li>

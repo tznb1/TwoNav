@@ -43,13 +43,21 @@ $title='收录管理';$awesome=true; require dirname(__DIR__).'/header.php';
             <textarea name = "Notice" placeholder="显示在收录页的公告使用HTML代码编写(如有拦截提示,请暂时关闭防XSS脚本和防SQL注入)" rows = "5" class="layui-textarea"></textarea>
             </div>
         </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">提交限制</label>
+            <div class="layui-input-inline" style="    width: 71px;">
+                <input type="number" name="submit_limit" lay-verify="required" placeholder='单位:秒' value="10" autocomplete="off" class="layui-input">
+            </div>
+            <div class="layui-form-mid layui-word-aux">单位:次,指最近24小时内可以提交多少次(为了防止恶意提交,删除记录可以恢复次数)</div>
+        </div>
+            
         <div class="layui-form-item layui-form-text">
             <label class="layui-form-label">使用说明</label>
             <div class="layui-form-mid ">部分主题没有收录入口,请自行添加到链接或者底部等你认为合适的地方!前往<a style="color:#3c78d8" target="_blank" href="./index.php?c=apply&u=<?php echo $u?>" target="_blank">申请收录</a></div>
         </div>
         <div class="layui-form-item layui-form-text">
             <label class="layui-form-label">安全限制</label>
-            <div class="layui-form-mid ">1.禁止含有特殊字符<'&">等 &nbsp;  2.SQL和XSS相关的敏感词  &nbsp; 3.限制超过256个字符 <br /> 4.提交限频:IP/24小时/5次 (删除记录可恢复)</div>
+            <div class="layui-form-mid ">1.禁止含有特殊字符<'&">等 &nbsp;  2.SQL和XSS相关的敏感词  &nbsp; 3.限制超过256个字符</div>
         </div>
         <div class="layui-form-item">
             <div class="layui-input-block">
@@ -340,7 +348,7 @@ table.on('toolbar(apply_list)', function(obj){
     var data = checkStatus.data;
     switch(obj.event){
         case 'conf':
-            if(document.body.clientWidth < 768){area = ['100%' , '100%'];}else{area = ['768px' , '450px'];}
+            if(document.body.clientWidth < 768){area = ['100%' , '100%'];}else{area = ['768px' , '500px'];}
             layer.open({
                 type: 1,
                 scrollbar: false,

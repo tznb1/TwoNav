@@ -63,7 +63,7 @@ layui.use(['layer','miniTab'], function(){
                     }else{
                         i++;
                     }
-                    $("#layui-layer"+ msg_id+" .layui-layer-padding").html('<i class="layui-layer-ico layui-layer-ico16"></i>[ ' + i + ' / ' + up_info.info.length + ' ] ' + up_info.info[i-1]);
+                    $("#layui-layer"+ msg_id+" .layui-layer-padding").html('<i class="layui-layer-face layui-icon layui-icon layui-icon-loading layui-anim layui-anim-rotate layui-anim-loop"></i>[ ' + i + ' / ' + up_info.info.length + ' ] ' + up_info.info[i-1]);
                     
                     $.post(get_api("other_upsys"),{"i":i}, function(data, status) {
                         if (data.code == 1) { 

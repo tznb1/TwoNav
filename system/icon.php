@@ -82,9 +82,9 @@ $favicon_url = url_patch($favicon_url,$url);
 
 //if 如果图标类型是base64或者svg则不需要下载
 
-
 //匹配图标类型>下载>输出
 $suffix = strtolower(end(explode('.',$favicon_url)));
+$suffix = strtolower(reset(explode('?',$suffix)));
 $suffix = preg_match('/^(jpg|jpeg|png|ico|bmp|svg|webp)$/i',$suffix) ? $suffix : 'ico';
 
 //下载图标 > 成功则输出
@@ -184,6 +184,7 @@ function get_html($url,$TIMEOUT = 5){
 
 function down_ico($ico_url,  $savePath = './data/temp/',$referer = '',$TIMEOUT = 60){
     $suffix = strtolower(end(explode('.',$ico_url)));
+    $suffix = strtolower(reset(explode('?',$suffix))); //截取?前面的
     if(!preg_match('/^(jpg|jpeg|png|ico|bmp|svg|webp)$/i',$suffix)){
         $suffix = 'ico'; //没匹配到后缀名则默认为ico
     }

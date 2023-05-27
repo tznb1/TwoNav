@@ -677,7 +677,7 @@ function write_link(){
     //图标拉取
     }elseif($_GET['type'] === 'icon_pull'){
         if($global_config['offline']){
-            msg(-1,"离线模式禁止下载主题!");
+            msg(-1,"离线模式不可用");
         } 
         if(!is_subscribe('bool')){
             msg(-1,"未检测到有效授权,无法使用该功能!");
@@ -689,25 +689,32 @@ function write_link(){
         if(empty($link)){
             msg(-1,'请求的链接id不存在');
         }
-        if(empty($_POST['cover']) && !empty($link['icon'])){
-            msg(1,'skip');//跳过存在图标的链接
-        }
         $path = DIR ."/data/user/".U."/favicon";
         if(!Check_Path($path)){
             msg(-1,'创建目录失败,请检查权限');
         }
+        //检查配置
+        $config = unserialize( get_db("global_config", "v", ["k" => "icon_config"])) ?? [];
+        if($config['o_switch'] == '0'){
+            msg(-1,'相关服务处于关闭状态,请联系站长开启');
+        }
+        
+        //跳过存在图标的链接
+        if(empty($_POST['cover']) && !empty($link['icon'])){
+            msg(1,'skip');
+        }
+
         $api = Get_Index_URL().'?c=icon&url='.base64_encode($link['url']);
         $res = ccurl($api);
         $data = get_db('global_icon','*',['url_md5'=>md5($link['url'])]);
         if(empty($data)){
-            msg(-1,'fail');
+            msg(1,'fail');
         }
         $new_path = "./data/user/".U.'/favicon/'.$data['file_name'];
         if(copy("./data/icon/{$data['file_name']}",$new_path)){
             update_db('user_links',['icon'=>$new_path],['uid'=>UID ,"lid" => $_POST['id'] ],[1,'success']);
         }
-        
-        msg(-1,'fail');
+        msg(1,'fail');
 
     }elseif($_GET['type'] == 'extend_list'){
         if($GLOBALS['global_config']['link_extend'] != 1 ||!check_purview('link_extend',1)){
@@ -813,11 +820,15 @@ function write_apply(){
     if($_GET['type'] == 'set'){
         $s['apply']   = intval($_POST['apply']);   // 功能选项0.关闭 1.需要审核  2.无需审核
         $s['Notice']  = $_POST['Notice']??'';  // 公告
+        $s['submit_limit'] = intval($_POST['submit_limit']); //提交限制
         if($s['apply'] < 0 || $s['apply'] > 2 ){ 
-            msg(-1102,'参数错误!');
+            msg(-1,'参数错误!');
         }elseif(strlen($s['Notice']) > 512){
-            msg(-1102,'公告长度超限!');
+            msg(-1,'公告长度超限!');
+        }if(empty($_POST['submit_limit']) || !preg_match("/^\d*$/",$_POST['submit_limit'])){
+            msg(-1,'提交限制必须为正整数!');
         }
+        
         write_user_config('apply',$s,'config','收录配置');
         msg(1,'保存成功');
     }elseif($_GET['type'] == '2'){ //通过
@@ -846,6 +857,7 @@ function write_apply(){
             'url'           =>  $link['url'],
             'description'   =>  $link['description'],
             'add_time'      =>  time(),
+            'up_time'       =>  time(),
             'icon'          =>  $link['iconurl']
             ];
         insert_db('user_links',$data);//插入链接

@@ -84,7 +84,7 @@ if(isset($url_data['id'])){
 
 // 统计IP 24小时内提交的数量!,超限则拦截!
 $count = count_db("user_apply", ["uid"=>UID , "ip" => $user_ip ,"time[>]" => time() - 60*60*24]);
-if ($count >= 5){
+if ($count >= $apply['submit_limit'] ?? 5){
     msg(-1,'您提交的申请数量已达到上限!请明天再试!');
 }
 
@@ -112,13 +112,16 @@ if($apply['apply'] == 1){
     if(!empty(get_db("user_links","*",["url"=> $url,'uid'=>UID ]))){
         msg(-1,'URL已经存在！'); //存在于链接列表中!
     }
+    $lid = get_maxid('link_id');
     $url_data = [
+        'lid'           =>  $lid,
         'uid'           =>  UID,
         'fid'           =>  $category_id,
         'title'         =>  $title,
         'url'           =>  $url,
         'description'   =>  $description,
         'add_time'      =>  time(),
+        'up_time'       =>  time(),
         'weight'        =>  0,
         'property'      =>  0,
         'icon'       =>  $iconurl
