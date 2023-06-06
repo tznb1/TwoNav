@@ -37,6 +37,8 @@ CREATE TABLE IF NOT EXISTS "updatadb_logs" (
 );
 INSERT INTO "updatadb_logs" ("file_name", "update_time", "status", "extra") VALUES ('20230417.php', '1681719049', 'TRUE', '');
 INSERT INTO "updatadb_logs" ("file_name", "update_time", "status", "extra") VALUES ('20230420.php', '1681977368', 'TRUE', '');
+INSERT INTO "updatadb_logs" ("file_name", "update_time", "status", "extra") VALUES ('20230522.php', '1684762253', 'TRUE', '');
+INSERT INTO "updatadb_logs" ("file_name", "update_time", "status", "extra") VALUES ('20230605.php', '1685960298', 'TRUE', '');
 
 -- 创建用户表
 CREATE TABLE IF NOT EXISTS "global_user" (
@@ -48,7 +50,7 @@ CREATE TABLE IF NOT EXISTS "global_user" (
   "Email" TEXT(32) NOT NULL,
   "SecretKey" TEXT(32) NOT NULL DEFAULT "",
   "Token" TEXT(32) NOT NULL DEFAULT "",
-  "RegIP" TEXT(15) NOT NULL,
+  "RegIP" TEXT(64) NOT NULL DEFAULT "",
   "RegTime" integer(10) NOT NULL,
   "Login" TEXT(16) NOT NULL,
   "LoginConfig" TEXT NOT NULL,
@@ -107,8 +109,8 @@ CREATE TABLE IF NOT EXISTS "user_login_info" (
   "id" integer NOT NULL PRIMARY KEY AUTOINCREMENT,
   "uid" integer(10) NOT NULL,
   "user" TEXT(32) NOT NULL,
-  "ip" TEXT(15) NOT NULL,
-  "ua" TEXT(256) NOT NULL,
+  "ip" TEXT(64) NOT NULL,
+  "ua" TEXT NOT NULL,
   "login_time" integer(10) NOT NULL,
   "last_time" integer(10) NOT NULL,
   "expire_time" integer(10) NOT NULL,
@@ -120,11 +122,11 @@ CREATE TABLE IF NOT EXISTS "user_log" (
   "id" integer NOT NULL PRIMARY KEY AUTOINCREMENT,
   "uid" integer(10) NOT NULL,
   "user" TEXT(32) NOT NULL,
-  "ip" TEXT(15) NOT NULL,
+  "ip" TEXT(64) NOT NULL,
   "time" TEXT(13) NOT NULL,
   "type" TEXT(16) NOT NULL,
   "content" TEXT NOT NULL,
-  "description" TEXT(128) NOT NULL
+  "description" TEXT NOT NULL
 );
 
 -- 用户组
@@ -163,7 +165,8 @@ INSERT INTO `purview_list` (`code`, `name`, `description`) VALUES
 ('guestbook', '留言板', '允许使用留言板功能'),
 ('link_extend', '链接扩展', '允许使用链接扩展字段'),
 ('theme_in', '主题设置', '后台显示主题设置菜单'),
-('theme_set', '主题配置', '允许自定义主题配置');
+('theme_set', '主题配置', '允许自定义主题配置'),
+('icon_pull', '图标拉取', '允许用户拉取链接图标');
 
 -- 注册码列表
 CREATE TABLE IF NOT EXISTS "regcode_list" (
@@ -197,8 +200,8 @@ CREATE TABLE IF NOT EXISTS "user_apply" (
   "title" TEXT(512) DEFAULT "",
   "url" TEXT(512) DEFAULT "",
   "email" TEXT(128) DEFAULT "",
-  "ip" TEXT(16) DEFAULT "",
-  "ua" TEXT(512) DEFAULT "",
+  "ip" TEXT(64) DEFAULT "",
+  "ua" TEXT DEFAULT "",
   "time" integer DEFAULT "0",
   "state" integer DEFAULT "0",
   "category_id" INTEGER DEFAULT "0",
@@ -217,7 +220,7 @@ CREATE TABLE IF NOT EXISTS "user_share" (
   "up_time" integer(13) DEFAULT "0",
   "expire_time" integer(13) DEFAULT "0",
   "views" integer(13) DEFAULT "0",
-  "description" TEXT(13) DEFAULT "",
+  "description" TEXT DEFAULT "",
   "type" integer(1) NOT NULL,
   "data" TEXT,
   "pv" integer(1) DEFAULT "0"

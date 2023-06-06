@@ -72,7 +72,8 @@ function theme_download(dir,name,desc,fn){
             layer.msg(data.msg, {icon: 1});
             setTimeout(() => {location.reload();}, 500);//延迟刷新
         }else{
-            layer.msg(data.msg, {icon: 5});
+            //layer.msg(data.msg, {icon: 5});
+            layer.alert(data.msg,{icon:5,title:"错误",anim: "slideDown",shadeClose: true,closeBtn: 0,btn: ['知道了']});
         }
     });
 }

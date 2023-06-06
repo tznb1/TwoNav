@@ -258,7 +258,7 @@ require 'header.php';
 <?php if($USER_DB['UserGroup'] == 'root'){ ?>
                             <tr>
                                 <td>最新版本</td>
-                                <td id="new_ver"><?php echo $data['version'] ?? SysVer; ?></td>
+                                <td id="new_ver"><a target="_blank" href="https://gitee.com/tznb/TwoNav/releases"><?php echo $data['version'] ?? SysVer; ?></a> </td>
                             </tr>
                             <tr>
                                 <td>授权状态</td>
@@ -273,7 +273,7 @@ require 'header.php';
                             </tr>
                             <tr>
                                 <td>技术支持</td>
-                                <td><a target="_blank"  href="tencent://message/?uin=271152681">QQ：271152681</a></td>
+                                <td><a target="_blank" href="tencent://message/?uin=271152681">QQ：271152681</a></td>
                             </tr>
                             <tr>
                                 <td>专属地址</td>

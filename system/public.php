@@ -335,21 +335,38 @@ function Get_ExpireTime($day =30){
 }
 //验证登录
 function is_login(){
-    global $USER_DB,$db;
+    global $USER_DB;
     $time = time();
     $LoginConfig = unserialize($USER_DB['LoginConfig']);
     
-    //清理间隔30分钟(1800秒)
-    if( ($USER_DB['kct'] + 1800) < $time ){
-        $lt = $time - ($LoginConfig['KeyClear'] * 24 * 60 * 60);
-        $where =  ["AND" => 
-            [
-              "uid" => $USER_DB['ID'],
-		      "OR" => ["expire_time[<]" => $time,"last_time[<]" => $lt]
-	        ]
-        ];
+    function delete_expired_info($time,$LoginConfig){
+        global $USER_DB;
+        if(empty($LoginConfig['Session'])){
+            $where = [ 
+                "uid" => $USER_DB['ID'],
+                //"expire_time" => 0,
+                "OR" => [
+                    "last_time[<]" => strtotime('-1 day'),
+                    "login_time[<]" => strtotime('-15 day')
+                ]
+            ];
+        }else{
+            $where = [ 
+                "uid" => $USER_DB['ID'],
+                "OR" => [
+                    "expire_time[<]" => $time,
+                    "last_time[<]" => strtotime("-{$LoginConfig['KeyClear']} day")
+                ]
+            ];
+        }
+        //var_dump(select_db('user_login_info','*',$where),$where);exit;
         delete_db("user_login_info", $where); //清理到期Key
         update_db("global_user",["kct"=>$time],["User" => $USER_DB['User']]); //记录清理时间
+    }
+    
+    //清理间隔30分钟(1800秒)
+    if( ($USER_DB['kct'] + 1800) < $time ){
+        delete_expired_info($time,$LoginConfig);
     }
     
     //查询登录信息
@@ -359,26 +376,22 @@ function is_login(){
     //没找到返回未登录
     if(empty($info)){return false;}
     
-
-    
     //UA验证
     if($LoginConfig['KeySecurity'] > 0 && $_SERVER['HTTP_USER_AGENT'] != $info['ua']){return false;}
     //IP验证
     if($LoginConfig['KeySecurity'] > 1 && Get_IP() != $info['ip']){return false;}
     
-    //到期验证(同时重新计算)
-    if( $info['expire_time'] != 0 && ($time > $info['expire_time'] || $time > ($info['login_time'] + ($LoginConfig['Session'] * 24 * 60 * 60) )  )){
-        delete_db("user_login_info", $where);
-        return false;
-    }
-    //会话Key验证(没有到期时间时如果距上次访问时间大于24小时认为无效)
-    if($info['expire_time'] == 0 &&  ($info['last_time'] + 86400) < $time){
-        delete_db("user_login_info", $where);
-        return false;
-    }//有到期时间,且开启了Key清理
-    elseif($LoginConfig['KeyClear'] != 0 && ($info['last_time'] + ($LoginConfig['KeyClear'] * 24 * 60 * 60)) < $time ){
-        delete_db("user_login_info", $where);
-        return false;
+    //根据登录保持选项来判断key是否有效
+    if(empty($LoginConfig['Session'])){ //浏览器关闭时
+        if($info['last_time'] < strtotime('-1 day') || $info['login_time'] < strtotime('-15 day')){ //上次访问超过1天 或 登录时间超过15天
+            delete_expired_info($time,$LoginConfig);
+            return false;
+        }
+    }else{ //保持天数(已到期或上次访问时间超时)
+        if($info['expire_time'] < $time || $info['last_time'] < strtotime("-{$LoginConfig['KeyClear']} day")){ 
+            delete_expired_info($time,$LoginConfig);
+            return false;
+        }
     }
     
     //Key验证

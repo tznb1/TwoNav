@@ -31,7 +31,7 @@ if(!isset($User)){
 }elseif($c != $global_config["Login"] && $c != $USER_DB['Login'] ){
     update_db("user_log", ["description" => "请求登录>登录入口错误"], ["id"=>$log_id]);
     msg(-1,"登录入口错误");
-}elseif(strlen($_SERVER['HTTP_USER_AGENT'])>256){
+}elseif(strlen($_SERVER['HTTP_USER_AGENT'])>1024){
     update_db("user_log", ["description" => "请求登录>浏览器UA长度异常"], ["id"=>$log_id]);
     msg(-1,"浏览器UA长度异常,请更换浏览器!");
 }

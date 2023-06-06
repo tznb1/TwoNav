@@ -766,7 +766,7 @@ function write_security_setting(){
     global $USER_DB;
     if($USER_DB['Password'] !== Get_MD5_Password($_POST['Password'],$USER_DB['RegTime'])){
         msg(-1,'密码错误,请核对后再试！');
-    }elseif( $_POST['KeyClear'] > $_POST['Session']){
+    }elseif( intval($_POST['Session']) > 0 && intval($_POST['KeyClear']) > intval($_POST['Session'])){
         msg(-1,'Key清理时间不能大于登录保持时间');
     }
     
@@ -1137,6 +1137,9 @@ function write_theme(){
         }else{
             msg(-1,"获取程序版本异常");
         }
+        if(!is_writable('./templates')){
+            msg(-1,"检测到模板目录不可写<br />请检查templates目录权限<br />宝塔面板请注意所有者为www<br />其他疑问请联系技术支持");
+        }
         //从数据库查找主题信息
         $template = get_db('global_config','v',['k'=> 'theme_'.$fn.'_cache']);
         if(empty($template)){
@@ -1156,7 +1159,10 @@ function write_theme(){
         }
         
         //下载主题包
-        if (!is_dir('./data/temp')) mkdir('./data/temp',0755,true) or msg(-1,'下载失败,创建临时[/data/temp]目录失败');
+        if(!is_dir('./data/temp')) mkdir('./data/temp',0755,true) or msg(-1,'下载失败,创建临时[/data/temp]目录失败');
+        if(!is_writable('./data/temp')){
+            msg(-1,"检测到临时目录不可写<br />请检查data/temp目录权限<br />宝塔面板请注意所有者为www<br />其他疑问请联系技术支持");
+        }
         $data = $key;
         foreach($data['url'] as $url){
             if(downFile( $url , $file , DIR.'/data/temp/')){
@@ -1280,7 +1286,7 @@ function read_login_info(){
     $limit  = empty(intval($_REQUEST['limit'])) ? 50 : intval($_REQUEST['limit']);
     $offset = ($page - 1) * $limit; //起始行号
     $where["uid"] = UID;
-    $where["cookie_key[!]"] = md5($_COOKIE[U.'_key']);
+    //$where["cookie_key[!]"] = md5($_COOKIE[U.'_key']); //不显示当前设备
     //统计条数
     $count = count_db('user_login_info',$where);
     //权重排序(数字小的排前面)
@@ -1289,7 +1295,10 @@ function read_login_info(){
     $where['LIMIT'] = [$offset,$limit];
     //查询
     $datas = select_db('user_login_info',['id','ip','ua','login_time','last_time','expire_time'],$where);
-    msgA(['code'=>1,'msg'=>'获取成功','count'=>$count,'data'=>$datas]);
+    //获取当前登录ID,用于前端标记
+    $where["cookie_key"] = md5($_COOKIE[U.'_key']); 
+    $current_id = get_db('user_login_info','id',$where);
+    msgA(['code'=>1,'msg'=>'获取成功','count'=>$count,'data'=>$datas,'current_id'=>$current_id]);
 }
 
 //写登录信息

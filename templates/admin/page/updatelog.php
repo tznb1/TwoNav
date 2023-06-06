@@ -5,6 +5,21 @@
     <li class="layui-timeline-item">
         <i class="layui-icon layui-timeline-axis"></i>
         <div class="layui-timeline-content layui-text">
+            <h4 class="layui-timeline-title">v2.0.24-20230606</h4>
+            <ul>
+                <li>[修复] 调整数据库字段长度限制,使其能够正确记录IPV6地址/较长的浏览器UA ( 同时解决MySQL严格模式报错 )</li>
+                <li>[修复] 放宽登录时UA长度限制,使其能够在腾讯系列APP(微信/QQ/QQ浏览器等)的内置浏览器登录程序</li>
+                <li>[修复] 安全设置>登录保持设为浏览器关闭时无法保存</li>
+                <li>[优化] 站长工具>生成伪静态,优化配置规则提高站点安全性 ( 需站长手动将新规则写入指定位置,仅针对Nginx环境 )</li>
+                <li>[优化] 下载主题前检测目录是否可写,不可写时提醒用户</li>
+                <li>[优化] 管理员登录后台时始终显示更新系统入口 ( 避免用户不知道在哪里更新系统 )</li>
+                <li>[优化] 登录设备页面支持显示当前设备(字体为红色)</li>
+            </ul>
+        </div>
+    </li>
+    <li class="layui-timeline-item">
+        <i class="layui-icon layui-timeline-axis"></i>
+        <div class="layui-timeline-content layui-text">
             <h4 class="layui-timeline-title">v2.0.23-20230527</h4>
             <ul>
                 <li>[优化] 本地获取链接图标的成功率</li>

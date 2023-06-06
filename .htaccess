@@ -1,8 +1,12 @@
 # Apache配置文件
 RewriteEngine On
-RewriteRule  ^(data|system|templates)/.*.(db|db3|sql|tar|gz|zip|info|log)$ - [F]
+# 安全规则(必选)
+RewriteRule ^templates/.*\.(php|tar|gz|zip|info|log|json)$ - [F]
+RewriteRule ^data/.*\.(db|db3|php|sql|tar|gz|zip|info|log|json)$ - [F]
+# 重写规则(可选)
 RewriteRule '^login$' ./index.php?c=login [L] 
 RewriteRule '^admin$' ./index.php?c=admin [L]
+RewriteRule '^ico/(.+)' ./index.php?c=icon&url=$1 [L]
 RewriteRule '^([A-Za-z0-9]+)$' ./index.php?u=$1 [L]
 RewriteRule '^(.+)/click/([A-Za-z0-9]+)$' ./index.php?c=$2&id=$3&u=$1 [L]
 RewriteRule '^(.+)/click/(.+)' ./$3 [L]

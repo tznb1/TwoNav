@@ -92,15 +92,16 @@ layui.use(['layer','form','miniTab'], function () {
     $('.rewrite').on('click', function(){
         let pathname = window.location.pathname;
         $("#console_log").text("");
-        $("#console_log").append(`#安全设置\n`);
-        $("#console_log").append(`location ~* ^${pathname}(data|system|templates)/.*.(db|db3|php|sql|tar|gz|zip|info|log)$ {\n\treturn 403;\n}\n`);
-        $("#console_log").append(`#伪静态\n`);
+        $("#console_log").append(`#安全规则(必选)\n`);
+        $("#console_log").append(`location ^~ ${pathname}data/ {location ~* \\.(db|db3|php|sql|tar|gz|zip|info|log|json)$ {return 403;}}\n`);
+        $("#console_log").append(`location ^~ ${pathname}templates/ {location ~* \\.(php|tar|gz|zip|info|log|json)$ {return 403;}}\n`);
+        $("#console_log").append(`#重写规则(可选)\n`);
         $("#console_log").append(`rewrite ^${pathname}login$ ${pathname}index.php?c=login break;\n`);
         $("#console_log").append(`rewrite ^${pathname}admin$ ${pathname}index.php?c=admin break;\n`);
         $("#console_log").append(`rewrite ^${pathname}ico/(.+) ${pathname}index.php?c=icon&url=$1 break;\n`);
-        $("#console_log").append(`rewrite ^${pathname}([A-Za-z0-9]+)$ ${pathname}index.php?u=$1 break; #HOST/USER\n`);
+        $("#console_log").append(`rewrite ^${pathname}([A-Za-z0-9]+)$ ${pathname}index.php?u=$1 break;\n`);
         $("#console_log").append(`rewrite ^${pathname}(.+)/(click)/([A-Za-z0-9]+)$ ${pathname}index.php?c=$2&id=$3&u=$1 break;\n`);
-        $("#console_log").append(`rewrite ^${pathname}(.+)/(click)/(.+) ${pathname}$3 break; #static\n`);
+        $("#console_log").append(`rewrite ^${pathname}(.+)/(click)/(.+) ${pathname}$3 break;\n`);
 
     });
     //清理缓存

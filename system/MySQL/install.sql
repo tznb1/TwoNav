@@ -45,6 +45,7 @@ CREATE TABLE IF NOT EXISTS `updatadb_logs` (
 INSERT INTO "updatadb_logs" ("file_name", "update_time", "status", "extra") VALUES ('20230417.php', '1681719049', 'TRUE', '');
 INSERT INTO "updatadb_logs" ("file_name", "update_time", "status", "extra") VALUES ('20230420.php', '1681977368', 'TRUE', '');
 INSERT INTO "updatadb_logs" ("file_name", "update_time", "status", "extra") VALUES ('20230518.php', '1684393068', 'TRUE', '');
+INSERT INTO "updatadb_logs" ("file_name", "update_time", "status", "extra") VALUES ('20230522.php', '1684762253', 'TRUE', '');
 
 -- 创建用户表
 DROP TABLE IF EXISTS `global_user`;
@@ -57,7 +58,7 @@ CREATE TABLE IF NOT EXISTS `global_user` (
   `Email` varchar(32) NOT NULL COMMENT '邮箱',
   `SecretKey` varchar(32) NOT NULL DEFAULT '' COMMENT 'SecretKey',
   `Token` varchar(32) NOT NULL DEFAULT '' COMMENT 'Token',
-  `RegIP` varchar(15) NOT NULL COMMENT '注册IP',
+  `RegIP` varchar(64) NOT NULL DEFAULT '' COMMENT '注册IP',
   `RegTime` int(10) UNSIGNED NOT NULL COMMENT '注册时间',
   `Login` varchar(16) NOT NULL COMMENT '登录入口',
   `LoginConfig` text NOT NULL COMMENT '登陆配置',
@@ -130,8 +131,8 @@ CREATE TABLE IF NOT EXISTS `user_login_info` (
   `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT,
   `uid` int(10) UNSIGNED NOT NULL COMMENT '用户id',
   `user` varchar(32) NOT NULL COMMENT '用户名',
-  `ip` varchar(15) NOT NULL COMMENT '登录IP',
-  `ua` varchar(256) NOT NULL COMMENT '浏览器UA',
+  `ip` varchar(64) NOT NULL DEFAULT '' COMMENT '登录IP',
+  `ua` TEXT NOT NULL DEFAULT '' COMMENT '浏览器UA',
   `login_time` int(10) UNSIGNED NOT NULL COMMENT '登录时间',
   `last_time` int(10) UNSIGNED NOT NULL COMMENT '最后访问时间',
   `expire_time` int(10) UNSIGNED NOT NULL COMMENT '过期时间',
@@ -145,11 +146,11 @@ CREATE TABLE IF NOT EXISTS `user_log` (
   `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT,
   `uid` int(10) UNSIGNED NOT NULL COMMENT '用户id',
   `user` varchar(32) NOT NULL COMMENT '用户名',
-  `ip` varchar(15) NOT NULL COMMENT '请求ip',
+  `ip` varchar(64) NOT NULL DEFAULT '' COMMENT '请求ip',
   `time` varchar(13) NOT NULL COMMENT '请求时间',
   `type` varchar(16) NOT NULL COMMENT '日志类型',
   `content` text NOT NULL COMMENT '请求内容',
-  `description` varchar(128) NOT NULL COMMENT '描述',
+  `description` text NOT NULL DEFAULT '' COMMENT '描述',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COMMENT='日志';
 
@@ -191,7 +192,8 @@ INSERT INTO `purview_list` (`code`, `name`, `description`) VALUES
 ('guestbook', '留言板', '允许使用留言板功能'),
 ('link_extend', '链接扩展', '允许使用链接扩展字段'),
 ('theme_in', '主题设置', '后台显示主题设置菜单'),
-('theme_set', '主题配置', '允许自定义主题配置');
+('theme_set', '主题配置', '允许自定义主题配置'),
+('icon_pull', '图标拉取', '允许用户拉取链接图标');
 
 -- 注册码列表
 DROP TABLE IF EXISTS `regcode_list`;
@@ -228,9 +230,9 @@ CREATE TABLE IF NOT EXISTS `user_apply` (
   `iconurl` varchar(512) NOT NULL COMMENT '图标url',
   `title` varchar(512) NOT NULL COMMENT '标题',
   `url` varchar(512) NOT NULL COMMENT '链接',
-  `ip` varchar(16) NOT NULL DEFAULT '' COMMENT 'ip',
+  `ip` varchar(64) NOT NULL DEFAULT '' COMMENT 'ip',
   `email` varchar(128) NOT NULL DEFAULT '' COMMENT '邮箱',
-  `ua` varchar(512) NOT NULL DEFAULT '' COMMENT '浏览器UA',
+  `ua` TEXT NOT NULL DEFAULT '' COMMENT '浏览器UA',
   `time` int(10) NOT NULL DEFAULT '0' COMMENT '时间',
   `state` int(1) NOT NULL DEFAULT '0' COMMENT '状态',
   `category_id` int(10) NOT NULL DEFAULT '0' COMMENT '分类id',
@@ -251,7 +253,7 @@ CREATE TABLE IF NOT EXISTS `user_share` (
   `up_time` Bigint(13) NOT NULL DEFAULT '0' COMMENT '修改时间',
   `expire_time` Bigint(13) UNSIGNED NOT NULL DEFAULT '0' COMMENT '到期时间',
   `views` Bigint(13) NOT NULL DEFAULT '0' COMMENT '浏览数',
-  `description` varchar(13) NOT NULL DEFAULT '' COMMENT '备注',
+  `description` TEXT NOT NULL DEFAULT '' COMMENT '备注',
   `type` int(1) NOT NULL COMMENT '类型',
   `data` text NOT NULL COMMENT '数据',
   `pv` int(1) NOT NULL COMMENT '私有可见',
