@@ -77,6 +77,18 @@ $LoginConfig = unserialize( get_db("global_config", "v", ["k" => "LoginConfig"])
                 <div class="layui-form-mid layui-word-aux">部分主题和插件需设为开放模式!</div>
             </div>
             
+            <div class="layui-form-item">
+                <label class="layui-form-label">登录后</label>
+                <div class="layui-input-inline" >
+                    <select name="login_page">
+                        <option value="admin" selected>进入后台</option>
+                        <option value="index">进入主页</option>
+                        <option value="auto">自动识别</option>
+                    </select>
+                </div>
+                <div class="layui-form-mid layui-word-aux">自动识别:移动设备登录则进入主页,反之进入后台</div>
+            </div>
+            
             <fieldset class="layui-elem-field layui-field-title"><legend>站点设置</legend></fieldset>
             <div class="layui-form-item">
                 <label class="layui-form-label">主标题</label>

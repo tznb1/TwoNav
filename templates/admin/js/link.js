@@ -3,12 +3,11 @@ var bak_link_id = 0;
 var page_sid = '';
 var link_id = '';
 var load_index;
-
-layui.use(['form','upload','miniTab'], function () {
+var module = _GET('source') === 'tpl' ? ['form', 'upload'] : ['form', 'upload', 'miniTab'];
+layui.use(module, function () {
     var $ = layui.jquery;
     var form = layui.form;
     var upload = layui.upload;
-    var miniTab = layui.miniTab;
     var edit_mode = _GET('page') == 'link_edit'; //是否编辑模式
     //独立页面
     if(top.location == self.location){
@@ -108,9 +107,18 @@ layui.use(['form','upload','miniTab'], function () {
                 if(top.location == self.location){
                     layer.msg('已更新！', {icon: 1});
                 }else{
-                    parent.layui.table.reload('table');//刷新父页面的表格
-                    parent.layui.layer.msg('已更新！', {icon: 1});
-                    $('#close').click();//关闭子页面
+                    if(_GET('source') == 'tpl'){ //第三方调用时刷新父页面
+				        layer.msg('添加成功！', {icon: 1,time: 700,
+				            end: function() {
+				                parent.location.reload();
+				                $('#close').click();//关闭子页面
+				            }
+                        });
+				    }else{
+                        parent.layui.table.reload('table');//刷新父页面的表格
+                        parent.layui.layer.msg('已更新！', {icon: 1});
+                        $('#close').click();//关闭子页面
+				    }
                 }
             }else{
                 layer.msg(data.msg, {icon: 5});
@@ -132,7 +140,9 @@ layui.use(['form','upload','miniTab'], function () {
             window.close(); //关闭当前页面
         }else{
             parent.layer.close(parent.layer.getFrameIndex(window.name));//关闭当前页(内嵌窗口)
-            miniTab.deleteCurrentByIframe(); //关闭当前标签(标签窗口)
+            if(_GET('source') != 'tpl'){
+                layui.miniTab.deleteCurrentByIframe(); //关闭当前标签(标签窗口)
+            }
         }
     });
     

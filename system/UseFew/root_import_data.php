@@ -131,7 +131,7 @@ if($_POST['step'] == 2){
                     'add_time'=>$data['add_time'] ?? time(),
                     'up_time'=>$data['up_time'] ?? time(),
                     'weight'=>0,
-                    'description'=>htmlspecialchars($data['description'],ENT_QUOTES),
+                    'description'=>htmlspecialchars($data['description'],ENT_QUOTES) ?? '',
                     'font_icon'=> strstr($data['Icon'],'fa') ? 'fa '.$data['Icon'] : 'fa fa-folder',
                     'icon'=>''
                     ]
@@ -149,7 +149,7 @@ if($_POST['step'] == 2){
                     'title'         =>  $data['title'],
                     'url'           =>  $data['url'],
                     'url_standby'   =>  empty($data['url_standby']) ? '': [$data['url_standby']] ,
-                    'description'   =>  $data['description'],
+                    'description'   =>  $data['description']?? '',
                     'add_time'      =>  $data['add_time'] ?? time(),
                     'up_time'       =>  $data['up_time'] ?? time(),
                     'click'         =>  $data['click'] ?? 0,

@@ -1,14 +1,15 @@
 <?php $title='添加链接'; require 'header.php';  ?>
 <style>
-    .layui-textarea {min-height: 70px;}
     body {
-     margin: 0px 0px 0px 0px; 
-     background: bottom; 
-}
+        margin: 0px 0px 0px 0px; 
+        background: bottom; 
+    }
+    .layui-textarea {min-height: 70px;}
+    .layui-form-select dl {max-height: 190px;}
 </style>
-<div class="layuimini-container" style="height: 420px;">
-    <div class="layuimini-main" style=" margin-left: 0px; ">
-     <form class="layui-form layuimini-form">
+<div class="layuimini-container">
+    <div class="layuimini-main" style="margin-left: 0px;">
+     <form class="layui-form layuimini-form" style="padding-bottom: 20px;">
          
         <div class="layui-form-item">
             <label class="layui-form-label required" >URL</label>

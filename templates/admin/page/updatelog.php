@@ -5,6 +5,18 @@
     <li class="layui-timeline-item">
         <i class="layui-icon layui-timeline-axis"></i>
         <div class="layui-timeline-content layui-text">
+            <h4 class="layui-timeline-title">v2.0.25-20230607</h4>
+            <ul>
+                <li>[修复] 默认设置>登录保持设为浏览器关闭时无法保存</li>
+                <li>[修复] 导入OneNav Extend 升级数据时,如果description存在Null值造成导入失败</li>
+                <li>[新增] 默认设置>可定义登录后进入后台还是主页 (注:此页面配置仅对新注册账号有效,不会修改现有用户的配置)</li>
+                <li>[优化] 前端主题WebStack-Hugo的适配性</li>
+            </ul>
+        </div>
+    </li>
+    <li class="layui-timeline-item">
+        <i class="layui-icon layui-timeline-axis"></i>
+        <div class="layui-timeline-content layui-text">
             <h4 class="layui-timeline-title">v2.0.24-20230606</h4>
             <ul>
                 <li>[修复] 调整数据库字段长度限制,使其能够正确记录IPV6地址/较长的浏览器UA ( 同时解决MySQL严格模式报错 )</li>

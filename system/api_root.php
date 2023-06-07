@@ -574,7 +574,7 @@ function write_default_settings(){
     if(!is_subscribe('bool')){
         msg(-1,'未检测到有效授权');
     }
-    if( $_POST['KeyClear'] > $_POST['Session']){
+    if(intval($_POST['Session']) > 0 && intval($_POST['KeyClear']) > intval($_POST['Session'])){
         msg(-1,'Key清理时间不能大于登录保持时间');
     }
     // 安全配置(登录配置)
@@ -583,7 +583,8 @@ function write_default_settings(){
         'HttpOnly'=>['int'=>true,'min'=>0,'max'=>1,'msg'=>'HttpOnly参数错误'],
         'KeySecurity'=>['int'=>true,'min'=>0,'max'=>2,'msg'=>'Key安全参数错误'],
         'KeyClear'=>['int'=>true,'min'=>1,'max'=>60,'msg'=>'Key清理参数错误'],
-        'api_model'=>['v'=>['security','compatible','compatible+open'],'msg'=>'API模式参数错误']
+        'api_model'=>['v'=>['security','compatible','compatible+open'],'msg'=>'API模式参数错误'],
+        'login_page'=>['v'=>['admin','index','auto'],'msg'=>'登录成功参数错误']
         ];
     foreach ($datas as $key => $data){
         if($data['int']){
