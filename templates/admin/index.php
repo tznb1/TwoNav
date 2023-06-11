@@ -23,8 +23,9 @@
     <div class="layui-header header">
         <div class="layui-logo layuimini-logo"></div>
         <div class="layuimini-header-content">
-            <a><div class="layuimini-tool"><i title="左侧栏展开/收缩" class="fa fa-outdent" data-side-fold="1"></i></div></a>
+            <a><div class="layuimini-tool"><i title="左侧栏展开/收缩" class="fa fa-outdent" style="font-size: 1.1rem;" data-side-fold="1"></i></div></a>
             <ul class="layui-nav layui-layout-right">
+                <li class="layui-nav-item" lay-unselect><a href="javascript:;" data-home="主页" title="主页"><i class="fa fa-home" style="font-size: 1.08rem;"></i></a></li>
                 <li class="layui-nav-item" lay-unselect><a href="javascript:;" data-refresh="刷新" title="刷新"><i class="fa fa-refresh"></i></a></li>
                 <li class="layui-nav-item mobile layui-hide-xs" lay-unselect><a href="javascript:;" title="全屏" data-check-screen="full"><i class="fa fa-arrows-alt"></i></a></li>
                 <li class="layui-nav-item layuimini-setting">

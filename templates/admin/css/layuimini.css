@@ -649,7 +649,17 @@
     padding: 0px;
     overflow: hidden;
 }
-
+/**菜单缩放*/
+.popup-tips .layui-layer-TipsG{
+    display: none;
+}
+.popup-tips.layui-layer-tips .layui-layer-content{
+    padding: 0;
+}
+.popup-tips .layui-nav-tree{
+    width: 150px;
+    border-radius: 10px;
+}
 /**左侧菜单字体间距*/
 .layuimini-menu-left .layui-nav-item a span {
     letter-spacing: 1px;

@@ -27,7 +27,7 @@ switch ($type) {
             setcookie($USER_DB['User'].'_Password2', md5($USER_DB['Password'].$_COOKIE[U.'_key'].$_POST['Password2']), 0,'','',false,true);
             msg(1,'二级密码正确!');
         }else{
-            msg(-1,'二级密码错误!'.$LoginConfig['Password2']);
+            msg(-1,'二级密码错误!');
         }
         break;
     case "link_pwd":

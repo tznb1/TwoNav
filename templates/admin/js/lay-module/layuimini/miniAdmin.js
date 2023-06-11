@@ -160,10 +160,50 @@ layui.define(["jquery", "miniMenu", "element","miniTab", "miniTheme"], function 
         },
         // 监听
         listen: function () {
+            //主页
+            $('body').on('click','[data-home]', function () {
+                top.location.href='./index.php?u='+u;
+            });
             //刷新
             $('body').on('click','[data-refresh]', function () {
                 $(".layui-tab-item.layui-show").find("iframe")[0].contentWindow.location.reload();
                 miniAdmin.success('刷新成功');
+            });
+            // 悬停菜单>移入
+            $("body").on("mouseenter", ".layui-nav-tree .menu-li", function () {
+                if (miniAdmin.checkMobile()) {
+                    return false;
+                }
+                var classInfo = $(this).attr('class'),
+                    tips = $(this).prop("innerHTML"),
+                    isShow = $('.layuimini-tool i').attr('data-side-fold');
+                if (isShow == 0 && tips) {
+                    tips = "<ul class='layuimini-menu-left-zoom layui-nav layui-nav-tree layui-this'><li class='layui-nav-item layui-nav-itemed'>"+tips+"</li></ul>" ;
+                    window.openTips = layer.tips(tips, $(this), {
+                        tips: [2, '#2f4056'],
+                        time: 300000,
+                        skin:"popup-tips",
+                        success:function (el) {
+                            var left = $(el).position().left - 10 ;
+                            $(el).css({ left:left });
+                            element.render();
+                        }
+                    });
+                }
+            });
+            // 悬停菜单>移出
+            $("body").on("mouseleave", ".popup-tips", function () {
+                if (miniAdmin.checkMobile()) {
+                    return false;
+                }
+                var isShow = $('.layuimini-tool i').attr('data-side-fold');
+                if (isShow == 0) {
+                    try {
+                        layer.close(window.openTips);
+                    } catch (e) {
+                        console.log(e.message);
+                    }
+                }
             });
             //全屏
             $('body').on('click','[data-check-screen]', function () {

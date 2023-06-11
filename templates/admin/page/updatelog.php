@@ -5,6 +5,18 @@
     <li class="layui-timeline-item">
         <i class="layui-icon layui-timeline-axis"></i>
         <div class="layui-timeline-content layui-text">
+            <h4 class="layui-timeline-title">v2.0.26-20230611</h4>
+            <ul>
+                <li>[新增] 后台页面右上角新增主页图标用于返回主页</li>
+                <li>[修复] 后台左侧栏收起时无法使用二级菜单</li>
+                <li>[修复] 申请收录无法提交,v2.0.24更新造成</li>
+                <li>[修复] 二级密码输错时提示正确密码的bug</li>
+            </ul>
+        </div>
+    </li>
+    <li class="layui-timeline-item">
+        <i class="layui-icon layui-timeline-axis"></i>
+        <div class="layui-timeline-content layui-text">
             <h4 class="layui-timeline-title">v2.0.25-20230607</h4>
             <ul>
                 <li>[修复] 默认设置>登录保持设为浏览器关闭时无法保存</li>

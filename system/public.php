@@ -338,32 +338,33 @@ function is_login(){
     global $USER_DB;
     $time = time();
     $LoginConfig = unserialize($USER_DB['LoginConfig']);
-    
-    function delete_expired_info($time,$LoginConfig){
-        global $USER_DB;
-        if(empty($LoginConfig['Session'])){
-            $where = [ 
-                "uid" => $USER_DB['ID'],
-                //"expire_time" => 0,
-                "OR" => [
-                    "last_time[<]" => strtotime('-1 day'),
-                    "login_time[<]" => strtotime('-15 day')
-                ]
-            ];
-        }else{
-            $where = [ 
-                "uid" => $USER_DB['ID'],
-                "OR" => [
-                    "expire_time[<]" => $time,
-                    "last_time[<]" => strtotime("-{$LoginConfig['KeyClear']} day")
-                ]
-            ];
+    if (!function_exists('delete_expired_info')) {
+        function delete_expired_info($time,$LoginConfig){
+            global $USER_DB;
+            if(empty($LoginConfig['Session'])){
+                $where = [ 
+                    "uid" => $USER_DB['ID'],
+                    //"expire_time" => 0,
+                    "OR" => [
+                        "last_time[<]" => strtotime('-1 day'),
+                        "login_time[<]" => strtotime('-15 day')
+                    ]
+                ];
+            }else{
+                $where = [ 
+                    "uid" => $USER_DB['ID'],
+                    "OR" => [
+                        "expire_time[<]" => $time,
+                        "last_time[<]" => strtotime("-{$LoginConfig['KeyClear']} day")
+                    ]
+                ];
+            }
+            //var_dump(select_db('user_login_info','*',$where),$where);exit;
+            delete_db("user_login_info", $where); //清理到期Key
+            update_db("global_user",["kct"=>$time],["User" => $USER_DB['User']]); //记录清理时间
         }
-        //var_dump(select_db('user_login_info','*',$where),$where);exit;
-        delete_db("user_login_info", $where); //清理到期Key
-        update_db("global_user",["kct"=>$time],["User" => $USER_DB['User']]); //记录清理时间
     }
-    
+
     //清理间隔30分钟(1800秒)
     if( ($USER_DB['kct'] + 1800) < $time ){
         delete_expired_info($time,$LoginConfig);
