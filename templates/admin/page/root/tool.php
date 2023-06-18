@@ -18,6 +18,7 @@ require(dirname(__DIR__).'/header.php');
         <div class="layui-btn-container">
             <button type="button" class="layui-btn copy_log">复制内容</button>
             <button type="button" class="layui-btn diagnose">一键诊断</button>
+            <button type="button" class="layui-btn connectivity_test">连通测试</button>
             <button type="button" class="layui-btn phpinfo">phpinfo</button>
 <?php if(preg_match('/nginx/i',$_SERVER['SERVER_SOFTWARE']) ){ ?>
             <button type="button" class="layui-btn rewrite">生成伪静态</button>
@@ -75,6 +76,34 @@ layui.use(['layer','form','miniTab'], function () {
         });
     });
     
+    //连通测试
+    $('.connectivity_test').on('click', function(){
+        $("#console_log").text("");
+        $("#console_log").append("浏览器UA：" + navigator.userAgent +"\n");
+        $("#console_log").append("客户端时间：" +  timestampToTime(Math.round(new Date() / 1000) ) +"\n");
+        
+        var urls = [
+          ['主线路', 'https://update.lm21.top/connectivity_test.txt'],
+          ['备用线路(Gitee)', 'https://gitee.com/tznb/twonav_updata/raw/master/connectivity_test.txt']
+        ];
+        urls.forEach(function(route) {
+          var routeName = route[0];
+          var url = route[1];
+          $("#console_log").append("正在检测: " + routeName +"\n");
+          $.ajax({
+            url: get_api('read_data', 'connectivity_test'),
+            type: 'POST',
+            data: { url: url },
+            async: false,
+            success: function(data, status) {
+              $("#console_log").append(data.msg + "\n");
+            },
+            error: function(jqXHR, textStatus, errorThrown) {
+              $("#console_log").append(routeName + ": 请求 " + url + " 发生错误：" + errorThrown + "\n");
+            }
+          });
+        });
+    });
     //phpinfo
     $('.phpinfo').on('click', function(){
         layer.open({

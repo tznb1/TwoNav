@@ -180,14 +180,35 @@ $title='系统设置';require(dirname(__DIR__).'/header.php');
                 </div>
             </div>
 
-            <div class="layui-form-item" id="api_extend" style="display:none;">
-                <label class="layui-form-label required">api_extend</label>
+            <div class="layui-form-item layui-hide" id="api_extend">
+                <label class="layui-form-label">api_extend</label>
                 <div class="layui-input-inline">
                     <select name="api_extend">
                         <option value="0" selected="">关闭</option>
                         <option value="1" >开启</option>
                     </select>
                 </div>
+                <div class="layui-form-mid layui-word-aux">请勿开启!请勿开启!请勿开启!</div>
+            </div>
+
+            <div class="layui-form-item layui-hide">
+                <label class="layui-form-label">资源接口</label>
+                <div class="layui-input-inline">
+                    <select name="Update_Source">
+                        <option value="0" selected="">自动</option>
+                        <option value="lm21">主线路</option>
+                        <option value="gitee">备用线路(gitee)</option>
+                    </select>
+                </div>
+                <div class="layui-form-mid layui-word-aux">备用资源不定期更新,非必要请勿使用!</div>
+            </div>
+            
+            <div class="layui-form-item layui-hide">
+                <label class="layui-form-label">资源超时</label>
+                <div class="layui-input-inline">
+                    <input type="number" name="Update_Overtime" autocomplete="off" value="3" class="layui-input">
+                </div>
+                <div class="layui-form-mid layui-word-aux">默认3秒,范围3-60</div>
             </div>
             
             <fieldset class="layui-elem-field layui-field-title" style="margin-top: 30px;"><legend>扩展功能</legend></fieldset>
@@ -279,8 +300,6 @@ layui.use(['jquery','form'], function () {
     form.val('form', <?php echo json_encode($global_config);?>);
     form.val('form', <?php echo json_encode(unserialize( get_db("global_config", "v", ["k" => "length_limit"])));?>);
 
-
-
     //监听提交
     form.on('submit(save)', function (data) {
         $.post('./index.php?c=api&method=write_sys_settings&u='+u,data.field,function(data,status){
@@ -299,14 +318,13 @@ layui.use(['jquery','form'], function () {
     
     //开启隐藏功能
     $('.layui-elem-field').click(function () {
-        if(Number( $(this).attr('click')) >= 6){
-            $("#api_extend").show();
-        }else{
-            let click = $(this).attr('click') ? Number($(this).attr('click')) + 1 : 0;
-            $(this).attr('click',click)
+        let clickCount = Number($(this).attr('click') || 0);
+        if (clickCount >= 6) {
+            $(".layui-hide").removeClass("layui-hide");
+        } else {
+            $(this).attr('click', clickCount + 1);
         }
-        
-    }); 
+    });
     
 });
 </script>

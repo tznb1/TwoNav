@@ -48,10 +48,20 @@ function other_upsys(){
         }
         //设置执行最长时间，0为无限制。单位秒!
         set_time_limit(5*60);
+        $overtime = !isset($GLOBALS['global_config']['Update_Overtime']) ? 3 : ($GLOBALS['global_config']['Update_Overtime'] < 3 || $GLOBALS['global_config']['Update_Overtime'] > 60 ? 3 : $GLOBALS['global_config']['Update_Overtime']);
+        
         //加载远程数据
-        $urls = [ "https://update.lm21.top/TwoNav/updata.json"];
-        foreach($urls as $url){ 
-            $Res = ccurl($url,3);
+        $urls = [
+                "lm21" => "https://update.lm21.top/TwoNav/updata.json",
+                "gitee" => "https://gitee.com/tznb/twonav_updata/raw/master/updata.json"
+            ];
+        $Source = $GLOBALS['global_config']['Update_Source'] ?? '';
+        if (!empty($Source) && isset($urls[$Source])) {
+            $urls = [$Source => $urls[$Source]];
+        }
+            
+        foreach($urls as $key => $url){ 
+            $Res = ccurl($url,$overtime);
             $data = json_decode($Res["content"], true);
             if($data["code"] == 200 ){ //如果获取成功
                 break; //跳出循环.
@@ -537,6 +547,9 @@ function write_sys_settings(){
         'global_header'=>['empty'=>true],
         'global_footer'=>['empty'=>true],
         'api_extend'=>['empty'=>true],
+        //更新设置
+        'Update_Source'=>['empty'=>true],
+        'Update_Overtime'=>['int'=>true,'min'=>3,'max'=>60,'msg'=>'资源超时参数错误'],
         //扩展功能-(全局开关)
         'apply'=>['int'=>true,'min'=>0,'max'=>1,'msg'=>'收录管理参数错误'],
         'guestbook'=>['int'=>true,'min'=>0,'max'=>1,'msg'=>'留言管理参数错误'],

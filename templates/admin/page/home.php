@@ -14,14 +14,27 @@ if(!empty($Notice)){
 }
 //是否下载数据
 if(!offline && $reload){
-    $Res = ccurl('https://update.lm21.top/TwoNav/Notice.json',3);
-    $new_data = json_decode($Res['content'], true);unset($Res);
-    if($new_data["code"] == 200 ){ //下载成功,写入缓存
-        $new_data['download_time'] = time();
-        write_global_config('notice',json_encode($new_data),'官方公告(缓存)');
-        $data = $new_data;
+    $overtime = !isset($global_config['Update_Overtime']) ? 3 : ($global_config['Update_Overtime'] < 3 || $global_config['Update_Overtime'] > 60 ? 3 : $global_config['Update_Overtime']);
+    $urls = [
+        "lm21" => "https://update.lm21.top/TwoNav/Notice.json",
+        "gitee" => "https://gitee.com/tznb/twonav_updata/raw/master/Notice.json"
+    ];
+    $Source = $global_config['Update_Source'] ?? '';
+    if (!empty($Source) && isset($urls[$Source])) {
+        $urls = [$Source => $urls[$Source]];
     }
-    unset($new_data);
+    
+    foreach($urls as $key => $url){ 
+        $Res = ccurl($url,$overtime);
+        $new_data = json_decode($Res['content'], true);unset($Res);
+        if($new_data["code"] == 200 ){ //下载成功,写入缓存
+            $new_data['download_time'] = time();
+            write_global_config('notice',json_encode($new_data),'官方公告(缓存)');
+            $data = $new_data;
+            unset($new_data);
+            break;
+        }
+    }
 }
 //判断是否为空
 if(empty($data['version'])){

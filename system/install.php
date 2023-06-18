@@ -447,6 +447,25 @@ set_db_type(db_type);
 layui.use(['form'], function(){
     var form = layui.form;
     
+    //伪静态检测
+    var request = new XMLHttpRequest();
+    request.open('GET', './static/Other/login.css?t=' + new Date().getTime(), true);
+    request.onload = function() {
+      if (request.status >= 200 && request.status < 400) {
+        var fileContent = request.responseText;
+        if (fileContent.startsWith('<!DOCTYPE html>')) {
+            layer.alert(
+                "系统检测到您的站点可能配置了不属于TwoNav的伪静态规则<br />通常是因为之前使用过其他程序,例如:OneNav Extend 或 OneNav <br />您需要将它清除,否则会影响到程序的正常使用 ( 如登录页异常 )<br />并在安装完成后在站长工具>生成伪静态>重新配置到站点中"
+                ,{title:'环境异常提示',anim: 2,closeBtn: 0,btn: ['刷新页面']},function () {
+                    location.reload();
+                }
+            );
+        }
+      }
+    };
+    request.send();
+    
+    
     //开始安装
     form.on('submit(register)', function(data){
         var d = data.field;
@@ -510,12 +529,12 @@ function open_msg(u,p){
     layer.open({ //弹出结果
     type: 1
     ,title: '安装成功'
-    ,area: ['230px', '220px']
+    ,area: ['230px', '260px']
     ,maxmin: false
     ,shadeClose: false
     ,resize: false
     ,closeBtn: 0
-    ,content: '<div style="padding: 15px;">管理员账号: '+u+'<br>管理员密码: '+p+'<br><h3><a href="?c=admin&u='+u+'" style="color: #0000FF;" class="fl">  <br> >>点我进入后台</a></h3><h3><a href="?u='+u+'" style="color: #0000FF;" class="fl">  <br> >>点我进入首页</a></h3></div>'
+    ,content: '<div style="padding: 15px;">管理员账号: '+u+'<br>管理员密码: '+p+'<br><h3><a href="?c=admin&u='+u+'" style="color: #0000FF;" class="fl">  <br> >>点我进入后台</a></h3><h3><a href="?u='+u+'" style="color: #0000FF;" class="fl">  <br> >>点我进入首页</a></h3>  <h3><a href="https://gitee.com/tznb/TwoNav/wikis/%E5%AE%89%E8%A3%85%E6%95%99%E7%A8%8B/%E5%AE%89%E5%85%A8%E9%85%8D%E7%BD%AE" style="color: #0000FF;" class="fl" target="_blank">  <br> >>安全配置说明</a></h3> </div>'
     });
 }
 

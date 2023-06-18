@@ -705,7 +705,7 @@ function write_link(){
         }
 
         $api = Get_Index_URL().'?c=icon&url='.base64_encode($link['url']);
-        $res = ccurl($api);
+        $res = ccurl($api,30);
         $data = get_db('global_icon','*',['url_md5'=>md5($link['url'])]);
         if(empty($data)){
             msg(1,'fail');
@@ -1117,7 +1117,7 @@ function other_testing_link(){
     if ( $global_config['offline'] == '1'){ msg(-1,"离线模式无法使用此功能"); }
     $code = get_http_code($_POST['url']);
     if($code != 200 && $code != 302 && $code != 301){
-        $code = ccurl($_POST['url'])['code'];
+        $code = ccurl($_POST['url'],30)['code'];
     }
     msgA(['code' => 0 ,'StatusCode'=> $code]);
 }
@@ -1453,7 +1453,7 @@ function write_data_control(){
 function read_data(){
     global $USER_DB;
     //指定类型限制仅root账号可用!
-    if(in_array($USER_DB['UserGroup'] != 'root' && $_GET['type'],['diagnostic_log','phpinfo'])){
+    if(in_array($USER_DB['UserGroup'] != 'root' && $_GET['type'],['diagnostic_log','connectivity_test','phpinfo'])){
         msg(-1,'无权限');
     }
     
@@ -1464,7 +1464,24 @@ function read_data(){
         $index_count = get_db('user_count','v',['uid'=>UID,'k'=>date('Ym'),'t'=>'index_Ym'])??0;
         $click_count = get_db('user_count','v',['uid'=>UID,'k'=>date('Ym'),'t'=>'click_Ym'])??0;
         msgA( ['code'=>1,'data'=>[$category_count,$link_count,$index_count,$click_count] ]);
-        
+    //连通测试
+    }elseif($_GET['type'] == 'connectivity_test'){
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_URL, $_POST['url']);
+        curl_setopt($ch, CURLOPT_TIMEOUT, 10);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        $start = microtime(true);
+        $response = curl_exec($ch);
+        $end = microtime(true);
+        $time = round(($end - $start) * 1000, 2);
+        if(curl_errno($ch)) {
+            $log .= "请求发生错误：".curl_error($ch);
+        } else {
+            $log .= "响应内容：".$response ?? 'Null' ;
+            $log .= ",访问耗时：{$time} 毫秒。" ;
+        }
+        curl_close($ch);
+        msg(1,$log);
     //一键诊断
     }elseif($_GET['type'] == 'diagnostic_log'){
         clearstatcache(); //清除缓存

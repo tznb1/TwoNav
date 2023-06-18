@@ -129,14 +129,22 @@ if( $page == 'theme_home' || $page == 'theme_login' || $page == 'theme_transit' 
         
         //没有缓存 或 禁止缓存 或 缓存过时
         if(empty($template) ||   $_GET['cache'] === 'no'  || time() -  $data["time"] > 1800 ){ 
-            $urls = [ "https://update.lm21.top/TwoNav/{$fn}_template.json"];
+            $urls = [
+                "lm21" => "https://update.lm21.top/TwoNav/{$fn}_template.json",
+                "gitee" => "https://gitee.com/tznb/twonav_updata/raw/master/{$fn}_template.json"
+            ];
+            $Source = $global_config['Update_Source'] ?? '';
+            if (!empty($Source) && isset($urls[$Source])) {
+                $urls = [$Source => $urls[$Source]];
+            }
         }else{
             $cache = true;
         }
-        
+        //读取超时参数
+        $overtime = !isset($global_config['Update_Overtime']) ? 3 : ($global_config['Update_Overtime'] < 3 || $global_config['Update_Overtime'] > 60 ? 3 : $global_config['Update_Overtime']);
         //远程获取
-        foreach($urls as $url){ 
-            $Res = ccurl($url,3);
+        foreach($urls as $key => $url){ 
+            $Res = ccurl($url,$overtime);
             $data = json_decode($Res["content"], true);
             if($data["code"] == 200 ){ //如果获取成功
                 $data["time"] = time(); //记录当前时间

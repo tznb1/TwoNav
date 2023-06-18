@@ -5,6 +5,21 @@
     <li class="layui-timeline-item">
         <i class="layui-icon layui-timeline-axis"></i>
         <div class="layui-timeline-content layui-text">
+            <h4 class="layui-timeline-title">v2.0.27-20230618</h4>
+            <ul>
+                <li>[优化] 增加在线数据冗余线路,以适应更多环境</li>
+                <li>[优化] 安装时检测是否存在不属于本程序的伪静态规则,存在时提醒用户处理</li>
+                <li>[优化] 安装成功提示内容添加安全配置说明</li>
+                <li>[新增] 站长工具新增连通测试,用于检测是否能与资源服务器连通! </li>
+                <li>[模板] 主页模板 WebStack-Hugo, 新增拖拽排序支持(默认关闭),修复使用分类个性图标时无法定位分类,优化iframe的自适应</li>
+                <li>[模板] 非默认登录模板无法登录的bug</li>
+                <li>[修复] 过度页停留时间设置无效的bug</li>
+            </ul>
+        </div>
+    </li>
+    <li class="layui-timeline-item">
+        <i class="layui-icon layui-timeline-axis"></i>
+        <div class="layui-timeline-content layui-text">
             <h4 class="layui-timeline-title">v2.0.26-20230611</h4>
             <ul>
                 <li>[新增] 后台页面右上角新增主页图标用于返回主页</li>

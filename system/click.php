@@ -128,6 +128,9 @@ if($global_config['link_extend'] == 1 && check_purview('link_extend',1) && in_ar
     $extend = empty($link['extend']) ? [] : unserialize($link['extend']);
 }
 
+//载入过渡页设置
+$transition_page = unserialize(get_db("user_config", "v", ["uid"=>UID,"k"=>"s_transition_page"]));
+
 //如果存在备用链接,则强制载入过渡页
 if(!empty($link['url_standby'])) {
     $link['url_standby'] = unserialize($link['url_standby']);
