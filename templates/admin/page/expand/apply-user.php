@@ -15,6 +15,7 @@
 	    body{background-color:rgba(0, 0, 51, 0.8);}
 		.title{max-width: 400px;height: auto;margin-left: auto;margin-right: auto;margin-top:5em;}
 		.title h1{color:#FFFFFF;text-align: center;}
+		 .required {color: red;margin-left: 5px;float: right;}
 	</style>
 </head>
 <body>
@@ -29,32 +30,21 @@
   <div class="layui-form-item" style="color: #fbfbfb;">
     <?php echo $apply['Notice'];?>
   </div>
-  <div class="layui-form-item">
-    <label class="layui-form-label">网站标题</label>
-    <div class="layui-input-block">
-      <input type="text" name="title" required  lay-verify="required" placeholder="例如 百度一下" autocomplete="off" class="layui-input">
-    </div>
+<div class="layui-form-item">
+  <label class="layui-form-label">网站标题<span class="required">*</span></label>
+  <div class="layui-input-block">
+    <input type="text" name="title" required lay-verify="required" placeholder="例如 百度一下" autocomplete="off" class="layui-input">
   </div>
-  <div class="layui-form-item">
-    <label class="layui-form-label">网站链接</label>
-    <div class="layui-input-block">
-      <input type="url" name="url" required  lay-verify="required|url" placeholder="例如 https://www.baidu.com" autocomplete="off" class="layui-input">
-    </div>
+</div>
+<div class="layui-form-item">
+  <label class="layui-form-label">网站链接<span class="required">*</span></label>
+  <div class="layui-input-block">
+    <input type="url" name="url" required lay-verify="required|url" placeholder="例如 https://www.baidu.com" autocomplete="off" class="layui-input">
   </div>
+</div>
+
   <div class="layui-form-item">
-    <label class="layui-form-label">网站图标</label>
-    <div class="layui-input-block">
-      <input type="url" name="iconurl" required  lay-verify="url" placeholder="例如 https://www.baidu.com/favicon.ico" autocomplete="off" class="layui-input">
-    </div>
-  </div>
-  <div class="layui-form-item">
-    <label class="layui-form-label">网站描述</label>
-    <div class="layui-input-block">
-      <input type="text" name="description"    placeholder="例如 搜索引擎" autocomplete="off" class="layui-input">
-    </div>
-  </div>
-  <div class="layui-form-item">
-    <label class="layui-form-label">网站分类</label>
+    <label class="layui-form-label">网站分类<span class="required">*</span></label>
     <div class="layui-input-block">
       <select name="category_id" lay-verify="required" lay-search>
         <option ></option>
@@ -63,9 +53,21 @@
     </div>
   </div>
   <div class="layui-form-item">
+    <label class="layui-form-label">网站图标</label>
+    <div class="layui-input-block">
+      <input type="url" name="iconurl" lay-verify="url" placeholder="例如 https://www.baidu.com/favicon.ico" autocomplete="off" class="layui-input">
+    </div>
+  </div>
+  <div class="layui-form-item">
+    <label class="layui-form-label">网站描述</label>
+    <div class="layui-input-block">
+      <input type="text" name="description"  placeholder="例如 搜索引擎" autocomplete="off" class="layui-input">
+    </div>
+  </div>
+  <div class="layui-form-item">
     <label class="layui-form-label">联系邮箱</label>
     <div class="layui-input-block">
-      <input type="text" name="email"   lay-verify="required" placeholder="例如 admin@qq.com" autocomplete="off" class="layui-input">
+      <input type="text" name="email" placeholder="例如 admin@qq.com" autocomplete="off" class="layui-input">
     </div>
   </div>
   <div class="layui-form-item">

@@ -5,6 +5,22 @@
     <li class="layui-timeline-item">
         <i class="layui-icon layui-timeline-axis"></i>
         <div class="layui-timeline-content layui-text">
+            <h4 class="layui-timeline-title">v2.0.28-20230624</h4>
+            <ul>
+                <li>[优化] 收录管理允许用户自行设置必填项</li>
+                <li>[优化] 可添加的链接类型新增wsa和vmrc</li>
+                <li>[优化] 站点设置中热门网址和最新网址由下拉选项改为直接输入,范围:0-100</li>
+                <li>[修复] 分类列表无法查看加密分类的bug</li>
+                <li>[模板] 主页模板 WebStack-Hugo, 修复开启拖拽排序造成悬停提示失效的bug,禁止拖拽查看全部</li>
+                <li>[模板] 过度模板可能无法设置的bug</li>
+                <li>[新增] 链接列表添加图标显示 (仅显示自定义图标,未定义时显示ie图标)</li>
+                <li>[优化] 链接列表排序由前端当前页排序改为后端全局排序</li>
+            </ul>
+        </div>
+    </li>
+    <li class="layui-timeline-item">
+        <i class="layui-icon layui-timeline-axis"></i>
+        <div class="layui-timeline-content layui-text">
             <h4 class="layui-timeline-title">v2.0.27-20230618</h4>
             <ul>
                 <li>[优化] 增加在线数据冗余线路,以适应更多环境</li>

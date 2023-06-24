@@ -48,7 +48,7 @@
         
         <span id = "testing_tip" style = "display:none;">测试中...</span>
         <span id = "subscribe" style = "display:none;"><?php echo is_subscribe('bool')?'1':'0' ?></span>
-        <table id="table" class="layui-table" lay-filter="table" style="margin: -3px 0;"></table>
+        <table id="table" class="layui-table" lay-filter="table" style="margin: 1px 0;"></table>
     </div>
 </div>
 <!-- 操作列 -->

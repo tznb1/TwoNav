@@ -50,7 +50,15 @@ $title='收录管理';$awesome=true; require dirname(__DIR__).'/header.php';
             </div>
             <div class="layui-form-mid layui-word-aux">单位:次,指最近24小时内可以提交多少次(为了防止恶意提交,删除记录可以恢复次数)</div>
         </div>
-            
+        <div class="layui-form-item">
+            <label class="layui-form-label">必填选项</label>
+            <div class="layui-input-block" style="margin-left: 32px;">
+                <input type="checkbox" name="iconurl" title="图标" >
+                <input type="checkbox" name="description" title="描述" >
+                <input type="checkbox" name="email" title="邮箱" >
+            </div>
+        </div>
+        
         <div class="layui-form-item layui-form-text">
             <label class="layui-form-label">使用说明</label>
             <div class="layui-form-mid ">部分主题没有收录入口,请自行添加到链接或者底部等你认为合适的地方!前往<a style="color:#3c78d8" target="_blank" href="./index.php?c=apply&u=<?php echo $u?>" target="_blank">申请收录</a></div>
@@ -348,7 +356,7 @@ table.on('toolbar(apply_list)', function(obj){
     var data = checkStatus.data;
     switch(obj.event){
         case 'conf':
-            if(document.body.clientWidth < 768){area = ['100%' , '100%'];}else{area = ['768px' , '500px'];}
+            if(document.body.clientWidth < 768){area = ['100%' , '100%'];}else{area = ['768px' , '520px'];}
             layer.open({
                 type: 1,
                 scrollbar: false,

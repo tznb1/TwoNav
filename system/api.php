@@ -306,7 +306,7 @@ function read_link_list(){
         $list = unserialize($list);
         msgA(['code'=>1,'msg'=>'获取成功','count'=>count($list),'data'=>$list]);
     }
-    
+    $field = ['lid','fid','pid(pwd_id)','status','property','title','url','url_standby','weight','description','icon','click','add_time','up_time'];
     $query  = $_POST['query'];
     $fid    = intval(@$_POST['fid']); //获取分类ID
     $page   = empty(intval($_REQUEST['page'])) ? 1 : intval($_REQUEST['page']);
@@ -334,14 +334,20 @@ function read_link_list(){
     
     //统计条数
     $count = count_db('user_links',$where);
-    //权重排序(数字小的排前面)
     
-    $where['ORDER']['weight'] = 'ASC';
-    $where['ORDER']['lid'] = 'ASC';
+    //前端指定排序方式,过滤字段名和方式
+    if(!empty($_POST['order']) && !empty($_POST['field']) && in_array($_POST['field'],$field) && in_array($_POST['order'],['ASC','DESC'])){
+        $where['ORDER'][$_POST['field']] = $_POST['order'];
+    }else{
+        //默认排序方式 权重排序(数字小的排前面)
+        $where['ORDER']['weight'] = 'ASC';
+        $where['ORDER']['lid'] = 'ASC';
+    }
+    
     //分页
     $where['LIMIT'] = [$offset,$limit];
     //查询
-    $datas = select_db('user_links',['lid','fid','pid(pwd_id)','status','property','title','url','url_standby','weight','description','icon','click','add_time','up_time'],$where);
+    $datas = select_db('user_links',$field,$where);
 
     msgA(['code'=>1,'msg'=>'获取成功','count'=>$count,'data'=>$datas]);
 }
@@ -821,6 +827,10 @@ function write_apply(){
         $s['apply']   = intval($_POST['apply']);   // 功能选项0.关闭 1.需要审核  2.无需审核
         $s['Notice']  = $_POST['Notice']??'';  // 公告
         $s['submit_limit'] = intval($_POST['submit_limit']); //提交限制
+        $s['iconurl'] = $_POST['iconurl'];
+        $s['description'] = $_POST['description'];
+        $s['email'] = $_POST['email'];
+        
         if($s['apply'] < 0 || $s['apply'] > 2 ){ 
             msg(-1,'参数错误!');
         }elseif(strlen($s['Notice']) > 512){
@@ -966,8 +976,8 @@ function write_site_setting(){
         'main_link_priority'=>['int'=>true,'min'=>0,'max'=>3,'msg'=>'主链优先参数错误'],
         'link_icon'=>['int'=>true,'min'=>0,'max'=>30,'msg'=>'链接图标参数错误'],
         'site_icon'=>['empty'=>true],
-        'top_link'=>['int'=>true,'min'=>0,'max'=>20,'msg'=>'热门链接参数错误'],
-        'new_link'=>['int'=>true,'min'=>0,'max'=>20,'msg'=>'最新链接参数错误'],
+        'top_link'=>['int'=>true,'min'=>0,'max'=>100,'msg'=>'热门链接参数错误'],
+        'new_link'=>['int'=>true,'min'=>0,'max'=>100,'msg'=>'最新链接参数错误'],
         'max_link'=>['int'=>true,'min'=>0,'max'=>100,'msg'=>'输出上限参数错误'],
         'custom_header'=>['empty'=>true],
         'custom_footer'=>['empty'=>true]

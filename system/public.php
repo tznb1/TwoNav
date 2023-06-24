@@ -234,7 +234,7 @@ function echo_pwds(){
 }
 //检查链接
 function check_link($fid,$title,$url,$url_standby_s=''){
-    $pattern = "/^(http:\/\/|https:\/\/|ftp:\/\/|ftps:\/\/|sftp:\/\/|magnet:?|ed2k:\/\/|thunder:\/\/|tcp:\/\/|udp:\/\/|rtsp:\/\/).+/";
+    $pattern = "/^(http:\/\/|https:\/\/|ftp:\/\/|ftps:\/\/|sftp:\/\/|magnet:?|ed2k:\/\/|thunder:\/\/|tcp:\/\/|udp:\/\/|rtsp:\/\/|wsa:\/\/|vmrc:\/\/).+/";
     $length_limit = unserialize(get_db("global_config","v",["k"=>"length_limit"]));
     if (empty($fid)) msg(-1,'分类id(fid)不能为空');
     if (empty($title)) msg(-1,'名称不能为空');

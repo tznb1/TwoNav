@@ -84,31 +84,19 @@
             </div>
             
             <div class="layui-form-item">
-                <label class="layui-form-label">热门网址</label>
+                <label class="layui-form-label">最新网址</label>
                 <div class="layui-input-inline" >
-                    <select name="top_link">
-                        <option value="0" selected>不显示</option>
-                        <option value="5" >显示5条</option>
-                        <option value="10" >显示10条</option>
-                        <option value="15" >显示15条</option>
-                        <option value="20" >显示20条</option>
-                    </select>
+                    <input type="number" name="new_link" class="layui-input" value="0" placeholder="输入范围: 0-100" lay-verify="required">
                 </div>
-                <div class="layui-form-mid layui-word-aux">在主页显示热门网址(点击排行)</div>
+                <div class="layui-form-mid layui-word-aux">在主页显示最新的网址(创建时间)</div>
             </div>
             
             <div class="layui-form-item">
-                <label class="layui-form-label">最新网址</label>
+                <label class="layui-form-label">热门网址</label>
                 <div class="layui-input-inline" >
-                    <select name="new_link">
-                        <option value="0" selected>不显示</option>
-                        <option value="5" >显示5条</option>
-                        <option value="10" >显示10条</option>
-                        <option value="15" >显示15条</option>
-                        <option value="20" >显示20条</option>
-                    </select>
+                   <input type="number" name="top_link" class="layui-input" value="0" placeholder="输入范围: 0-100" lay-verify="required">
                 </div>
-                <div class="layui-form-mid layui-word-aux">在主页显示最新的网址(创建时间)</div>
+                <div class="layui-form-mid layui-word-aux">在主页显示热门网址(点击排行)</div>
             </div>
             
            <div class="layui-form-item">

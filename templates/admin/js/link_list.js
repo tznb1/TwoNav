@@ -9,6 +9,7 @@ layui.use(['form','table','dropdown','miniTab'], function () {
     var api = get_api('read_link_list'); //列表接口
     var limit = localStorage.getItem(u + "_limit") || 50; //尝试读取本地记忆数据,没有就默认50
     var pwds = [];
+    var field,order;
     miniTab.listen();
     //渲染表格
     renderTable1();
@@ -24,11 +25,11 @@ layui.use(['form','table','dropdown','miniTab'], function () {
             }
         });
     }
-
+    var img_src;
     var cols=[ //表头
       {type:'checkbox'} //开启复选框
       ,{field: 'lid', title: 'ID', width:80, sort: true,hide:true}
-      ,{field: 'category_name', title: '所属分类',sort:true,width:140,event: 'edit_category',templet:function(d){
+      ,{field: 'fid', title: '所属分类',sort:true,width:140,event: 'edit_category',templet:function(d){
           //检查是否存在,避免特殊情况报错
           if (categorys && categorys[d.fid] && categorys[d.fid].font_icon && categorys[d.fid].name) { 
               return  '<i class="' + categorys[d.fid].font_icon + '"></i> ' + categorys[d.fid].name;
@@ -36,24 +37,38 @@ layui.use(['form','table','dropdown','miniTab'], function () {
               return 'Null';
           }
       }}
-      ,{field: 'title', title: '链接标题', width:200, edit: 'text'}
+      ,{field: 'icon', title: '图标', width:60, templet:function(d){
+          if(d.icon == null || d.icon == ""){
+              return '<img src="./templates/admin/img/ie.svg" width="28" height="28">';
+          }else{
+              if(d.icon.substr(0,5) =='data:') {
+                img_src = d.icon;
+              }else if(d.icon.substr(0,4) == '<svg'){
+                img_src = 'data:image/svg+xml;base64,'+ btoa(d.icon.replace(/[\u00A0-\u2666]/g, function(c) {return '&#' + c.charCodeAt(0) + ';';}));
+              }else{
+                img_src = d.icon + (d.icon.indexOf('?') !== -1 ? '&_t=' : '?_t=')  + Date.now();
+              }
+              return '<img src="' + img_src + '" width="28" height="28">';
+          }
+      }}
+      ,{field: 'title', title: '链接标题',sort:true, width:200, edit: 'text'}
       ,{ title:'操作', toolbar: '#tablebar',width:110}
       ,{field:'pwd_id',title:'密码',width:70,templet: function(d){
-                return d.pwd_id>0?'<a class="layui-btn layui-btn-normal layui-btn-xs" lay-event="pwd">查看</a>':'';
-            }}
+          return d.pwd_id>0?'<a class="layui-btn layui-btn-normal layui-btn-xs" lay-event="pwd">查看</a>':'';
+      }}
       ,{field: 'property', title: '私有', width: 100, sort: true,templet: function(d){
           return "<input type='checkbox' value='" + d.lid + "' lay-filter='property' lay-skin='switch' lay-text='私有|公开' " + (d.property == 1?"checked":"" )+  ">";
       }}
       ,{field: 'status', title: '状态', width: 100, sort: true,templet: function(d){
           return "<input type='checkbox' value='" + d.lid + "' lay-filter='status' lay-skin='switch' lay-text='启用|禁用' " + (d.status == 1?"checked":"" )+  ">";
       }}
-      ,{field: 'url', title: 'URL',templet:function(d){
-        return '<a color=""   target = "_blank" href = "' + d.url + '" title = "' + d.url + '" referrerpolicy="same-origin" >' + d.url + '</a>';
+      ,{field: 'url',sort:true, title: 'URL',templet:function(d){
+          return '<a color=""   target = "_blank" href = "' + d.url + '" title = "' + d.url + '" referrerpolicy="same-origin" >' + d.url + '</a>';
       }}
       ,{field: 'click', title: '点击数',width:90,sort:true}
       ,{field: 'add_time', title: '添加时间', width:160, sort: true,templet:function(d){
-        var add_time = timestampToTime(d.add_time);
-        return add_time;
+          var add_time = timestampToTime(d.add_time);
+          return add_time;
       }}
       ,{field: 'up_time', title: '修改时间', width:160,sort:true,templet:function(d){
           return d.up_time == null ?'':timestampToTime(d.up_time);
@@ -122,6 +137,12 @@ layui.use(['form','table','dropdown','miniTab'], function () {
                 });
             }
         });
+        // 监听表格排序事件
+        table.on('sort(table)', function(obj) {
+            field = obj.field; // 排序字段
+            order = obj.type == null ? '' : obj.type.toUpperCase(); // 排序方式asc,desc转为大写,null则默认排序
+            link_search();
+        });
     };
     
     function link_search(){
@@ -136,7 +157,7 @@ layui.use(['form','table','dropdown','miniTab'], function () {
                 pageName: 'page' //页码的参数名称
                 ,limitName: 'limit' //每页数据量的参数名
             }
-            ,where: {query:keyword,fid:fid,property:property,status:status}
+            ,where: {query:keyword,fid:fid,property:property,status:status,field:field,order:order}
             ,page: {curr: 1}
         });
     }

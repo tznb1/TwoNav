@@ -216,7 +216,7 @@ function preview_icon(icon =''){
         }else if(icon.substr(0,4) == '<svg'){
             $('#icon_img').attr('src','data:image/svg+xml;base64,'+ btoa(icon.replace(/[\u00A0-\u2666]/g, function(c) {return '&#' + c.charCodeAt(0) + ';';}))  );
         }else{
-            $('#icon_img').attr('src',icon + '?t=' + Math.random() ) ;
+            $('#icon_img').attr('src',icon + (icon.indexOf('?') !== -1 ? '&_t=' : '?_t=')  + Math.random() ) ;
         }
     }
 }

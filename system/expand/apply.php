@@ -44,22 +44,22 @@ foreach($_POST as $key =>$value){
 
 $title = $_POST['title'];
 $url =  $_POST['url'];
-$iconurl = $_POST['iconurl'];
-$description = $_POST['description'];
+$iconurl = $_POST['iconurl'] ?? '';
+$description = $_POST['description'] ?? '';
 $category_id = intval ($_POST['category_id']);
-$email = $_POST['email'];
+$email = $_POST['email'] ?? '';
 $user_ip = Get_IP();
 if( !filter_var($url, FILTER_VALIDATE_URL) ) {
     msg(-1,'URL无效!');
-}elseif( !empty($iconurl) && !filter_var($iconurl, FILTER_VALIDATE_URL) ){
+}elseif(!empty($apply['iconurl'])  && !filter_var($iconurl, FILTER_VALIDATE_URL) ){
     msg(-1,'网站图标无效!');
-}elseif(!preg_match('/^([a-zA-Z]|[0-9])(\w|\-)+@[a-zA-Z0-9]+\.([a-zA-Z]{2,4})$/',$email)){
+}elseif(!empty($apply['email']) && !preg_match('/^([a-zA-Z]|[0-9])(\w|\-)+@[a-zA-Z0-9]+\.([a-zA-Z]{2,4})$/',$email)){
     msg(-1,'联系邮箱无效!');
 }elseif(!isset($_POST['category_id'])){
     msg(-1,'分类ID不能为空!');
 }elseif(!isset($_POST['title'])){
     msg(-1,'网站标题不能为空!');
-}elseif(!isset($_POST['description'])){
+}elseif(!empty($apply['description']) && empty($_POST['description'])){
     msg(-1,'网站描述不能为空!');
 }
 //获取和检查分类信息

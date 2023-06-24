@@ -82,6 +82,15 @@
                 }
                 limit = false; //取消修改限制
                 layer.closeAll('loading'); //关闭加载层
+                //加载加密分组数据
+                $.post(get_api('read_pwd_group_list'),{'page':'1','limit':'9999'},function(data,status){
+                    if(data.code == 1){
+                        pwds = [];
+                        for(var i =0;i<data.count;i++){
+                            pwds['pid_'+data.data[i].pid] = {'pwd':data.data[i].password,'name':data.data[i].name};
+                        }
+                    }
+                });
             } 
         });
     };
