@@ -5,6 +5,21 @@
     <li class="layui-timeline-item">
         <i class="layui-icon layui-timeline-axis"></i>
         <div class="layui-timeline-content layui-text">
+            <h4 class="layui-timeline-title">v2.0.29-20230705</h4>
+            <ul>
+                <li>[升级] Layui v2.8.3 升级到 v2.8.10</li>
+                <li>[修复] 全新安装v2.0.22 - v2.0.28,未创建图标缓存表导致图标拉取失败的bug <a href="https://gitee.com/tznb/TwoNav/releases/tag/v2.0.22-20230523" target="_blank">手动修复说明</a></li>
+                <li>[变更] 默认设置和站长工具中邮件配置/图标配置,移入系统设置中</li>
+                <li>[新增] Token页面新增使用说明</li>
+                <li>[安全] 优化安全性,站长工具>phpinfo使用时需输入密码核验,并移除Cookie相关信息!</li>
+                <li>[安全] 系统设置中长度限制改为相关限制,并加入默认用户组禁止使用自定义代码的开关!默认为禁止!并在开启时提示站长存在安全隐患!</li>
+                <li>[安全] 系统安装后默认禁止注册,如需开启请在系统设置>注册配置>设为开放注册</li>
+            </ul>
+        </div>
+    </li>
+    <li class="layui-timeline-item">
+        <i class="layui-icon layui-timeline-axis"></i>
+        <div class="layui-timeline-content layui-text">
             <h4 class="layui-timeline-title">v2.0.28-20230624</h4>
             <ul>
                 <li>[优化] 收录管理允许用户自行设置必填项</li>

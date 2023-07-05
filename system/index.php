@@ -10,6 +10,10 @@ if(!is_login && ($global_config['Privacy'] == 1 || !check_purview('Common_home',
 }
 //载入站点设置
 $site = unserialize(get_db('user_config','v',['uid'=>UID,'k'=>'s_site']));
+//如果没有权限则清除自定义代码
+if(!check_purview('header',1)){$site['custom_header'] = '';}
+if(!check_purview('footer',1)){$site['custom_footer'] = '';}
+
 $site['Title']  =  $site['title'].(empty($site['subtitle'])?'':' - '.$site['subtitle']);
 //免费用户请保留版权,谢谢!
 $copyright = empty($global_config['copyright'])?'<a target="_blank" href="https://gitee.com/tznb/TwoNav">Copyright © TwoNav</a>':$global_config['copyright'];

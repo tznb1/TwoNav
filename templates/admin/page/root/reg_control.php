@@ -9,7 +9,7 @@ $user_groups = select_db('user_group',['id','code','name'],'');
 <body>
 <div class="layuimini-container">
     <div class="layuimini-main">
-        <table id="table" class="layui-table" lay-filter="table" style="margin: -3px 0;"></table>
+        <table id="table" class="layui-table" lay-filter="table" style="margin: 1px 0;"></table>
     </div>
 </div>
 <!-- 表头工具栏 -->

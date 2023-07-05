@@ -1,6 +1,8 @@
 <?php 
 if($USER_DB['UserGroup'] != 'root'){$content='您没有权限访问此页面'; require(DIR.'/templates/admin/page/404.php');exit;}
 $title='站长工具'; 
+session_start();
+$_SESSION['phpinfo_id'] = Get_Rand_Str(8);
 if(function_exists("opcache_reset")){
     opcache_reset(); //清理PHP缓存
 }
@@ -28,8 +30,6 @@ require(dirname(__DIR__).'/header.php');
             <button type="button" class="layui-btn" layuimini-content-href="root/sys_log" data-title="系统日志">系统日志</button>
             <button type="button" class="layui-btn" layuimini-content-href="updatelog" data-title="更新日志">更新日志</button>
             <button type="button" class="layui-btn" layuimini-content-href="root/import_data" data-title="导入数据">导入数据</button>
-            <button type="button" class="layui-btn" layuimini-content-href="root/mail_set" data-title="邮件配置">邮件配置</button>
-            <button type="button" class="layui-btn" layuimini-content-href="root/icon_set" data-title="图标配置">图标配置</button>
         </div>
         <pre class="layui-code" id="console_log" >
 1.功能都集中在上方的按钮了,需要那个就点击那个!
@@ -49,6 +49,7 @@ require(dirname(__DIR__).'/header.php');
 <script src = "<?php echo $libs;?>/jquery/jquery-3.6.0.min.js"></script>
 <script src = "./templates/admin/js/public.js?v=<?php echo $Ver;?>"></script>
 <script src = "<?php echo $libs?>/Other/ClipBoard.min.js"></script>
+<script src = '<?php echo $libs?>/jquery/jquery.md5.js'></script>
 <?php load_static('js');?>
 <script>
 layui.use(['layer','form','miniTab'], function () {
@@ -106,6 +107,17 @@ layui.use(['layer','form','miniTab'], function () {
     });
     //phpinfo
     $('.phpinfo').on('click', function(){
+        index = layer.prompt({formType: 1,value: '',title: '输入登录密码:',shadeClose: false,"success":function(){
+            $("input.layui-layer-input").on('keydown',function(e){if(e.which == 13) {echo_phpinfo();}});
+        }},function(){
+            echo_phpinfo()
+        }); 
+    });
+    
+    function echo_phpinfo(){
+        let p = $("input.layui-layer-input").val();
+        if(p == ''){ return false;}
+        layer.close(index);
         layer.open({
             title: 'phpinfo',
             type: 2,
@@ -114,9 +126,9 @@ layui.use(['layer','form','miniTab'], function () {
             maxmin:false,
             shadeClose: true,
             area: ['100%', '100%'],
-            content: get_api('read_data','phpinfo'),
+            content: get_api('read_data','phpinfo')+'&p='+$.md5(p)+'&pid=<?php echo $_SESSION['phpinfo_id'] ;?>'
         });
-    });
+    }
     //伪静态
     $('.rewrite').on('click', function(){
         let pathname = window.location.pathname;

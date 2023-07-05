@@ -221,7 +221,7 @@ if ($page == 'menu') {
           [
             ['title'=>'系统设置','href'=>'root/sys_setting','icon'=>'fa fa-gears'],
             ['title'=>'授权管理','href'=>'root/vip','icon'=>'fa fa-diamond'],
-            ['title'=>'默认设置','href'=>'root/default_setting','icon'=>'fa fa-heart-o'],
+            //['title'=>'默认设置','href'=>'root/default_setting','icon'=>'fa fa-heart-o'],
             ['title'=>'用户管理','href'=>'root/user_control','icon'=>'fa fa-user'],
             ['title'=>'用户分组','href'=>'root/users_control','icon'=>'fa fa-users'],
             ['title'=>'注册管理','href'=>'root/reg_control','icon'=>'fa fa-user-plus'],
@@ -269,6 +269,7 @@ function load_static($type){
     }elseif($type == 'js.layui'){
         echo 
 '<script src="'.$GLOBALS['layui']['js'].'" charset="utf-8"></script>
+<script src="./templates/admin/js/lay-config.js?v='.$GLOBALS['Ver'].'" charset="utf-8"></script>
 <script>layui.config({version:"'.$GLOBALS['Ver'].'"})</script>
 ';
     }

@@ -642,6 +642,10 @@ function is_Duplicated($array, $field){
 //检查权限(有权限返回true 没有权限时根传递参数1是返回false 2是直接返回错误信息)
 function check_purview($name,$return_type){
     global $USER_DB;
+    //230705新增,禁止判断默认用户是否可以使用自定义代码
+    if($USER_DB['UserGroup'] == 'default' && $GLOBALS['global_config']['c_code'] != '1' && ( $name == 'header' || $name == 'footer' )){
+        return false;
+    }
     if($USER_DB['UserGroup'] == 'root' || $USER_DB['UserGroup'] == 'default'){
         return true;
     }

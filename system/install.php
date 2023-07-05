@@ -4,8 +4,8 @@ if(!defined('DIR')){header('HTTP/1.1 404 Not Found');header("status: 404 Not Fou
 //初始化
 session_name('TwoNav_initial');
 session_start();
-$layui['js']  = './static/Layui/v2.8.3/layui.js';
-$layui['css'] = './static/Layui/v2.8.3/css/layui.css';
+$layui['js']  = './static/Layui/v2.8.10/layui.js';
+$layui['css'] = './static/Layui/v2.8.10/css/layui.css';
 
 //判断请求类型
 if($_SERVER['REQUEST_METHOD'] === 'POST'){
@@ -284,7 +284,7 @@ function Write_Config(){
     //写站点配置
     $o_config['Login'] = 'login'; //登录入口
     $o_config['Register'] = 'register'; //注册入口
-    $o_config['RegOption'] = '1'; //注册配置
+    $o_config['RegOption'] = '0'; //注册配置
     $o_config['Libs'] = './static'; //静态库路径
     $o_config['Default_User'] = $_POST['User']; //默认用户
     $o_config['XSS_WAF'] = '1'; //防XSS脚本
@@ -294,6 +294,7 @@ function Write_Config(){
     $o_config['Maintenance'] = '0'; //维护模式
     $o_config['Sub_domain'] = '0'; //二级域名
     $o_config['copyright'] = ''; //版权信息
+    $o_config['c_code'] = '0'; //禁用默认用户使用自定义代码
     
     insert_db("global_config", ["k" => "o_config","v" => $o_config,"d" => '网站配置']);  
     

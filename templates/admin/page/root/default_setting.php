@@ -9,7 +9,7 @@ $LoginConfig = unserialize( get_db("global_config", "v", ["k" => "LoginConfig"])
     <div class="layuimini-main">
     <form class="layui-form" lay-filter="form">
         <div class="layui-form layuimini-form layui-form-pane">
-            <blockquote class="layui-elem-quote layui-text" style="">1.本页功能<a href="https://gitee.com/tznb/OneNav/wikis/%E8%AE%A2%E9%98%85%E6%9C%8D%E5%8A%A1%E6%8C%87%E5%BC%95" target="_blank">授权用户</a>专享<br />2.用户注册后默认使用此方案<br />3.如果您不理解选项的作用请勿乱改   </blockquote>
+            <blockquote class="layui-elem-quote layui-text" style="">1.本页功能<a href="https://gitee.com/tznb/OneNav/wikis/%E8%AE%A2%E9%98%85%E6%9C%8D%E5%8A%A1%E6%8C%87%E5%BC%95" target="_blank">授权用户</a>专享<br />2.用户注册后默认使用此方案<br />3.此功能不会修改现有用户的配置<br />4.如果您不理解选项的作用请勿乱改   </blockquote>
             <fieldset class="layui-elem-field layui-field-title"><legend>安全设置</legend></fieldset>
             
             <div class="layui-form-item">

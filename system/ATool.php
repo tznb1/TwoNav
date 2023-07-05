@@ -218,7 +218,7 @@ function echo_Atool(){
 <head>
     <meta charset="UTF-8">
     <title>ATool 工具箱</title>
-    <link rel="stylesheet" href="../static/Layui/v2.8.3/css/layui.css">
+    <link rel="stylesheet" href="../static/Layui/v2.8.10/css/layui.css">
     <style>
         html, body {min-width: 1200px;background-color: #fff;position: relative;}
         .page-wrapper {width: 1200px;margin: 0 auto;padding: 0 15px;}
@@ -269,7 +269,7 @@ function echo_Atool(){
         <a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="set_user_name">改账号</a>
     </div>
 </script>
-<script src="../static/Layui/v2.8.3/layui.js"></script>
+<script src="../static/Layui/v2.8.10/layui.js"></script>
 <script src="../static/jquery/jquery-3.6.0.min.js"></script>
 <script src="../static/jquery/jquery.md5.js"></script>
 <script src="../templates/admin/js/public.js?v=<?php echo time();?>"></script>
@@ -398,7 +398,7 @@ function echo_verify(){ ?>
 <head>
     <meta charset="UTF-8">
     <title>ATool 工具箱</title>
-    <link rel="stylesheet" href="../static/Layui/v2.8.3/css/layui.css">
+    <link rel="stylesheet" href="../static/Layui/v2.8.10/css/layui.css">
     <link rel="stylesheet" href="../static/Other/login.css">
 </head>
 <body>
@@ -423,7 +423,7 @@ function echo_verify(){ ?>
     </div>
 </div>
 <script src = "../static/jquery/jquery-3.6.0.min.js"></script>
-<script src = "../static/Layui/v2.8.3/layui.js"></script>
+<script src = "../static/Layui/v2.8.10/layui.js"></script>
 <script src = '../static/jquery/jquery.md5.js'></script>
 <script>
     layui.use(['form','jquery'], function () {

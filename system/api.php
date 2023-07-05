@@ -1559,7 +1559,16 @@ function read_data(){
         msg(1,$log);
     //输出phpinfo信息
     }elseif($_GET['type'] == 'phpinfo'){
-        phpinfo();
+        session_start();
+        if($_SESSION['phpinfo_id'] != $_GET['pid']){
+            exit('验证失败,请刷新页面后重试!');
+        }elseif(Get_MD5_Password($_GET["p"],$GLOBALS['USER_DB']["RegTime"]) === $GLOBALS['USER_DB']["Password"]){
+            $_COOKIE = [];
+            $_SERVER['HTTP_COOKIE'] = 'privacy';
+            phpinfo();
+        }else{
+            exit('密码验证失败,请重试!');
+        }
     }
 }
 

@@ -38,7 +38,6 @@ CREATE TABLE IF NOT EXISTS "updatadb_logs" (
 INSERT INTO "updatadb_logs" ("file_name", "update_time", "status", "extra") VALUES ('20230417.php', '1681719049', 'TRUE', '');
 INSERT INTO "updatadb_logs" ("file_name", "update_time", "status", "extra") VALUES ('20230420.php', '1681977368', 'TRUE', '');
 INSERT INTO "updatadb_logs" ("file_name", "update_time", "status", "extra") VALUES ('20230522.php', '1684762253', 'TRUE', '');
-INSERT INTO "updatadb_logs" ("file_name", "update_time", "status", "extra") VALUES ('20230605.php', '1685960298', 'TRUE', '');
 
 -- 创建用户表
 CREATE TABLE IF NOT EXISTS "global_user" (
@@ -225,3 +224,18 @@ CREATE TABLE IF NOT EXISTS "user_share" (
   "data" TEXT,
   "pv" integer(1) DEFAULT "0"
 );
+
+-- 图标缓存
+CREATE TABLE IF NOT EXISTS "global_icon" (
+  "id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+  "url_md5" text(32) NOT NULL DEFAULT "",
+  "url" text NOT NULL DEFAULT "",
+  "ico_url" text NOT NULL DEFAULT "",
+  "add_time" integer(10) NOT NULL,
+  "update_time" integer(10) NOT NULL,
+  "file_name" text NOT NULL DEFAULT "",
+  "file_mime" text NOT NULL DEFAULT "",
+  "extend" text NOT NULL DEFAULT "",
+  CONSTRAINT "id" UNIQUE ("id" ASC)
+);
+

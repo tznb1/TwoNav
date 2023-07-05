@@ -110,7 +110,7 @@ foreach ($link['url_standby'] as $key => $url_standby){
 
 <?php if( empty($link['url_standby']) ) { ?>
 
-				<div class="spinner-border"></div> 即将打开，请稍等...
+				<div class="spinner-border" style="margin-top: 16px;"></div> 即将打开，请稍等...
 <?php }else{ ?>
 				<div class="alert alert-primary" style="margin-top: 16px;">
 					<strong>存在备用链接，请手动点击您要打开的链接！</strong>

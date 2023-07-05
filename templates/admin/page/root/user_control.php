@@ -28,7 +28,7 @@ $user_groups = select_db('user_group',['id','code','name'],'');
         <div class="layui-inline layui-form" style="padding-bottom: 5px;">
             <button class="layui-btn layui-btn-normal " id="search" style="height: 36px;">搜索</button>
         </div>
-        <table id="table" class="layui-table" lay-filter="table" style="margin: -3px 0;"></table>
+        <table id="table" class="layui-table" lay-filter="table" style="margin: 1px 0;"></table>
     </div>
 </div>
 

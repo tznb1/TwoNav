@@ -20,7 +20,7 @@ $title='收录管理';$awesome=true; require dirname(__DIR__).'/header.php';
         <script type="text/html" id="link_operate">
             <a class="layui-btn layui-btn-xs" lay-event="operation">操作 <i class="layui-icon layui-icon-down"></i></a>
         </script>
-        <table id="apply_list" class="layui-table" lay-filter="apply_list" style="margin: -3px 0;"></table>
+        <table id="apply_list" class="layui-table" lay-filter="apply_list" style="margin: 1px 0;"></table>
     </div>
 </div>
 <!--设置-->

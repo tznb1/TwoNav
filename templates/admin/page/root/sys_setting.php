@@ -2,9 +2,17 @@
 if($USER_DB['UserGroup'] != 'root'){$content='您没有权限访问此页面'; require(DIR.'/templates/admin/page/404.php');exit;}
 $title='系统设置';require(dirname(__DIR__).'/header.php');
 ?>
+<style>
+.layui-btn-container .layui-btn{border-width: 1px; border-style: solid; border-color: #FF5722!important; color: #FF5722!important;background: none;height: 30px; line-height: 30px; padding: 0 10px; font-size: 12px;}
+</style>
 <body>
 <div class="layuimini-container">
     <div class="layuimini-main">
+        <div class="layui-btn-container">
+            <button type="button" class="layui-btn" layuimini-content-href="root/default_setting" data-title="默认设置">默认设置</button>
+            <button type="button" class="layui-btn" layuimini-content-href="root/mail_set" data-title="邮件配置">邮件配置</button>
+            <button type="button" class="layui-btn" layuimini-content-href="root/icon_set" data-title="图标配置">图标配置</button>
+        </div>
     <form class="layui-form" lay-filter="form">
         <div class="layui-form layuimini-form layui-form-pane">
             <blockquote class="layui-elem-quote layui-text" style="">1.带*号的选项属<a href="https://gitee.com/tznb/OneNav/wikis/%E8%AE%A2%E9%98%85%E6%9C%8D%E5%8A%A1%E6%8C%87%E5%BC%95" target="_blank">授权用户</a>专享<br />2.原OneNav Extend的部分配置已下放到用户组配置中<br />3.如果您不理解选项的作用请勿乱改   </blockquote>
@@ -244,42 +252,52 @@ $title='系统设置';require(dirname(__DIR__).'/header.php');
                 <div class="layui-form-mid layui-word-aux">自定义链接的扩展信息(需自行添加字段,目前仅用于自定义过渡页)</div>
             </div>
             
-            <fieldset class="layui-elem-field layui-field-title" style="margin-top: 30px;"><legend>长度限制</legend></fieldset>
+            <fieldset class="layui-elem-field layui-field-title" style="margin-top: 30px;"><legend>相关限制</legend></fieldset>
             <blockquote class="layui-elem-quote layui-text" style="">程序采用UTF8编码,一个汉字约占用3个字节!英文字母和数组占用1个字节!值为0表示不限制!</blockquote>
             <div class="layui-form-item">
                 <label class="layui-form-label required">分类名称</label>
                 <div class="layui-input-inline">
                     <input type="number" name="c_name" autocomplete="off" value="0" class="layui-input">
                 </div>
-                <div class="layui-form-mid layui-word-aux">单位:字节。</div>
+                <div class="layui-form-mid layui-word-aux">字符长度限制,单位:字节。</div>
             </div>
             <div class="layui-form-item">
                 <label class="layui-form-label required">分类描述</label>
                 <div class="layui-input-inline">
                     <input type="number" name="c_desc" autocomplete="off" value="0" class="layui-input">
                 </div>
-                <div class="layui-form-mid layui-word-aux">单位:字节。</div>
+                <div class="layui-form-mid layui-word-aux">字符长度限制,单位:字节。</div>
             </div>
             <div class="layui-form-item">
                 <label class="layui-form-label required">链接名称</label>
                 <div class="layui-input-inline">
                     <input type="number" name="l_name" autocomplete="off" value="0" class="layui-input">
                 </div>
-                <div class="layui-form-mid layui-word-aux">单位:字节。</div>
+                <div class="layui-form-mid layui-word-aux">字符长度限制,单位:字节。</div>
             </div>
             <div class="layui-form-item">
                 <label class="layui-form-label required">链接地址</label>
                 <div class="layui-input-inline">
                     <input type="number" name="l_url" autocomplete="off" value="0" class="layui-input">
                 </div>
-                <div class="layui-form-mid layui-word-aux">单位:字节。</div>
+                <div class="layui-form-mid layui-word-aux">字符长度限制,单位:字节。</div>
             </div>
             <div class="layui-form-item">
                 <label class="layui-form-label required">链接描述</label>
                 <div class="layui-input-inline">
                     <input type="number" name="l_desc" autocomplete="off" value="0" class="layui-input">
                 </div>
-                <div class="layui-form-mid layui-word-aux">单位:字节。</div>
+                <div class="layui-form-mid layui-word-aux">字符长度限制,单位:字节。</div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label required">自定义代码</label>
+                <div class="layui-input-inline">
+                    <select name="c_code" lay-filter="c_code">
+                        <option value="0" selected="">禁止</option>
+                        <option value="1" >允许</option>
+                    </select>
+                </div>
+                <div class="layui-form-mid layui-word-aux">是否允许默认用户组使用自定义代码!允许存在安全隐患!</div>
             </div>
             
             <div class="layui-form-item">
@@ -289,17 +307,25 @@ $title='系统设置';require(dirname(__DIR__).'/header.php');
     </form>
     </div>
 </div>
+<script src = "<?php echo $libs;?>/jquery/jquery-3.6.0.min.js"></script>
 <?php load_static('js.layui');?>
 <script>
-layui.use(['jquery','form'], function () {
+layui.use(['jquery','form','miniTab'], function () {
     var form = layui.form;
     var layer = layui.layer;
     var $ = layui.jquery;
-    
+    var miniTab = layui.miniTab;
+    miniTab.listen();
     //表单赋值
     form.val('form', <?php echo json_encode($global_config);?>);
     form.val('form', <?php echo json_encode(unserialize( get_db("global_config", "v", ["k" => "length_limit"])));?>);
-
+    
+    //危险提示
+    form.on('select(c_code)', function(data){
+        if (data.value === '1') {
+            layer.alert("允许使用自定义代码存在安全隐患<br />除非您信任使用者!否则建议禁止<br />同时请避免在登录管理员账号时浏览其他用户的主页", { title: '危险提示:' })
+        }
+    });
     //监听提交
     form.on('submit(save)', function (data) {
         $.post('./index.php?c=api&method=write_sys_settings&u='+u,data.field,function(data,status){
