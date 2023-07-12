@@ -5,7 +5,7 @@
     <li class="layui-timeline-item">
         <i class="layui-icon layui-timeline-axis"></i>
         <div class="layui-timeline-content layui-text">
-            <h4 class="layui-timeline-title">v2.0.30-202307012</h4>
+            <h4 class="layui-timeline-title">v2.0.30-20230712</h4>
             <ul>
                 <li>[修复] 登录接口的一个错误</li>
                 <li>[优化] 图标配置页面新增清除缓存按钮,优化图标拉取功能的成功率</li>
