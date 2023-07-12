@@ -135,6 +135,7 @@ layui.use(['form','table','dropdown','miniTab'], function () {
                         key: input.name,value: input.checked
                     });
                 });
+                $('th[data-field="icon"]').attr('title', '仅显示已上传的图标');
             }
         });
         // 监听表格排序事件

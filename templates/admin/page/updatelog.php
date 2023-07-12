@@ -5,6 +5,18 @@
     <li class="layui-timeline-item">
         <i class="layui-icon layui-timeline-axis"></i>
         <div class="layui-timeline-content layui-text">
+            <h4 class="layui-timeline-title">v2.0.30-202307012</h4>
+            <ul>
+                <li>[修复] 登录接口的一个错误</li>
+                <li>[优化] 图标配置页面新增清除缓存按钮,优化图标拉取功能的成功率</li>
+                <li>[优化] 主题设置>过渡模板,当站点设置中链接模式不为过度页面时显示提示信息</li>
+                <li>[新增] 后台概要页的报表统计支持选择最近7/14/30天的统计数据 (终端记忆)</li>
+            </ul>
+        </div>
+    </li>
+    <li class="layui-timeline-item">
+        <i class="layui-icon layui-timeline-axis"></i>
+        <div class="layui-timeline-content layui-text">
             <h4 class="layui-timeline-title">v2.0.29-20230705</h4>
             <ul>
                 <li>[升级] Layui v2.8.3 升级到 v2.8.10</li>

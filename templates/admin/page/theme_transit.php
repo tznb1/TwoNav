@@ -1,4 +1,7 @@
-<?php $title='过渡模板';$awesome=true; require 'header.php'; ?>
+<?php $title='过渡模板';$awesome=true; require 'header.php'; 
+$site = unserialize(get_db('user_config','v',['uid'=>UID,'k'=>'s_site']));
+$tip = $site['link_model'] == 'Transition';
+?>
 <style type="text/css">
 .screenshot{
     width: 99%;  
@@ -15,7 +18,8 @@
     <blockquote class="layui-elem-quote layuimini-form" style="margin-top: 0px;border-left: 5px solid <?php echo $cache?"#1e9fff":($global_config['offline']?"":"#639d11") ?>;padding: 6px;">
         <span class="layui-breadcrumb" lay-separator="|">
             <a href="./index.php?c=admin&page=theme_transit&cache=no&u=<?php echo U;?>">刷新数据</a>
-            <a href="javascript:;" layuimini-content-href="set_transit" data-title="设置过渡页面">设置</a>
+            <a href="javascript:;" layuimini-content-href="set_transit" data-title="设置过渡页面">设置</a><?php if(!$tip){echo '
+            <a href="javascript:;" layuimini-content-href="SiteSetting" data-title="站点设置">注:请将站点设置>链接模式>改为过渡页面</a>';}?> 
         </span>
     </blockquote>
     <div class="layui-bg-gray" style="padding: 1px;" >

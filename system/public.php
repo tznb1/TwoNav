@@ -530,7 +530,7 @@ function get_http_code($url,$TIMEOUT = 10 ,$NOBODY = true) {
     return $return;
 }
 
-function ccurl($url,$overtime = 3){
+function ccurl($url,$overtime = 3,$Referer = false){
     try {
         $curl  =  curl_init ( $url ) ; //初始化
         curl_setopt($curl, CURLOPT_TIMEOUT, $overtime ); //超时
@@ -539,6 +539,11 @@ function ccurl($url,$overtime = 3){
         curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
         curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, false);
+        if($Referer === true){
+            curl_setopt($curl, CURLOPT_REFERER, $_SERVER['HTTP_REFERER']);
+        }elseif(!empty($Referer)){
+            curl_setopt($curl, CURLOPT_REFERER, $Referer);
+        }
         curl_setopt($curl, CURLOPT_USERAGENT, 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/95.0.4638.69 Safari/537.36');
         $Res["content"] = curl_exec   ( $curl ) ;
         $Res["code"] = curl_getinfo($curl, CURLINFO_HTTP_CODE);

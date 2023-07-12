@@ -738,6 +738,25 @@ function other_root(){
         if(!is_subscribe('bool')){msg(-1,"未检测到有效授权,无法使用该功能!");}
         write_global_config('icon_config',$_POST,'图标配置');
         msg(1,'保存成功');
+    }elseif($_GET['type'] == 'write_icon_del_cache'){
+        //删除数据库缓存信息
+        if(empty(count_db('global_icon','*'))){
+            msg(-1,'无缓存记录..');
+        }
+        delete_db('global_icon','*');
+        
+        //删除缓存目录下的所有文件
+        $files = glob(DIR.'/data/icon' . '/*');
+        if (empty($files)) {
+            msg(-1,'无缓存文件..');
+        } 
+        foreach ($files as $file) {
+            if (is_file($file)) {
+                unlink($file);
+            }
+        }
+        
+        msg(1,'操作成功');
     }
 }
 

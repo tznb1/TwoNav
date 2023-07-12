@@ -240,9 +240,16 @@ require 'header.php';
                     </div>
                     <div class="layui-col-md12">
                         <div class="layui-card">
-                            <div class="layui-card-header"><i class="fa fa-line-chart icon"></i>报表统计</div>
+                            <div class="layui-card-header">
+                                <div style="display: flex; justify-content: space-between;">
+                                    <div><i class="fa fa-line-chart icon"></i>报表统计</div>
+                                    <div>
+                                        <button class="layui-btn layui-btn-primary echarts" style="border: none;display:none;"><span>最近7天</span><i class="layui-icon layui-icon-down layui-font-12"></i></button>
+                                    </div>
+                                </div>
+                            </div>
                             <div class="layui-card-body">
-                                <div id="echarts-records" style="width: 100%;min-height:500px"></div>
+                                <div id="echarts-records" style="width: 100%; min-height: 500px;"></div>
                             </div>
                         </div>
                     </div>
@@ -323,29 +330,61 @@ if($USER_DB['UserGroup'] == 'root'){
         var $ = layui.jquery,
             layer = layui.layer,
             miniTab = layui.miniTab,
-            echarts = layui.echarts;
+            echarts = layui.echarts,
+            dropdown = layui.dropdown;
         miniTab.listen();
 
-        //报表功能
-        var echartsRecords = echarts.init(document.getElementById('echarts-records'), 'walden');
-        var optionRecords = {
-            tooltip: {trigger: 'axis'},
-            legend: {data:['访问量','点击量']},
-            grid: {left: '3%',right: '4%',bottom: '3%',containLabel: true},
-            xAxis: {
-                type: 'category',
-                boundaryGap: false,
-                data: <?php echo json_encode($day)?>
-            },
-            yAxis: {},
-            series: <?php echo json_encode($day_data)?>
-        };
-        echartsRecords.setOption(optionRecords);
-
-        // echarts 窗口缩放自适应
-        window.onresize = function(){
-            echartsRecords.resize();
+        
+        //报表统计下拉初始化
+        var home_echarts = localStorage.getItem(u + "_home_echarts") || 7 ;
+        $('.echarts').find('span').text(`最近${home_echarts}天`);
+        $('.echarts').show();
+        dropdown.render({
+          elem: '.echarts',
+          data: [{
+            title: '最近7天',
+            value: 7
+          },{
+            title: '最近14天',
+            value: 14
+          },{
+            title: '最近30天',
+            value: 30
+          }],
+          click: function(obj){
+              this.elem.find('span').text(obj.title);
+              localStorage.setItem(u + "_home_echarts",obj.value);
+              home_echarts = obj.value;
+              load_echarts();
+          }
+        });
+        
+        //加载报表统计
+        function load_echarts(){
+            var echartsRecords = echarts.init(document.getElementById('echarts-records'), 'walden');
+            $.post('./index.php?c=api&method=read_data&date='+home_echarts+'&type=echarts&u='+u,function(data,status){
+                if(data.code == 1){
+                    var optionRecords = {
+                        tooltip: {trigger: 'axis'},
+                        legend: {data:['访问量','点击量']},
+                        grid: {left: '3%',right: '4%',bottom: '3%',containLabel: true},
+                        xAxis: {
+                            type: 'category',
+                            boundaryGap: false,
+                            data: data.data.dates
+                        },
+                        yAxis: {},
+                        series: data.data.day_data
+                    };
+                    echartsRecords.setOption(optionRecords);
+                    window.onresize = function(){echartsRecords.resize();} // echarts 窗口缩放自适应
+                    return;
+                }
+                layer.alert("获取统计数据失败..",{icon:5,title:'错误',anim: 2,closeBtn: 0,btn: ['刷新页面']},function () {location.reload();});
+            });
         }
+        load_echarts();
+        
         //定时刷新
         setInterval(function() {
             if($("#layuiminiHomeTabId",parent.document).attr('class') == 'layui-this' && document.visibilityState == 'visible'){

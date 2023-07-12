@@ -18,14 +18,19 @@ if($_SERVER['REQUEST_METHOD'] === 'GET'){
 AccessControl(); //访问控制
 $User = $_POST["User"];$Password = $_POST["Password"]; //获取请求数据
 
+if(empty($User)){
+    insert_db("user_log", ["uid" => '',"user"=>'',"ip"=>Get_IP(),"time"=>time(),"type" => 'login',"content"=>Get_Request_Content(),"description"=>"请求登录>账号为空"]);
+    msg(-1,'账号不能为空!');
+}elseif($User != $USER_DB['User']){ 
+    insert_db("user_log", ["uid" => '',"user"=>$User,"ip"=>Get_IP(),"time"=>time(),"type" => 'login',"content"=>Get_Request_Content(),"description"=>"请求登录>账号不存在"]);
+    msg(-1,'账号不存在!');
+}
+
 //记录请求日志
 insert_db("user_log", ["uid" => $USER_DB['ID'],"user"=>$USER_DB['User'],"ip"=>Get_IP(),"time"=>time(),"type" => 'login',"content"=>Get_Request_Content(),"description"=>"请求登录"]);
 $log_id = $db->id();
 //基础判断
-if(!isset($User)){
-    update_db_db("user_log", ["description" => "请求登录>账号不能为空"], ["id"=>$log_id]);
-    msg(-1,'账号不能为空!');
-}elseif(strlen($Password)!==32){
+if(strlen($Password)!==32){
     update_db("user_log", ["description" => "请求登录>密码错误(长度应该是32位的MD5)"], ["id"=>$log_id]);
     msg(-1,'密码错误!');
 }elseif($c != $global_config["Login"] && $c != $USER_DB['Login'] ){

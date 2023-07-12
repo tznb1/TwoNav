@@ -176,7 +176,7 @@ function write_category(){
             'fid'=>intval($_POST['fid']??'0'),
             'pid'=>intval($_POST['pwd_id']??'0'),
             'status'=>1,
-            'property'=>$_POST['property']??'0',
+            'property'=>intval($_POST['property']??'0'),
             'name'=>htmlspecialchars($_POST['name'],ENT_QUOTES),
             'add_time'=>time(),
             'up_time'=>time(),
@@ -230,7 +230,7 @@ function write_category(){
         $data = [
             'fid'=>$_POST['fid'],
             'pid'=>intval($_POST['pwd_id']??'0'),
-            'property'=>$_POST['property']??'0',
+            'property'=>intval($_POST['property']??'0'),
             'name'=>$_POST['name'],
             'up_time'=>time(),
             'description'=>$_POST['description'],
@@ -711,7 +711,7 @@ function write_link(){
         }
 
         $api = Get_Index_URL().'?c=icon&url='.base64_encode($link['url']);
-        $res = ccurl($api,30);
+        $res = ccurl($api,30,true);
         $data = get_db('global_icon','*',['url_md5'=>md5($link['url'])]);
         if(empty($data)){
             msg(1,'fail');
@@ -1569,6 +1569,25 @@ function read_data(){
         }else{
             exit('密码验证失败,请重试!');
         }
+    //报表统计
+    }elseif($_GET['type'] == 'echarts'){
+        $days = isset($_GET['date']) && !empty($_GET['date']) ? $_GET['date'] : 7;
+        $dates = [];
+        for ($i = 0; $i < $days; $i++) {
+            $date = date('Ymd', strtotime("-$i days"));
+            $dates[] = $date;
+        }
+        $dates = array_reverse($dates);
+        $day_data = [];
+        array_push($day_data, ['name' => '访问量', 'type' => 'line', 'data' => []]);
+        array_push($day_data, ['name' => '点击量', 'type' => 'line', 'data' => []]);
+        foreach ($dates as $date) {
+            array_push($day_data[0]['data'], get_db('user_count', 'v', ['uid' => UID, 'k' => $date, 't' => 'index_Ymd']) ?? 0);
+            array_push($day_data[1]['data'], get_db('user_count', 'v', ['uid' => UID, 'k' => $date, 't' => 'click_Ymd']) ?? 0);
+        }
+        
+        $data = ['dates'=>$dates,'day_data'=>$day_data];
+        msgA(['code'=>1,'data'=>$data]);
     }
 }
 

@@ -86,6 +86,7 @@ $title='系统设置';require(dirname(__DIR__).'/header.php');
             
             <div class="layui-form-item">
                 <div class="layui-input-block">
+                    <button class="layui-btn layui-btn-danger" type="button" id="clean">清除缓存</button>
                     <button class="layui-btn layui-btn-normal" lay-submit lay-filter="save">确认保存</button>
                 </div>
             </div>
@@ -103,7 +104,24 @@ layui.use(['jquery','form'], function () {
     
     //表单赋值
     form.val('form', <?php echo json_encode(unserialize( get_db("global_config", "v", ["k" => "icon_config"])));?>);
-
+    //清除缓存
+    $('#clean').click(function() {
+        layer.confirm('确定要清除全部缓存吗?',{icon: 3, title:'温馨提示'}, function(index){
+            $.post(get_api('other_root','write_icon_del_cache'),function(data,status){
+                if(data.code == 1) {
+                    if(data.msg!="操作成功"){
+                        layer.alert(data.msg)
+                    }else{
+                        layer.msg(data.msg, {icon: 1});
+                    }
+                }else{
+                    layer.msg(data.msg, {icon: 5});
+                }
+            });
+            return false;
+        });
+    });
+    
     //监听提交
     form.on('submit(save)', function (data) {
         $.post(get_api('other_root','write_icon_config'),data.field,function(data,status){
