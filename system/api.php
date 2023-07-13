@@ -1463,7 +1463,7 @@ function write_data_control(){
 function read_data(){
     global $USER_DB;
     //指定类型限制仅root账号可用!
-    if(in_array($USER_DB['UserGroup'] != 'root' && $_GET['type'],['diagnostic_log','connectivity_test','phpinfo'])){
+    if($USER_DB['UserGroup'] != 'root' && in_array( $_GET['type'],['diagnostic_log','connectivity_test','phpinfo'])){
         msg(-1,'无权限');
     }
     
