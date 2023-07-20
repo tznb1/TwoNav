@@ -10,7 +10,7 @@
                 <div class="layui-input-inline">
                     <input type="number" min="0" max="60" lay-verify="required|number" name="visitor_stay_time" value = "3" autocomplete="off" placeholder="访客停留时间，单位s" class="layui-input">
                 </div>
-                <div class="layui-form-mid layui-word-aux">访客停留时间，单位秒</div>
+                <div class="layui-form-mid layui-word-aux">访客停留时间,单位秒(需模板支持)</div>
             </div>
 
             <div class="layui-form-item">
@@ -18,7 +18,18 @@
                 <div class="layui-input-inline">
                     <input type="number" min="0" max="60" lay-verify="required|number" name="admin_stay_time" value = "5" autocomplete="off" placeholder="管理员停留时间，单位s" class="layui-input">
                 </div>
-                <div class="layui-form-mid layui-word-aux">管理员停留时间，单位秒</div>
+                <div class="layui-form-mid layui-word-aux">管理员停留时间,单位秒(需模板支持)</div>
+            </div>
+            
+            <div class="layui-form-item">
+                <label class="layui-form-label" >默认关键字</label>
+                <div class="layui-input-inline" >
+                    <select name="default_keywords" >
+                        <option value="0">链接标题</option>
+                        <option value="1">站点关键字</option>
+                    </select>
+                </div>
+                <div class="layui-form-mid layui-word-aux">指链接信息未填写关键字时选择其他值作为关键字</div>
             </div>
             
             <div class="layui-form-item">

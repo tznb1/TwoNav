@@ -38,6 +38,7 @@ CREATE TABLE IF NOT EXISTS "updatadb_logs" (
 INSERT INTO "updatadb_logs" ("file_name", "update_time", "status", "extra") VALUES ('20230417.php', '1681719049', 'TRUE', '');
 INSERT INTO "updatadb_logs" ("file_name", "update_time", "status", "extra") VALUES ('20230420.php', '1681977368', 'TRUE', '');
 INSERT INTO "updatadb_logs" ("file_name", "update_time", "status", "extra") VALUES ('20230522.php', '1684762253', 'TRUE', '');
+INSERT INTO "updatadb_logs" ("file_name", "update_time", "status", "extra") VALUES ('20230715.php', '1684762253', 'TRUE', '');
 
 -- 创建用户表
 CREATE TABLE IF NOT EXISTS "global_user" (
@@ -93,6 +94,7 @@ CREATE TABLE IF NOT EXISTS "user_links" (
   "url" TEXT(1024) NOT NULL,
   "url_standby" text NOT NULL DEFAULT "",
   "weight" integer(11) NOT NULL DEFAULT 0,
+  "keywords" TEXT(128) NOT NULL DEFAULT "",
   "description" TEXT(128) NOT NULL DEFAULT "",
   "icon" text NOT NULL DEFAULT "",
   "click" integer(10) NOT NULL DEFAULT 0,

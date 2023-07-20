@@ -29,8 +29,8 @@ layui.use(module, function () {
                 if(data.path != '' ){$("#iconurl").val(data.path);}
                 //如果勾选连续添加
                 if($("#continuity").is(":checked")){
-                    //$('#reset').click();//完全清空
-                    form.val('form',{'url':'','title':'','description':'','icon':''});
+                    form.val('form',{'url':'','title':'','description':'','icon':'','keywords':''});
+                    $('form input[name^="_"]').val(''); //扩展字段清空
                     $('#icon_img').attr('src', blank_img);//清除缩略图
                     layer.msg('添加成功', {icon: 1});
                     $("#url").focus();//URL获取输入焦点
@@ -232,6 +232,9 @@ function get_link_info() {
             }
             if(data.data.description != null) {
                 $("#description").val(data.data.description);
+            }
+            if(data.data.keywords != null) {
+                $("#keywords").val(data.data.keywords);
             }
         }else{
             layer.msg(data.msg, {icon: 5});

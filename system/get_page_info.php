@@ -1,5 +1,4 @@
 <?php 
-// 来源  https://blog.mimvp.com/article/23089.html
 
 function get_page_info($output, $friend_link = '', $curl_info=array()) {
     $page_info = array();
@@ -71,16 +70,39 @@ function get_page_info($output, $friend_link = '', $curl_info=array()) {
          
         preg_match('/<META\s+content="([\w\W]*?)"\s+scheme="([\w\W]*?)"/si', $meta_str, $res);
         if(!empty($res)) $meta_array[strtolower($res[2])] = $res[1];
+        
+        // 20230716 新增匹配语法
+        preg_match('/<META\s+content=[\'"](.*?)[\'"]\s+itemprop=[\'"](.*?)[\'"]\s+name=[\'"](.*?)[\'"]>/si', $meta_str, $res);
+        if(!empty($res)) $meta_array[strtolower($res[3])] = $res[1];
+        
+        preg_match('/<meta\s+itemprop=[\'"](.*?)[\'"]\s+name=[\'"](.*?)[\'"]\s+content=[\'"](.*?)[\'"]>/si', $meta_str, $res);
+        if(!empty($res)) $meta_array[strtolower($res[2])] = $res[3];
     }
-     
+    
+    //如果正则匹配失败则使用php函数尝试再次匹配
+    if(empty($meta_array['keywords']) || empty($meta_array['description'])){
+        //将html保存为临时文件
+        $key = md5(uniqid().Get_Rand_Str(8));
+        $tempFile = DIR ."/data/temp/".md5(uniqid().Get_Rand_Str(8)).".html";
+        file_put_contents($tempFile, $output);
+        $tags = get_meta_tags($tempFile);
+        unlink($tempFile); //删除临时文件
+        if(empty($meta_array['keywords']) && !empty($tags['keywords'])){
+            $meta_array['keywords'] = $tags['keywords'];
+        }
+        if(empty($meta_array['description']) && !empty($tags['description'])){
+            $meta_array['description'] = $tags['description'];
+        }
+    }
+    
     $page_info['site_keywords'] = $meta_array['keywords'];
     $page_info['site_description'] = $meta_array['description'];
     //$page_info['meta_array'] = $meta_array; //暂时不需要全部meta
-     
+    
     # 判断是否存在友链
     if(!empty($friend_link) && strstr($output, $friend_link) != "") {
         $page_info['friend_link_status'] = 1;
     }
-     
+    
     return $page_info;
 }

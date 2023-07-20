@@ -366,7 +366,7 @@ if($USER_DB['UserGroup'] == 'root'){
                 if(data.code == 1){
                     var optionRecords = {
                         tooltip: {trigger: 'axis'},
-                        legend: {data:['访问量','点击量']},
+                        legend: {data:['访问量','点击量','IP数']},
                         grid: {left: '3%',right: '4%',bottom: '3%',containLabel: true},
                         xAxis: {
                             type: 'category',

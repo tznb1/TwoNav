@@ -521,7 +521,7 @@ function write_sys_settings(){
     }
     
     //长度限制
-    foreach (['c_name','c_desc','l_name','l_url','l_desc'] as $name){
+    foreach (['c_name','c_desc','l_name','l_url','l_key','l_desc'] as $name){
         $length_limit[$name] = is_subscribe('bool') ? intval($_POST[$name]) : 0;
     }
     write_global_config("length_limit",$length_limit,'长度限制');

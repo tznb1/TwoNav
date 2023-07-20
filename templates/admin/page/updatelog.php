@@ -5,6 +5,26 @@
     <li class="layui-timeline-item">
         <i class="layui-icon layui-timeline-axis"></i>
         <div class="layui-timeline-content layui-text">
+            <h4 class="layui-timeline-title">v2.0.31-20230720</h4>
+            <ul>
+                <li>[新增] 支持统计访问IP数,可在后台概要页报表统计展示</li>
+                <li>[新增] 数据库链接表新增关键字列</li>
+                <li>[新增] 添加/编辑链接页面新增关键字输入,用于过渡页SEO优化 (注:230715之前的过度模板固定用链接标题作为关键字)</li>
+                <li>[新增] 过度模板设置新增默认关键字选项 (针对未填写关键字时选择其他值作为关键字,需更新过度页模板)</li>
+                <li>[新增] 链接列表新增识别按钮,用于批量获取URL的标题/描述/关键字/图标</li>
+                <li>[新增] 系统设置中新增链接关键字长度限制</li>
+                <li>[新增] 链接列表排序模式支持记忆到客户端</li>
+                <li>[新增] 已开启链接扩展字段时,添加链接时支持填写扩展字段 (原仅编辑支持)</li>
+                <li>[修复] 编辑链接时重置按钮未对扩展内容重置</li>
+                <li>[优化] 添加/编辑链接页面识别功能支持关键字识别</li>
+                <li>[优化] 链接列表的图标拉取与自动识别功能合并</li>
+                <li>[优化] 链接识别的成功率</li>
+            </ul>
+        </div>
+    </li>
+    <li class="layui-timeline-item">
+        <i class="layui-icon layui-timeline-axis"></i>
+        <div class="layui-timeline-content layui-text">
             <h4 class="layui-timeline-title">v2.0.30-20230713</h4>
             <ul>
                 <li>[修复] 登录接口的一个错误</li>

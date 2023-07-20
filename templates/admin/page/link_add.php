@@ -79,14 +79,25 @@
                 </li>
             </ul>
         </div>
-  
+        
+        <div class="layui-form-item">
+            <label class="layui-form-label">关键字</label>
+            <div class="layui-input-block">
+                <input type="text" id="keywords" name="keywords" placeholder="可留空" class="layui-input">
+            </div>
+        </div>
+        
         <div class="layui-form-item">
             <label class="layui-form-label">描述</label>
             <div class="layui-input-block">
-                <textarea name="description" id="description" placeholder="请输入内容" class="layui-textarea"></textarea>
+                <textarea name="description" id="description" placeholder="可留空" class="layui-textarea"></textarea>
             </div>
         </div>
-    
+<?php 
+//判断全局是否开启扩展
+if($global_config['link_extend'] && check_purview('link_extend',1)){
+    require 'link_extend.php';
+}?>
         <div class="layui-form-item">
             <div class="layui-input-block">
                 <input type="checkbox" id="continuity" lay-skin="primary" title="连续添加">

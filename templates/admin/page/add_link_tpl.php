@@ -41,11 +41,17 @@
             </div>
         </div>
 
-  
+        <div class="layui-form-item">
+            <label class="layui-form-label">关键字</label>
+            <div class="layui-input-block">
+                <input type="text" id="keywords" name="keywords" placeholder="可留空" class="layui-input">
+            </div>
+        </div>
+        
         <div class="layui-form-item">
             <label class="layui-form-label">描述</label>
             <div class="layui-input-block">
-                <textarea name="description" id="description" placeholder="请输入内容" class="layui-textarea"></textarea>
+                <textarea name="description" id="description" placeholder="可留空" class="layui-textarea"></textarea>
             </div>
         </div>
     

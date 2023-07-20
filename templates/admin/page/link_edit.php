@@ -1,5 +1,5 @@
 <?php 
-$link = get_db('user_links',['lid','fid','pid(pwd_id)','property','title','url','url_standby','description','icon'],['uid'=>UID,'lid'=>$_GET['id']]);
+$link = get_db('user_links',['lid','fid','pid(pwd_id)','property','title','url','url_standby','keywords','description','icon'],['uid'=>UID,'lid'=>$_GET['id']]);
 if(empty($link)){
     require(DIR.'/templates/admin/page/404.php');
     exit;
@@ -92,11 +92,18 @@ $title='编辑链接';$awesome=true; require 'header.php';
                 </li>
             </ul>
         </div>
-  
+        
+        <div class="layui-form-item">
+            <label class="layui-form-label">关键字</label>
+            <div class="layui-input-block">
+                <input type="text" id="keywords" name="keywords" placeholder="可留空" class="layui-input">
+            </div>
+        </div>
+        
         <div class="layui-form-item">
             <label class="layui-form-label">描述</label>
             <div class="layui-input-block">
-                <textarea name="description" id="description" placeholder="请输入内容" class="layui-textarea"></textarea>
+                <textarea name="description" id="description" placeholder="可留空" class="layui-textarea"></textarea>
             </div>
         </div>
 <?php 

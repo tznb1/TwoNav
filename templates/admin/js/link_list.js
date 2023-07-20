@@ -8,8 +8,8 @@ layui.use(['form','table','dropdown','miniTab'], function () {
     var IDs = [];
     var api = get_api('read_link_list'); //列表接口
     var limit = localStorage.getItem(u + "_limit") || 50; //尝试读取本地记忆数据,没有就默认50
+    var link_sort = JSON.parse(localStorage.getItem(u + "_link_sort")) || {field: 'lid', type: null };
     var pwds = [];
-    var field,order;
     miniTab.listen();
     //渲染表格
     renderTable1();
@@ -81,21 +81,23 @@ layui.use(['form','table','dropdown','miniTab'], function () {
             item.hide = local[item.field];
         }
     });
-
+    
     //渲染表格函数
     var renderTable2 = function () {
+        where = link_sort.type === null ? {} : {field:link_sort.field,order:link_sort.type.toUpperCase()};
         table.render({
             elem: '#table'
             ,height: 'full-110' //自适应高度
             ,url: api //数据接口
+            ,where: where
             ,page: true //开启分页
             ,limit:limit  //默认每页显示行数
             ,limits: [20,50,100,300,500]
             ,even:true //隔行背景色
             ,loading:true //加载条
-            //,defaultToolbar:false
             ,toolbar: '#toolbar'
             ,id:'table'
+            ,initSort: link_sort
             ,cols: [cols]
             ,method: 'post'
             ,response: {statusCode: 1 } 
@@ -112,10 +114,9 @@ layui.use(['form','table','dropdown','miniTab'], function () {
                 $("[data-field='add_time']").addClass('layui-hide-xs');
                 $("[data-field='up_time']").addClass('layui-hide-xs');
                 $("[data-field='click']").addClass('layui-hide-xs');
-                //$(".layui-laypage .layui-laypage-count").css("padding-left","35px");
-                $(".layui-laypage .layui-laypage-prev").addClass('layui-hide-xs');
-                $(".layui-laypage .layui-laypage-curr").addClass('layui-hide-xs');
-                $(".layui-laypage .layui-laypage-next").addClass('layui-hide-xs');
+                // $(".layui-laypage .layui-laypage-prev").addClass('layui-hide-xs');
+                // $(".layui-laypage .layui-laypage-curr").addClass('layui-hide-xs');
+                // $(".layui-laypage .layui-laypage-next").addClass('layui-hide-xs');
                 $(".layui-laypage .layui-laypage-skip").addClass('layui-hide-xs');
                 $(".layui-table-tool-self").addClass('layui-hide-xs');
                 //加载加密分组数据
@@ -140,25 +141,23 @@ layui.use(['form','table','dropdown','miniTab'], function () {
         });
         // 监听表格排序事件
         table.on('sort(table)', function(obj) {
-            field = obj.field; // 排序字段
-            order = obj.type == null ? '' : obj.type.toUpperCase(); // 排序方式asc,desc转为大写,null则默认排序
+            link_sort = {field:obj.field,type:obj.type};
+            localStorage.setItem(u + "_link_sort",JSON.stringify(link_sort));
             link_search();
         });
     };
     
     function link_search(){
-        var fid = document.getElementById("fid").value;
-        var keyword = document.getElementById("link_keyword").value;//获取输入内容
-        var property = document.getElementById("property").value;
-        var status = document.getElementById("status").value;
+        let data = form.val('form');
+        if(link_sort.type != null){
+            data.field = link_sort.field;
+            data.order = link_sort.type.toUpperCase();
+        }
         table.reload('table', {
             url: api
             ,method: 'post'
-            ,request: {
-                pageName: 'page' //页码的参数名称
-                ,limitName: 'limit' //每页数据量的参数名
-            }
-            ,where: {query:keyword,fid:fid,property:property,status:status,field:field,order:order}
+            ,request: {pageName: 'page',limitName: 'limit'}
+            ,where: data
             ,page: {curr: 1}
         });
     }
@@ -321,7 +320,43 @@ layui.use(['form','table','dropdown','miniTab'], function () {
                     layer.msg(data.msg);
                 }
             });
+        }else if(event === 'msg_pull'){
+            index = layer.open({type: 1,scrollbar: false,shadeClose: true,title: '批量识别链接信息',area : ['100%', '100%'],content: $('.msg_pull')});
         }
+    });
+
+    $('#start_pull').click(function () {
+        let lits = table.checkStatus('table').data; console.log( lits );
+        let config = form.val('msg_pull');
+        let number = 0;
+        let total = lits.length;
+        let load_id = layer.load(1, {shade:[0.5,'#fff']});//加载层
+        let msg_id = layer.msg('正在识别中', {icon: 16,time: 1000*300}); //进度提示
+        //检查是否满足条件
+        $.post(get_api('write_link','msg_pull_check'),config,function(data,status){
+            if(data.code == 1){
+                config.key = data.key;
+                start_pull(number); //开始拉取
+            }else{
+                layer.alert(data.msg || '未知错误',{icon:5,title:'错误',anim: 2,closeBtn: 0,btn: ['刷新页面']},function () {location.reload();});
+            }
+        });
+        function start_pull(number){
+            if(number >= total){
+                layer.closeAll();
+                layer.alert('处理完毕,请刷新页面!' ,{icon:1,title:'提示',anim: 2,shadeClose: false,closeBtn: 0});
+                return true;
+            }
+            $("#layui-layer"+ msg_id+" .layui-layer-padding").html('<i class="layui-layer-face layui-icon layui-icon layui-icon-loading layui-anim layui-anim-rotate layui-anim-loop"></i>[ ' + number + ' / ' + total + ' ]     正在处理中..');
+            config.link_id = lits[number].lid;
+            $.post(get_api('write_link','msg_pull'),config,function(data,status){
+                number ++;
+                start_pull(number);
+            });
+        }
+            
+        
+        return false;
     });
     
     table.render({

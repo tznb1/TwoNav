@@ -378,6 +378,7 @@ function write_link(){
         $url = $_POST['url'];
         $icon = empty($_POST['icon']) ? '' : $_POST['icon'];
         $description = empty($_POST['description']) ? '' : $_POST['description'];
+        $keywords = empty($_POST['keywords']) ? '' : $_POST['keywords'];
         $property = empty($_POST['property']) ? 0 : 1;
         //检测链接是否合法
         check_link($fid,$title,$url,$_POST['url_standby']); 
@@ -390,7 +391,10 @@ function write_link(){
         if($length_limit['l_desc'] > 0 && strlen($description) > $length_limit['l_desc'] ){
             msg(-1,'描述长度不能大于'.$length_limit['l_desc'].'个字节');
         }
-        
+        //关键字长度检测
+        if($length_limit['l_key'] > 0 && strlen($keywords) > $length_limit['l_key'] ){
+            msg(-1,'关键字长度不能大于'.$length_limit['l_key'].'个字节');
+        }
         //取最大链接ID
         $lid = get_maxid('link_id');
         //图标处理
@@ -416,6 +420,7 @@ function write_link(){
             'title'         =>  htmlspecialchars($title,ENT_QUOTES),
             'url'           =>  $url,
             'url_standby'   =>  $_POST['url_standby']??'',
+            'keywords'      =>  htmlspecialchars($keywords,ENT_QUOTES),
             'description'   =>  htmlspecialchars($description,ENT_QUOTES),
             'add_time'      =>  time(),
             'up_time'       =>  time(),
@@ -425,7 +430,20 @@ function write_link(){
             'property'      =>  $property,
             'icon'          =>  $icon
             ];
-        
+        //扩展字段
+        if($GLOBALS['global_config']['link_extend'] == 1 && check_purview('link_extend',1)){
+            $list = get_db("user_config","v",["k"=>"s_extend_list","uid"=>UID]);
+            if(!empty($list)){
+                $list = unserialize($list); 
+                $extend = [];
+                foreach($list as $field){
+                    $name = "_{$field['name']}";
+                    if(isset($_POST[$name])){
+                        $data['extend'][$name] = $_POST[$name];
+                    }
+                }
+            }
+        }
         //插入数据库
         insert_db('user_links',$data);
         msgA(['code'=>1,'msg'=>'添加成功','id'=>$lid]);
@@ -537,6 +555,7 @@ function write_link(){
         $title = $_POST['title'];
         $url = $_POST['url'];
         $icon =  $_POST['icon'];
+        $keywords = empty($_POST['keywords']) ? '' : $_POST['keywords'];
         $description = empty($_POST['description']) ? '' : $_POST['description'];
         $property = empty($_POST['property']) ? 0 : 1;
         //检测链接是否合法
@@ -545,6 +564,10 @@ function write_link(){
         $length_limit = unserialize(get_db("global_config","v",["k"=>"length_limit"]));
         if($length_limit['l_desc'] > 0 && strlen($description) > $length_limit['l_desc'] ){
             msg(-1,'描述长度不能大于'.$length_limit['l_desc'].'个字节');
+        }
+        //关键字长度检测
+        if($length_limit['l_key'] > 0 && strlen($keywords) > $length_limit['l_key'] ){
+            msg(-1,'关键字长度不能大于'.$length_limit['l_key'].'个字节');
         }
         //检查链接是否已存在
         if(has_db('user_links',['uid'=>UID ,'lid[!]'=>$lid, "url" => $url])){msg(-1,'链接已存在!');}
@@ -557,6 +580,7 @@ function write_link(){
             'title'         =>  htmlspecialchars($title,ENT_QUOTES),
             'url'           =>  $url,
             'url_standby'   =>  $_POST['url_standby']??'',
+            'keywords'      =>  htmlspecialchars($keywords,ENT_QUOTES),
             'description'   =>  htmlspecialchars($description,ENT_QUOTES),
             'up_time'       =>  time(),
             'property'      =>  $property,
@@ -576,7 +600,6 @@ function write_link(){
                     }
                 }
             }
-        
         }
         
         //非必须参数,未传递参数时
@@ -597,6 +620,9 @@ function write_link(){
 
         if(!isset($_POST['pwd_id'])){
             unset($data['pid']);
+        }
+        if(!isset($_POST['keywords'])){
+            unset($data['keywords']);
         }
         //更新数据
         update_db('user_links',$data,['uid'=>UID,'lid'=>intval($_POST['lid']) ]);
@@ -680,6 +706,116 @@ function write_link(){
         if(empty($fid)){msg(-1,'分类ID错误');}
         //加一个查找分类是否存在
         update_db('user_links',['fid'=>$fid],['uid'=>UID ,"lid" => json_decode($_POST['lid']) ],[1,'设置成功']);
+    //检测是否满足要求
+    }elseif($_GET['type'] === 'msg_pull_check'){
+        if($global_config['offline']){
+            msg(-1,"离线模式不可用");
+        } 
+        if(!is_subscribe('bool')){
+            msg(-1,"未检测到有效授权,无法使用该功能!");
+        }
+        if(intval($_POST['icon']) > 0){
+            if(!check_purview('icon_pull',1)){
+                msg(-1,'您所在的用户组,无法使用网站图标获取功能');
+            }
+            $path = DIR ."/data/user/".U."/favicon";
+            if(!Check_Path($path)){
+                msg(-1,'创建目录失败,请检查目录权限');
+            }
+            $config = unserialize( get_db("global_config", "v", ["k" => "icon_config"])) ?? [];
+            if($config['o_switch'] == '0'){
+                msg(-1,'相关服务处于关闭状态,请联系站长开启');
+            }
+        }
+        session_start();
+        $key = md5(uniqid().Get_Rand_Str(8));
+        $_SESSION['msg_pull']["$key"] = true;
+        msgA(['code'=>1,'msg'=>'success','key'=>$key]);
+    }elseif($_GET['type'] === 'msg_pull'){
+        session_start();
+        $key = $_POST['key'];
+        if(empty($key) || !$_SESSION['msg_pull']["$key"]){
+            msg(-1,'key验证失败,请重试!');
+        }elseif(empty($_POST['link_id'])){
+            msg(-1,'链接ID不能为空');
+        }
+        //读取信息
+        $link = get_db('user_links','*',['uid'=>UID ,'lid'=>$_POST['link_id'] ]);
+        //检查链接
+        if(empty($link)){
+            msg(-1,'链接ID不存在');
+        }elseif(!preg_match("/^(http:\/\/|https:\/\/).*/",$link['url'])){
+            msg(-1,'只支持识别http/https协议的链接!');
+        }elseif( !filter_var($link['url'], FILTER_VALIDATE_URL) ) {
+             msg(-1,'URL无效!');
+        }
+        
+        //是否获取站点信息
+        if( ( intval($_POST['title']) + intval($_POST['keywords']) + intval($_POST['description']) ) > 0 ){
+            //读取长度限制配置
+            $length_limit = unserialize(get_db("global_config","v",["k"=>"length_limit"]));
+            //获取网站标题
+            $c = curl_init(); 
+            curl_setopt($c, CURLOPT_URL, $link['url']); 
+            curl_setopt($c, CURLOPT_RETURNTRANSFER, 1); 
+            curl_setopt($c, CURLOPT_SSL_VERIFYPEER, false);
+            curl_setopt($c, CURLOPT_SSL_VERIFYHOST, false);
+            curl_setopt($c, CURLOPT_USERAGENT, 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/95.0.4638.69 Safari/537.36');
+            curl_setopt($c, CURLOPT_FOLLOWLOCATION, 1);
+            curl_setopt($c , CURLOPT_TIMEOUT, 10);
+            $data = curl_exec($c); 
+            curl_close($c); 
+            require (DIR .'/system/get_page_info.php');
+            $info = get_page_info($data);
+            $new = [];
+            if(intval($_POST['title']) > 0 && !empty($info['site_title'])){
+                $new['title'] = $info['site_title'];
+                if($length_limit['l_name'] > 0 && strlen($new['title']) > $length_limit['l_name'] ){
+                    $new['title'] = mb_substr($new['title'], 0, $length_limit['l_name'], 'utf-8');
+                }
+            }
+            if(intval($_POST['keywords']) > 0 && !empty($info['site_keywords'])){
+                $new['keywords'] = (empty($link['keywords']) || $_POST['keywords'] == '2') ? $info['site_keywords'] : $link['keywords'];
+                if($length_limit['l_key'] > 0 && strlen($new['keywords']) > $length_limit['l_key'] ){
+                    $new['keywords'] = mb_substr($new['keywords'], 0, $length_limit['l_key'], 'utf-8');
+                }
+            }
+            if(intval($_POST['description']) > 0 && !empty($info['site_description'])){
+                $new['description'] = (empty($link['description']) || $_POST['description'] == '2') ? $info['site_description'] : $link['description'];
+                if($length_limit['l_desc'] > 0 && strlen($new['description']) > $length_limit['l_desc'] ){
+                    $new['description'] = mb_substr($new['description'], 0, $length_limit['l_desc'], 'utf-8');
+                }
+            }
+            if(empty($new)){
+                $r['info'] = 'fail';
+            }else{
+                update_db('user_links',$new,['uid'=>UID ,"lid" => $link['lid'] ]);
+                $r['info'] = 'success';
+            }
+        }
+        
+        //是否获取图标
+        if(intval($_POST['icon']) > 0){
+            //检查跳过已存在图标的链接
+            if($_POST['icon'] == '1' && !empty($link['icon'])){
+                $r['icon'] = 'skip';
+            }
+            $api = Get_Index_URL().'?c=icon&url='.base64_encode($link['url']);
+            $res = ccurl($api,30,true);
+            $data = get_db('global_icon','*',['url_md5'=>md5($link['url'])]);
+            if(empty($data)){
+                $r['icon'] = 'fail';
+            }
+            $new_path = "./data/user/".U.'/favicon/'.$data['file_name'];
+            if(copy("./data/icon/{$data['file_name']}",$new_path)){
+                update_db('user_links',['icon'=>$new_path],['uid'=>UID ,"lid" => $link['lid'] ]);
+                $r['icon'] = 'success';
+            }else{
+                $r['icon'] = 'fail';
+            }
+        }
+        
+        msg(1,$r);
     //图标拉取
     }elseif($_GET['type'] === 'icon_pull'){
         if($global_config['offline']){
@@ -1006,7 +1142,8 @@ function write_site_setting(){
 function write_transit_setting(){ 
     $datas = [
         'visitor_stay_time'=>['int'=>true,'min'=>0,'max'=>60,'msg'=>'访客停留时间范围0-60'],
-        'admin_stay_time'=>['int'=>true,'min'=>0,'max'=>60,'msg'=>'管理员停留时间范围0-60']
+        'admin_stay_time'=>['int'=>true,'min'=>0,'max'=>60,'msg'=>'管理员停留时间范围0-60'],
+        'default_keywords'=>['int'=>true,'min'=>0,'max'=>1,'msg'=>'默认关键字参数错误']
         ];
     
     foreach ($datas as $key => $data){
@@ -1581,9 +1718,11 @@ function read_data(){
         $day_data = [];
         array_push($day_data, ['name' => '访问量', 'type' => 'line', 'data' => []]);
         array_push($day_data, ['name' => '点击量', 'type' => 'line', 'data' => []]);
+        array_push($day_data, ['name' => 'IP数', 'type' => 'line', 'data' => []]);
         foreach ($dates as $date) {
             array_push($day_data[0]['data'], get_db('user_count', 'v', ['uid' => UID, 'k' => $date, 't' => 'index_Ymd']) ?? 0);
             array_push($day_data[1]['data'], get_db('user_count', 'v', ['uid' => UID, 'k' => $date, 't' => 'click_Ymd']) ?? 0);
+            array_push($day_data[2]['data'], get_db('user_count', 'v', ['uid' => UID, 'k' => $date, 't' => 'ip_count']) ?? 0);
         }
         
         $data = ['dates'=>$dates,'day_data'=>$day_data];
@@ -1615,6 +1754,7 @@ function other_get_link_info(){
     curl_setopt($c, CURLOPT_RETURNTRANSFER, 1); 
     curl_setopt($c, CURLOPT_SSL_VERIFYPEER, false);
     curl_setopt($c, CURLOPT_SSL_VERIFYHOST, false);
+    curl_setopt($c, CURLOPT_USERAGENT, 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/95.0.4638.69 Safari/537.36');
     curl_setopt($c, CURLOPT_FOLLOWLOCATION, 1); //允许重定向,解决http跳转到https无法识别
     curl_setopt($c , CURLOPT_TIMEOUT, 5); //设置超时时间
     $data = curl_exec($c); 
@@ -1623,6 +1763,7 @@ function other_get_link_info(){
     require (DIR .'/system/get_page_info.php');
     $info = get_page_info($data);
     $link['title'] =  $info['site_title'];
+    $link['keywords'] = $info['site_keywords'];
     $link['description'] = $info['site_description'];
     msgA(['code'=>1,'data'=>$link]);
 }

@@ -46,6 +46,7 @@ INSERT INTO "updatadb_logs" ("file_name", "update_time", "status", "extra") VALU
 INSERT INTO "updatadb_logs" ("file_name", "update_time", "status", "extra") VALUES ('20230420.php', '1681977368', 'TRUE', '');
 INSERT INTO "updatadb_logs" ("file_name", "update_time", "status", "extra") VALUES ('20230518.php', '1684393068', 'TRUE', '');
 INSERT INTO "updatadb_logs" ("file_name", "update_time", "status", "extra") VALUES ('20230522.php', '1684762253', 'TRUE', '');
+INSERT INTO "updatadb_logs" ("file_name", "update_time", "status", "extra") VALUES ('20230715.php', '1684762253', 'TRUE', '');
 
 -- 创建用户表
 DROP TABLE IF EXISTS `global_user`;
@@ -109,6 +110,7 @@ CREATE TABLE IF NOT EXISTS `user_links` (
   `url` text NOT NULL COMMENT '主链接',
   `url_standby` text NOT NULL COMMENT '备用链接',
   `weight` int(11) NOT NULL DEFAULT '0' COMMENT '权重',
+  `keywords` text NOT NULL DEFAULT '' COMMENT '关键字',
   `description` text NOT NULL DEFAULT '' COMMENT '描述',
   `icon` text NOT NULL DEFAULT '' COMMENT '图标',
   `click` int(10) UNSIGNED NOT NULL DEFAULT '0' COMMENT '点击数',

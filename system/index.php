@@ -288,5 +288,6 @@ if(empty($_GET['share']) && !$site['ex_theme']){
 //访问统计
 write_user_count(date('Ym'),'index_Ym');
 write_user_count(date('Ymd'),'index_Ymd');
+count_ip();
 //载入模板
 require($index_path);

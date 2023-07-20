@@ -253,7 +253,7 @@ $title='系统设置';require(dirname(__DIR__).'/header.php');
             </div>
             
             <fieldset class="layui-elem-field layui-field-title" style="margin-top: 30px;"><legend>相关限制</legend></fieldset>
-            <blockquote class="layui-elem-quote layui-text" style="">程序采用UTF8编码,一个汉字约占用3个字节!英文字母和数组占用1个字节!值为0表示不限制!</blockquote>
+            <blockquote class="layui-elem-quote layui-text" style="">程序采用UTF8编码,一个汉字约占用3个字节!英文字母和数组占用1个字节!值为0表示不限制!<br />添加或编辑时长度超限则不允许添加,批量识别时超限则截断</blockquote>
             <div class="layui-form-item">
                 <label class="layui-form-label required">分类名称</label>
                 <div class="layui-input-inline">
@@ -279,6 +279,13 @@ $title='系统设置';require(dirname(__DIR__).'/header.php');
                 <label class="layui-form-label required">链接地址</label>
                 <div class="layui-input-inline">
                     <input type="number" name="l_url" autocomplete="off" value="0" class="layui-input">
+                </div>
+                <div class="layui-form-mid layui-word-aux">字符长度限制,单位:字节。</div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label required">链接关键字</label>
+                <div class="layui-input-inline">
+                    <input type="number" name="l_key" autocomplete="off" value="0" class="layui-input">
                 </div>
                 <div class="layui-form-mid layui-word-aux">字符长度限制,单位:字节。</div>
             </div>

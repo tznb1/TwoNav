@@ -1,7 +1,8 @@
 <?php if(!defined('DIR')){Not_Found();}AccessControl();
 //负责过渡页/跳转/隐私保护/密码访问
 $id = intval($_GET['id']);
-
+//IP数统计
+count_ip();
 //如果id为空,则显示404
 if(empty($id)){Not_Found();}
 
@@ -130,6 +131,19 @@ if($global_config['link_extend'] == 1 && check_purview('link_extend',1) && in_ar
 
 //载入过渡页设置
 $transition_page = unserialize(get_db("user_config", "v", ["uid"=>UID,"k"=>"s_transition_page"]));
+
+//关键字处理
+if(!empty($link['url_standby']) || $site['link_model'] == 'Transition'){
+    if(empty($link['keywords'])){
+       if($transition_page['default_keywords'] == '0'){
+           $link['keywords'] = $link['title'];
+       }else if($transition_page['default_keywords'] == '1'){
+           $link['keywords'] = $site['keywords'];
+       }else{
+           $link['keywords'] = $link['title'];
+       }
+    }
+}
 
 //如果存在备用链接,则强制载入过渡页
 if(!empty($link['url_standby'])) {

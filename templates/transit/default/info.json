@@ -2,8 +2,8 @@
     "name":"OneNav1",
     "description":"OneNav旧版过渡页",
     "homepage":"https://www.xiaoz.me",
-    "version":"2.0.1",
-    "update":"2023/04/05",
+    "version":"2.0.2",
+    "update":"2023/07/16",
     "author":"xiaoz",
     "screenshot":"https://s3.bmp.ovh/imgs/2022/04/17/8cac968a8cc8135c.png",
     "config": {

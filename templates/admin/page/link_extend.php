@@ -13,6 +13,7 @@ if(!empty($list)){
     foreach ($list as $data) {
         $field = "_".$data['name'];
         $data['value'] = isset($extend_data[$field]) ?  $extend_data[$field] : $data['default'];
+        $link["_{$data['name']}"] = ''.htmlentities($data['value']);
         if($data['type'] == 'text'){
             echo_text($data);
         }elseif($data['type'] == 'textarea'){

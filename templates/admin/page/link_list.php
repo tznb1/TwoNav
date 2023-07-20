@@ -5,11 +5,11 @@
 <body>
 <div class="layuimini-container">
     <div class="layuimini-main">
-        
+      <form class="layui-form" lay-filter="form">
         <div class="layui-inline layui-form" style="padding-bottom: 5px;">
             <label class="layui-form-label " style="width:60px;padding-left: 5px;padding-right: 5px;">分类筛选:</label>
             <div class="layui-input-inline">
-                <select id="fid" lay-filter="fid" name="categorys" lay-search>
+                <select name="fid" lay-search>
                     <option value="0" selected="">全部</option>
                     <optgroup label="用户分类">
                     <?php echo_category(true); ?>
@@ -21,21 +21,20 @@
         <div class="layui-inline layui-form" style="padding-bottom: 5px;">
             <label class="layui-form-label layui-hide-sm" style="width:60px;padding-left: 5px;padding-right: 5px;">关键字:</label>
             <div class="layui-input-inline">
-                <input class="layui-input" name="keyword" id="link_keyword" placeholder='请输入标题或描述或URL' value=''autocomplete="off" >
+                <input class="layui-input" name="query" id="link_keyword" placeholder='请输入标题或描述或URL' autocomplete="off" >
             </div>
-            
         </div>
         <div class="layui-inline layui-form layui-hide-xs" style="padding-bottom: 5px;" >
             <label class="layui-form-label layui-hide-sm" style="width:60px;padding-left: 5px;padding-right: 5px; ">属性筛选:</label>
             <div class="layui-input-inline" style=" width: 80px; ">
-                <select id="property"  >
+                <select name="property"  >
                     <option value="" selected>不限</option>
                     <option value="0" >公开</option>
                     <option value="1" >私有</option>
                 </select>
             </div>
             <div class="layui-input-inline" style=" width: 80px; ">
-                <select id="status"  >
+                <select name="status"  >
                     <option value="" selected>不限</option>
                     <option value="0" >禁用</option>
                     <option value="1" >启用</option>
@@ -43,12 +42,12 @@
             </div>
         </div>
         <div class="layui-inline layui-form" style="padding-bottom: 5px;">
-            <button class="layui-btn layui-btn-normal " id="link_search" style="height: 36px;">搜索</button>
+            <button class="layui-btn layui-btn-normal "type="button" id="link_search" style="height: 36px;">搜索</button>
         </div>
-        
         <span id = "testing_tip" style = "display:none;">测试中...</span>
         <span id = "subscribe" style = "display:none;"><?php echo is_subscribe('bool')?'1':'0' ?></span>
-        <table id="table" class="layui-table" lay-filter="table" style="margin: 1px 0;"></table>
+      </form>
+      <table id="table" class="layui-table" lay-filter="table" style="margin: 1px 0;"></table>
     </div>
 </div>
 <!-- 操作列 -->
@@ -75,9 +74,7 @@
 <?php if($global_config['offline']  != 1 ){ ?> 
         <button class="layui-btn layui-btn-sm layui-btn-normal layui-btn-danger layui-hide-xs" lay-event="testing" id="testing">检测</button>
 <?php }?> 
-<?php if($global_config['offline']  != 1 && check_purview('icon_pull',1)){ ?> 
-        <button class="layui-btn layui-btn-sm layui-btn-normal layui-btn-danger layui-hide-xs" lay-event="icon_pull" id="icon_pull">图标拉取</button>
-<?php }?>
+        <button class="layui-btn layui-btn-sm layui-btn-normal layui-btn-danger layui-hide-xs" lay-event="msg_pull" id="msg_pull">识别</button>
         <button class="layui-btn layui-btn-sm layui-btn-normal layui-btn-danger" layuimini-content-href="link_sort" data-title="链接排序">排序模式</button>
     </div>
 </script>
@@ -115,6 +112,56 @@
             <button class="layui-btn layui-btn-sm layui-btn-danger del" lay-event="del">移除</button>
         </div>
     </script>
+</ul>
+<ul class="msg_pull" style="margin-top: 18px;display:none;padding-right: 10px;padding-left: 10px;">
+    <form class="layui-form layuimini-form" lay-filter="msg_pull">
+        <pre class="layui-code" id="tip" >提示: 自动识别仅针对http/https有效,且不能保证百分百成功!未成功识别时不会对链接信息进行修改!大批量识别前建议先备份数据,效果不理想时可以回退!</pre>
+        <div class="layui-form-item">
+            <label class="layui-form-label">网站标题</label>
+            <div class="layui-input-inline">
+                <select name="title" >
+                    <option value="0">保持不变</option>
+                    <option value="1">获取 (覆盖)</option>
+                </select> 
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">关键字</label>
+            <div class="layui-input-inline">
+                <select name="keywords" >
+                    <option value="0">保持不变</option>
+                    <option value="1" selected>获取 (未填关键字时)</option>
+                    <option value="2">获取 (覆盖)</option>
+                </select> 
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">网站描述</label>
+            <div class="layui-input-inline">
+                <select name="description" >
+                    <option value="0">保持不变</option>
+                    <option value="1" selected>获取 (未填描述时)</option>
+                    <option value="2">获取 (覆盖)</option>
+                </select> 
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">网站图标</label>
+            <div class="layui-input-inline">
+                <select name="icon" >
+                    <option value="0">保持不变</option>
+                    <option value="1" selected>获取 (未上传图标时)</option>
+                    <option value="2">获取 (覆盖)</option>
+                </select> 
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <div class="layui-input-block">
+                <button class="layui-btn layui-btn-warm" type="button" id="close" >关闭</button>
+                <button class="layui-btn layui-btn-normal" lay-submit lay-filter="start_pull" id="start_pull">开始</button>
+            </div>
+        </div>
+    </form>
 </ul>
 </body>
 </html>
