@@ -83,7 +83,7 @@ if($page == 'config_home'){
 }
 
 //主题设置页面
-if( $page == 'theme_home' || $page == 'theme_login' || $page == 'theme_transit' || $page == 'theme_register' || $page == 'theme_guide') {
+if( $page == 'theme_home' || $page == 'theme_login' || $page == 'theme_transit' || $page == 'theme_register' || $page == 'theme_guide' || $page == 'theme_article') {
     if(!check_purview('theme_in',1)){
         require(DIR.'/templates/admin/page/404.php');
         exit;
@@ -208,7 +208,9 @@ if ($page == 'menu') {
     if($global_config['guestbook'] == 1 && check_purview('guestbook',1)){ 
         array_push($extend,['title'=>'留言管理','href'=>'expand/guestbook-admin','icon'=>'fa fa-commenting-o']);
     }
-
+    if($global_config['article'] == 1 && check_purview('article',1)){ 
+        array_push($extend,['title'=>'文章管理','href'=>'expand/article-list','icon'=>'fa fa-file-text-o']);
+    }
     if(!empty($extend)){
         $extend = ['title'=>'扩展功能','icon'=>'fa fa-folder-open-o','href'=>'','child'=> $extend];
         array_push($menu,$extend);
@@ -239,6 +241,13 @@ if(empty($page)){
     $site = unserialize(get_db('user_config','v',['uid'=>UID,'k'=>'s_site']));
     $favicon = ( !empty($site['site_icon_file'])) ? $site['site_icon'] : './favicon.ico';
     require DIR."/templates/admin/index.php";
+    exit;
+}
+
+// 插件编辑链接跳转
+if($page === 'edit_link' &&  !empty($_GET['id'])){
+    header("HTTP/1.1 302 Moved Permanently");
+    header("Location: ./index.php?c=admin&page=link_edit&u=".U."&id=".$_GET['id']);
     exit;
 }
 

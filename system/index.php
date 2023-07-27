@@ -163,7 +163,7 @@ function get_links($fid) {
         $where['LIMIT'] = $site['max_link'];
         $max_link = true;
     }
-    $links = select_db('user_links',['lid(id)','fid','property','title','url(real_url)','url_standby','description','icon','click','pid'],$where);
+    $links = select_db('user_links',['lid(id)','fid','property','title','url(real_url)','url_standby','description','icon','click','pid','extend'],$where);
     foreach ($links as $key => $link) {
         $click = false; $lock = false;
         
@@ -197,6 +197,15 @@ function get_links($fid) {
 
         //获取图标链接
         $links[$key]['ico'] = $lock ? $GLOBALS['libs'].'/Other/lock.svg' : geticourl($site['link_icon'],$link);
+    }
+    //处理扩展信息
+    if($GLOBALS['global_config']['link_extend'] == 1 && check_purview('link_extend',1) && in_array($GLOBALS['theme_info']['support']['link_extend'],["true","1"])){
+        foreach ($links as &$link) {
+            if(!empty($link['extend'])){
+                $link = array_merge ($link,unserialize($link['extend']));
+            }
+        }
+
     }
     if($max_link && $count > $site['max_link']){
         $oc_url = "./index.php?u={$u}&oc={$fid}" . (empty($_GET['theme']) ? '':"&theme={$_GET['theme']}");

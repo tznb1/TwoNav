@@ -251,6 +251,16 @@ $title='系统设置';require(dirname(__DIR__).'/header.php');
                 </div>
                 <div class="layui-form-mid layui-word-aux">自定义链接的扩展信息(需自行添加字段,目前仅用于自定义过渡页)</div>
             </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label required">文章管理</label>
+                <div class="layui-input-inline">
+                    <select name="article">
+                        <option value="0" selected="">关闭</option>
+                        <option value="1" >开启</option>
+                    </select>
+                </div>
+                <div class="layui-form-mid layui-word-aux">简易文章管理功能 ( 请勿和专业的比,暂无前端模板支持,视情况逐渐优化 )</div>
+            </div>
             
             <fieldset class="layui-elem-field layui-field-title" style="margin-top: 30px;"><legend>相关限制</legend></fieldset>
             <blockquote class="layui-elem-quote layui-text" style="">程序采用UTF8编码,一个汉字约占用3个字节!英文字母和数组占用1个字节!值为0表示不限制!<br />添加或编辑时长度超限则不允许添加,批量识别时超限则截断</blockquote>
@@ -335,7 +345,9 @@ layui.use(['jquery','form','miniTab'], function () {
     });
     //监听提交
     form.on('submit(save)', function (data) {
+        layer.msg('正在保存中,请稍后...', {icon: 16,time: 1000*300,shadeClose: false});
         $.post('./index.php?c=api&method=write_sys_settings&u='+u,data.field,function(data,status){
+            layer.closeAll();
             if(data.code == 1) {
                 if(data.msg!="保存成功"){
                     layer.alert(data.msg)

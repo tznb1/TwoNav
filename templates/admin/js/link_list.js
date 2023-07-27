@@ -376,6 +376,7 @@ layui.use(['form','table','dropdown','miniTab'], function () {
             ,{field:'name',title:'字段名',edit:'text',width:256}
             ,{field:'type',title:'类型',edit:'text',width:256}
             ,{field:'default',title:'默认值',edit:'text',width:256}
+            ,{field:'tip',title:'提示内容',edit:'text',width:256}
             ,{ title:'操作',toolbar:'#link_extend_toolbar',align:'center',width:118}
         ]]
     });
@@ -530,7 +531,7 @@ layui.use(['form','table','dropdown','miniTab'], function () {
             "title": "请输入标题",
             "name":"请输入字段名(大小写字母或数字)",
             "weight":(max_weight + 1),
-            "type":"请输入 text 或 textarea",
+            "type":"请输入 text 或 textarea 或 up_img",
             "default":""
         });
         table.reload('link_extend_list', {data: data});

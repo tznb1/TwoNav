@@ -1,6 +1,6 @@
 <?php if(!defined('DIR')){header('HTTP/1.1 404 Not Found');header("status: 404 Not Found");exit;}
 
-if ( in_array($method,['link_list','get_a_link','q_category_link','category_list','get_a_category','check_login','add_link']) && function_exists($method) ) {
+if ( in_array($method,['link_list','get_a_link','q_category_link','category_list','get_a_category','check_login','add_link','app_info','del_link','global_search']) && function_exists($method) ) {
     $method();
 }else{
     Amsg(-1,'方法未找到 >> '.$method);
@@ -42,6 +42,50 @@ function add_link(){
         insert_db('user_links',$data); 
         msgA(['code'=>0,'id'=>$lid]);
 }
+//删除链接
+function del_link(){
+    $lid = intval(trim($_REQUEST['id']));
+    if(empty($lid)){
+        msg(-1,'id不能为空');
+    }
+    $where['lid'] = $lid;
+    $where['uid'] = UID;
+    if(!has_db('user_links',$where)){
+        msg(-1,'链接id不存在');
+    }
+    delete_db('user_links',$where,[0,'删除成功']);
+}
+
+//搜索链接
+function global_search(){
+    $keyword = htmlspecialchars($_REQUEST['keyword']);
+    
+    if( strlen($keyword) < 2 ) {
+        msg(-2000,'关键字的长度太短');
+    }elseif( strlen($keyword) > 32 ) {
+        msg(-2000,'关键字长度过长');
+    }
+    
+    $where['uid'] = UID;
+    $where['status'] = 1;
+    $where['AND']['OR'] = ["title[~]" => $keyword,"url[~]" => $keyword, "url_standby[~]" => $keyword,"description[~]" => $keyword];
+    $where['ORDER'] = ['weight'=>'DESC'];
+    $field = ['lid(id)','fid','status','property','title','url','url_standby','weight','description','click','add_time','up_time'];
+    $data = select_db('user_links',$field,$where);
+    
+    // 查询出分类名称
+    $categorys = select_db('user_categorys',['cid(id)','name'],['uid'=>UID,'status'=>1]);
+    // 遍历分类，以id作为键名
+    foreach ($categorys as $category) {
+        $newCategorys[$category['id']] = $category['name'];
+    }
+    // 遍历查询的数据，然后添加父级分类名称
+    foreach ($data as $key => $value) {
+        $data[$key]['category_name'] = $newCategorys[$value['fid']];
+    }
+    
+    msgA(['code'=>0,'msg'=>'获取成功','count'=>count($data),'data'=>$data]);
+}
 //查询链接列表
 function link_list(){
     $page   = empty(intval($_REQUEST['page'])) ? 1 : intval($_REQUEST['page']);
@@ -68,7 +112,6 @@ function get_a_link(){
     $lid = intval(trim($_REQUEST['id']));
     if(empty($lid)){
         msg(-1,'id不能为空');
-        
     }
     $where['lid'] = $lid;
     $where['uid'] = UID;
@@ -133,6 +176,15 @@ function get_a_category(){
             msgA(['code'=>-1,'msg'=>'私有分类,无权查看','data'=>[]]);
         }
     }
+}
+
+function app_info(){
+    $data['php_version'] = floatval(PHP_VERSION);
+    $data['onenav_version'] = SysVer;
+    $data['cat_num'] = count_db('user_categorys',['uid'=>UID])??0;
+    $data['link_num'] = count_db('user_links',['uid'=>UID])??0;
+    $data['username'] = U;
+    msgA(['code'=>200,'msg'=>'success','data'=>$data]);
 }
 
 //是否已登录

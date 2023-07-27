@@ -5,6 +5,22 @@
     <li class="layui-timeline-item">
         <i class="layui-icon layui-timeline-axis"></i>
         <div class="layui-timeline-content layui-text">
+            <h4 class="layui-timeline-title">v2.0.32-20230727</h4>
+            <ul>
+                <li>[新增] 扩展功能新增简易文章管理 [ 半成品,尚未完善 ]</li>
+                <li>[新增] 链接自定义字段类型新增up_img,该类型支持上传1M大小的图片,权限于上传图标共享</li>
+                <li>[新增] 链接自定义字段新增提示内容</li>
+                <li>[变更] 主页模板前置处理,若模板支持链接扩展时提供扩展信息</li>
+                <li>[跟进] 支持onenav新版浏览器插件的兼容</li>
+                <li>[修复] ip统计存在异常的问题</li>
+                <li>[修复] 上传链接图标后端接口未限制大小</li>
+                <li>[修复] 在使用CDN的情况下可能出现授权验证问题</li>
+            </ul>
+        </div>
+    </li>
+    <li class="layui-timeline-item">
+        <i class="layui-icon layui-timeline-axis"></i>
+        <div class="layui-timeline-content layui-text">
             <h4 class="layui-timeline-title">v2.0.31-20230720</h4>
             <ul>
                 <li>[新增] 支持统计访问IP数,可在后台概要页报表统计展示</li>

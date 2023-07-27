@@ -11,7 +11,9 @@ foreach($_POST as $key =>$value){
         if($method =='write_site_setting' && ($key =='custom_header' || $key =='custom_footer')){
             continue;
         }
-
+        if($method == 'write_article'){
+            continue;
+        }
         if(preg_match('/<(iframe|script|body|img|layer|div|meta|style|base|object|input)/i',$value)){
             $code = 2001;
         }elseif(preg_match('/(onmouseover|onerror|onload)\=/i',$value)){

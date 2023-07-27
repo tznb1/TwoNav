@@ -555,6 +555,7 @@ function write_sys_settings(){
         'apply'=>['int'=>true,'min'=>0,'max'=>1,'msg'=>'收录管理参数错误'],
         'guestbook'=>['int'=>true,'min'=>0,'max'=>1,'msg'=>'留言管理参数错误'],
         'link_extend'=>['int'=>true,'min'=>0,'max'=>1,'msg'=>'链接扩展参数错误'],
+        'article'=>['int'=>true,'min'=>0,'max'=>1,'msg'=>'文章管理参数错误']
         ];
     $o_config = [];
     foreach ($datas as $key => $data){
@@ -575,9 +576,30 @@ function write_sys_settings(){
         if($_POST['apply'] == 1){$o_config['apply'] = 0;$filter = true;}
         if($_POST['guestbook'] == 1){$o_config['guestbook'] = 0;$filter = true;}
         if($_POST['link_extend'] == 1){$o_config['link_extend'] = 0;$filter = true;}
+        if($_POST['article'] == 1){$o_config['article'] = 0;$filter = true;}
     }
-    
-
+    //检测于下载文章管理依赖资源
+    clearstatcache();
+    if($o_config['article'] == 1 && ( !is_file('./static/wangEditor/wangEditor.js') || !is_file('./static/wangEditor/wangEditor.css'))){
+        $filePath = "./data/temp/wangEdito.tar.gz";
+        if(downFile('https://update.lm21.top/TwoNav/updata/wangEdito.tar.gz','wangEdito.tar.gz','./data/temp/')){
+            $file_md5 = md5_file($filePath);
+            if($file_md5 != "95f830656ba8972cca39a1ddd6ebaeda"){
+                unlink($filePath); 
+                msg(-1,'效验wangEdito失败<br/>!');
+            }
+        }else{
+            msg(-1,'下载wangEdito失败,请重试!<br/>如需手动安装可联系技术支持!');
+        }
+        try {
+            $phar = new PharData($filePath);
+            $phar->extractTo('./static/', null, true);
+            unlink($filePath);
+            clearstatcache();
+        } catch (Exception $e) {
+            msg(-1,'安装wangEdito失败');
+        }
+    }
 
     update_db("global_config", ["v" => $o_config], ["k" => "o_config"],[1,($filter ?"保存成功,未检测到有效授权,带*号的配置无法为你保存":"保存成功")]);
 }

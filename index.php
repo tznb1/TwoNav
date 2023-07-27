@@ -74,7 +74,7 @@ if(empty($c) || $c == 'index'){
     require "./system/login.php";//登陆
 }elseif(in_array($c,['admin','click','api','ico','icon','verify'])){
     require "./system/{$c}.php";
-}elseif(in_array($c,['apply','guestbook'])){
+}elseif(in_array($c,['apply','guestbook','article'])){
     if($global_config['Maintenance'] != 0){Amsg(-1,'网站正在进行维护,请稍后再试!');}
     require "./system/expand/{$c}.php";
 }else{

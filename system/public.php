@@ -445,10 +445,10 @@ function is_subscribe($type = 'bool'){
             $count = count($host);
             if($count != 2){
                 $data['host'] = $host[$count-2].'.'.$host[$count-1];
-                //如果存在端口则去除
-                if(preg_match("/(.+):\d+/",$data['host'],$host)) {
-                    $data['host'] = $host[1];
-                }
+            }
+            //如果存在端口则去除
+            if(preg_match("/(.+):\d+/",$data['host'],$host)) {
+                $data['host'] = $host[1];
             }
         }
         if(!stristr($data['domain'],$data['host'])){
@@ -745,15 +745,15 @@ function send_email($config){
 function count_ip(){
     $ip = Get_IP(); //取访客IP
     $k = date('Ymd'); $t = 'ip_list';
-    $ip_list = get_db('user_count','v',['uid'=>UID,'k'=>$k,'t'=>$t]); //取列表
+    $ip_list = get_db('user_count','e',['uid'=>UID,'k'=>$k,'t'=>$t]); //取列表
     $ip_list = empty($ip_list) ? [] : unserialize($ip_list); //反序列化
     //判断IP是否存在列表中
     if(!in_array($ip, $ip_list)){
         $ip_list[] = $ip; //加入列表
         if(!has_db('user_count',['uid'=>UID,'t'=>$t,'k'=>$k])){
-            insert_db("user_count", ['uid'=>UID,"k"=>$k,"v"=>$ip_list,'t'=>$t]);  
+            insert_db("user_count", ['uid'=>UID,"k"=>$k,"e"=>$ip_list,'t'=>$t]);  
         }else{
-            update_db("user_count", ["v"=>$ip_list],['uid'=>UID,'t'=>$t,'k'=>$k]); 
+            update_db("user_count", ["e"=>$ip_list],['uid'=>UID,'t'=>$t,'k'=>$k]); 
         }
         write_user_count($k,'ip_count');//访问ip数+1
     }

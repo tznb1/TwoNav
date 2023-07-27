@@ -23,7 +23,8 @@ CREATE TABLE IF NOT EXISTS "user_count" (
   "uid" integer(10) NOT NULL,
   "k" text(32) NOT NULL DEFAULT "",
   "v" integer(10) NOT NULL DEFAULT 0,
-  "t" text(32) NOT NULL DEFAULT ""
+  "t" text(32) NOT NULL DEFAULT "",
+  "e" text NOT NULL DEFAULT ""
 );
 
 -- 数据库升级记录
@@ -38,7 +39,9 @@ CREATE TABLE IF NOT EXISTS "updatadb_logs" (
 INSERT INTO "updatadb_logs" ("file_name", "update_time", "status", "extra") VALUES ('20230417.php', '1681719049', 'TRUE', '');
 INSERT INTO "updatadb_logs" ("file_name", "update_time", "status", "extra") VALUES ('20230420.php', '1681977368', 'TRUE', '');
 INSERT INTO "updatadb_logs" ("file_name", "update_time", "status", "extra") VALUES ('20230522.php', '1684762253', 'TRUE', '');
-INSERT INTO "updatadb_logs" ("file_name", "update_time", "status", "extra") VALUES ('20230715.php', '1684762253', 'TRUE', '');
+INSERT INTO "updatadb_logs" ("file_name", "update_time", "status", "extra") VALUES ('20230715.php', '1689427853', 'TRUE', '');
+INSERT INTO "updatadb_logs" ("file_name", "update_time", "status", "extra") VALUES ('20230723.php', '1690119053', 'TRUE', '');
+
 
 -- 创建用户表
 CREATE TABLE IF NOT EXISTS "global_user" (
@@ -167,7 +170,9 @@ INSERT INTO `purview_list` (`code`, `name`, `description`) VALUES
 ('link_extend', '链接扩展', '允许使用链接扩展字段'),
 ('theme_in', '主题设置', '后台显示主题设置菜单'),
 ('theme_set', '主题配置', '允许自定义主题配置'),
-('icon_pull', '图标拉取', '允许用户拉取链接图标');
+('icon_pull', '图标拉取', '允许用户拉取链接图标'),
+('article', '文章管理', '允许使用文章管理功能'),
+('article_image', '文章图片', '允许在文章编辑器上传图片');
 
 -- 注册码列表
 CREATE TABLE IF NOT EXISTS "regcode_list" (
@@ -240,4 +245,30 @@ CREATE TABLE IF NOT EXISTS "global_icon" (
   "extend" text NOT NULL DEFAULT "",
   CONSTRAINT "id" UNIQUE ("id" ASC)
 );
-
+-- 用户文章分类
+CREATE TABLE IF NOT EXISTS "user_article_categorys" (
+  "id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+  "uid" integer(10) NOT NULL,
+  "name" text NOT NULL DEFAULT "",
+  "weight" integer NOT NULL,
+  "add_time" integer(10) NOT NULL,
+  CONSTRAINT "id" UNIQUE ("id" ASC)
+);
+-- 用户文章列表
+CREATE TABLE "user_article_list" (
+  "id" integer PRIMARY KEY AUTOINCREMENT,
+  "uid" integer(10) NOT NULL,
+  "title" TEXT NOT NULL DEFAULT "",
+  "category" integer NOT NULL,
+  "state" integer(1) DEFAULT 0,
+  "password" TEXT NOT NULL DEFAULT "",
+  "top" integer(10),
+  "add_time" integer(10),
+  "up_time" integer(10),
+  "browse_count" integer DEFAULT 0,
+  "summary" TEXT,
+  "content" TEXT,
+  "cover" TEXT,
+  "extend" TEXT,
+  CONSTRAINT "id" UNIQUE ("id" ASC)
+);

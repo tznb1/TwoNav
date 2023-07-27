@@ -26,7 +26,8 @@ CREATE TABLE IF NOT EXISTS `user_count` (
   `uid` int(10) UNSIGNED NOT NULL COMMENT '用户ID',
   `k` varchar(32) NOT NULL COMMENT '键',
   `v` bigint(10) UNSIGNED DEFAULT '0' COMMENT '值',
-  `t` varchar(32) NOT NULL COMMENT '类型'
+  `t` varchar(32) NOT NULL COMMENT '类型',
+  `e` text NOT NULL DEFAULT ''
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 
@@ -46,7 +47,8 @@ INSERT INTO "updatadb_logs" ("file_name", "update_time", "status", "extra") VALU
 INSERT INTO "updatadb_logs" ("file_name", "update_time", "status", "extra") VALUES ('20230420.php', '1681977368', 'TRUE', '');
 INSERT INTO "updatadb_logs" ("file_name", "update_time", "status", "extra") VALUES ('20230518.php', '1684393068', 'TRUE', '');
 INSERT INTO "updatadb_logs" ("file_name", "update_time", "status", "extra") VALUES ('20230522.php', '1684762253', 'TRUE', '');
-INSERT INTO "updatadb_logs" ("file_name", "update_time", "status", "extra") VALUES ('20230715.php', '1684762253', 'TRUE', '');
+INSERT INTO "updatadb_logs" ("file_name", "update_time", "status", "extra") VALUES ('20230715.php', '1689427853', 'TRUE', '');
+INSERT INTO "updatadb_logs" ("file_name", "update_time", "status", "extra") VALUES ('20230723.php', '1690119053', 'TRUE', '');
 
 -- 创建用户表
 DROP TABLE IF EXISTS `global_user`;
@@ -195,7 +197,9 @@ INSERT INTO `purview_list` (`code`, `name`, `description`) VALUES
 ('link_extend', '链接扩展', '允许使用链接扩展字段'),
 ('theme_in', '主题设置', '后台显示主题设置菜单'),
 ('theme_set', '主题配置', '允许自定义主题配置'),
-('icon_pull', '图标拉取', '允许用户拉取链接图标');
+('icon_pull', '图标拉取', '允许用户拉取链接图标'),
+('article', '文章管理', '允许使用文章管理功能'),
+('article_image', '文章图片', '允许在文章编辑器上传图片');
 
 -- 注册码列表
 DROP TABLE IF EXISTS `regcode_list`;
@@ -275,3 +279,33 @@ CREATE TABLE IF NOT EXISTS `global_icon` (
   `extend` text NOT NULL COMMENT '预留扩展',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4;
+
+-- 用户文章分类
+CREATE TABLE IF NOT EXISTS `user_article_categorys` (
+  `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `uid` varchar(32) NOT NULL COMMENT '用户id',
+  `name` varchar(64) NOT NULL COMMENT '名称',
+  `weight` int(11) NOT NULL DEFAULT '0' COMMENT '权重',
+  `add_time` int(10) UNSIGNED NOT NULL COMMENT '创建时间',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4;
+
+-- 用户文章列表
+CREATE TABLE IF NOT EXISTS `user_article_list` (
+  `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `uid` varchar(32) NOT NULL COMMENT '用户id',
+  `title` text NOT NULL COMMENT '标题',
+  `category` int(10) UNSIGNED NOT NULL COMMENT '分类id',
+  `state` int(10) UNSIGNED NOT NULL COMMENT '状态',
+  `password` text NOT NULL COMMENT '访问密码',
+  `top` int(10) UNSIGNED NOT NULL COMMENT '置顶',
+  `add_time` int(10) UNSIGNED NOT NULL COMMENT '创建时间',
+  `up_time` int(10) UNSIGNED NOT NULL COMMENT '修改时间',
+  `browse_count` int(10) UNSIGNED NOT NULL COMMENT '浏览次数',
+  `summary` text NOT NULL COMMENT '摘要',
+  `content` text NOT NULL COMMENT '内容',
+  `cover` text NOT NULL COMMENT '封面',
+  `extend` text NOT NULL COMMENT '扩展',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4;
+

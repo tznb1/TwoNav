@@ -18,15 +18,17 @@ if(!empty($list)){
             echo_text($data);
         }elseif($data['type'] == 'textarea'){
             echo_textarea($data);
+        }elseif($data['type'] == 'up_img'){
+            echo_up_img($data);
         }
     }
 }
    
 function echo_text($data){ ?>
         <div class="layui-form-item">
-            <label class="layui-form-label"><?php echo $data['title']?></label>
+            <label class="layui-form-label" title="<?php echo $data['name']?>"><?php echo $data['title']?></label>
             <div class="layui-input-block">
-                <input type="text" name="_<?php echo $data['name']?>" autocomplete="off" value="<?php echo htmlentities($data['value'])?>" class="layui-input">
+                <input type="text" name="_<?php echo $data['name']?>" autocomplete="off" value="<?php echo htmlentities($data['value'])?>" placeholder="<?php echo htmlentities($data['tip'])?>" class="layui-input" >
             </div>
         </div>
 <?php 
@@ -34,13 +36,26 @@ function echo_text($data){ ?>
 
 function echo_textarea($data){ ?>
         <div class="layui-form-item">
-            <label class="layui-form-label"><?php echo $data['title']?></label>
+            <label class="layui-form-label" title="<?php echo $data['name']?>"><?php echo $data['title']?></label>
             <div class="layui-input-block">
-                <textarea name="_<?php echo $data['name']?>" class="layui-textarea"><?php echo htmlentities($data['value'])?></textarea>
+                <textarea name="_<?php echo $data['name']?>" placeholder="<?php echo htmlentities($data['tip'])?>" class="layui-textarea"><?php echo htmlentities($data['value'])?></textarea>
             </div>
         </div>
 <?php 
-}   
+}  
+
+function echo_up_img($data){ ?>
+        <div class="layui-form-item">
+            <label class="layui-form-label" title="<?php echo $data['name']?>"><?php echo $data['title']?></label>
+            <div class="layui-input-block layuimini-upload" >
+                <input type="text" name="_<?php echo $data['name']?>" autocomplete="off" class="layui-input obtn" value="<?php echo htmlentities($data['value'])?>" placeholder="<?php echo htmlentities($data['tip'])?>">
+                <div style="position: absolute; top:0px;" >
+                    <span><a class="layui-btn layui-btn-primary extend_up_img"><i class="fa fa-upload"></i> 上传</a></span>
+                </div>
+            </div>
+        </div>
+<?php 
+} 
 
 
 ?>

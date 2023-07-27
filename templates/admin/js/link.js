@@ -204,6 +204,28 @@ layui.use(module, function () {
         }
     }
     
+    
+    //链接扩展上传图片
+    upload.render({
+        elem: '.extend_up_img'
+        ,url: get_api('write_link','extend_up_img')
+        ,exts: 'jpg|jpeg|png|ico|bmp|svg'
+        ,acceptMime:  'image/*'
+        ,accept: 'file'
+        ,size: 1024 
+        ,done: function(res){
+            if(res.code == 1){
+                let inpu  = this.item.closest('.layui-form-item').find('input[name^="_"]');
+                inpu.val(res.url);
+            }else{
+                layer.msg(res.msg || '上传失败', {icon: 5});
+            }
+        },error: function(){
+            layer.msg("上传异常,请刷新重试", {icon: 5});
+        }
+    }); 
+    
+    
 //layui>end
 });
 

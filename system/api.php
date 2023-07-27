@@ -5,9 +5,10 @@ header("Access-Control-Allow-Headers: Access-Control-Allow-Private-Network,Conte
 AccessControl();
 //鉴权验证 Cookie验证通过,验证二级密码,Cookie验证失败时尝试验证token
 
+if(!empty(trim($_REQUEST['token']))){ $_COOKIE = []; } //兼容浏览器插件,避免干扰
+
 //获取请求方法
 $method = htmlspecialchars(trim($_GET['method']),ENT_QUOTES); 
-
 $LoginConfig = unserialize($USER_DB['LoginConfig']);
 if(!is_login()){
     //没登录,根据API模式来限制
@@ -21,7 +22,7 @@ if(!is_login()){
         if($api_model != 'compatible+open'){
             Amsg(-1,'非开放模式,token不能为空!'); 
         }
-        if(in_array($method,['link_list','get_a_link','q_category_link','category_list','get_a_category','check_login'])){
+        if(in_array($method,['link_list','get_a_link','q_category_link','category_list','get_a_category','check_login','app_info'])){
             define('Access_Type','open'); //数据访问类型:仅开放
             require 'api_compatible.php';
             exit;
@@ -462,7 +463,10 @@ function write_link(){
             @unlink($_FILES["file"]["tmp_name"]);
             msg(-1,'文件格式不被支持!');
         }
-        
+        //限制文件大小
+        if(filesize($_FILES["file"]["tmp_name"]) > 1 * 1024 * 1024){
+            msg(-1,'文件大小超限');
+        }
         session_start();
         $sid = $_POST['page_sid'];
         //添加链接
@@ -516,7 +520,39 @@ function write_link(){
         }else{
             msg(-1,'参数错误');
         }
-
+    //扩展上传图片
+    }elseif($_GET['type'] == 'extend_up_img'){
+        //权限检测
+        if(!check_purview('Upload_icon',1)){
+            msg(-1,'您的用户组无权限上传图片');
+        }elseif(empty($_FILES["file"]) || $_FILES["file"]["error"] > 0){
+            msg(-1,'文件上传失败');
+        }
+        
+        //取后缀并判断是否支持
+        $suffix = strtolower(end(explode('.',$_FILES["file"]["name"])));
+        if(!preg_match('/^(jpg|jpeg|png|ico|bmp|svg)$/',$suffix)){
+            @unlink($_FILES["file"]["tmp_name"]);
+            msg(-1,'文件格式不被支持!');
+        }
+        //限制文件大小
+        if(filesize($_FILES["file"]["tmp_name"]) > 1 * 1024 * 1024){
+            msg(-1,'文件大小超限');
+        }
+        //文件临时路径
+        $path = DIR . "/data/user/{$u}/upload";
+        //检测目录,不存在则创建!
+        if(!Check_Path($path)){
+            msg(-1,'创建upload目录失败,请检查权限');
+        }
+        $tmp_name = 'LE_'.uniqid().'.'.$suffix;
+        //移动文件
+        if(!move_uploaded_file($_FILES["file"]["tmp_name"],"{$path}/{$tmp_name}")) {
+            msg(-1,'上传失败,请检查目录权限');
+        }else{
+            msgA(['code'=>1,'msg'=>'上传成功','url'=>"./data/user/".U.'/upload/'.$tmp_name]);
+        }
+            
     //删除图标
     }elseif($_GET['type'] === 'del_images'){
         session_start();
@@ -875,7 +911,7 @@ function write_link(){
             if(empty($data['name']) || check_xss($data['name']) || !preg_match('/^[A-Za-z0-9]{3,18}$/',$data['name'])){
                 msgA( ['code' => -1,'msg' => '字段名错误,请输入长度3-18的字母/数字'] );
             }
-            if(!in_array($data['type'],['text','textarea'])){
+            if(!in_array($data['type'],['text','textarea','up_img'])){
                 msgA( ['code' => -1,'msg' => '类型错误'] );
             }
         }
@@ -889,7 +925,7 @@ function write_link(){
         
         $datas = [];
         foreach ($lists as $key => $data ){
-            array_push($datas,['title'=>$data['title'],'name'=>$data['name'],'weight'=>$data['weight'],'type'=>$data['type'],'default'=> "{$data['default']}"]);
+            array_push($datas,['title'=>$data['title'],'name'=>$data['name'],'weight'=>$data['weight'],'type'=>$data['type'],'default'=> "{$data['default']}",'tip'=>$data['tip']]);
         }
         //根据序号排序
         usort($datas, function($a, $b) {
@@ -1272,7 +1308,7 @@ function other_testing_link(){
 //主题下载/更新/删除
 function write_theme(){
     global $global_config;
-    $fn = $_POST['fn'];if($_GET['type'] != 'config' && !in_array($fn,['home','login','transit','register','guide'])){msg(-1,'fn参数错误');}
+    $fn = $_POST['fn'];if($_GET['type'] != 'config' && !in_array($fn,['home','login','transit','register','guide','article'])){msg(-1,'fn参数错误');}
     if($_GET['type'] == 'download'){
         is_root();
         if($global_config['offline']){msg(-1,"离线模式禁止下载主题!");} //离线模式
@@ -1393,6 +1429,8 @@ function write_theme(){
             $s_templates['login'] = $name;
         }elseif($fn == 'transit'){
             $s_templates['transit'] = $name;
+        }elseif($fn == 'article'){
+            $s_templates['article'] = $name;
         }elseif($fn == 'register'){
             $global_templates['register'] = $name;
             update_db('global_config',['v'=>$global_templates],['k'=>'s_templates'],[1,'注册模板设置成功']);
@@ -1417,7 +1455,7 @@ function write_theme(){
             msg(-1,"获取模板类型错误");
         }
         $fn = empty($GET['fn']) ? $_GET['template_type'] : $GET['fn'];
-        if(!in_array($fn,['home','login','register','transit','guide'])){
+        if(!in_array($fn,['home','login','register','transit','guide','article'])){
             msg(-1,"参数错误");
         }
         //0420 END
@@ -1617,6 +1655,8 @@ function read_data(){
         curl_setopt($ch, CURLOPT_URL, $_POST['url']);
         curl_setopt($ch, CURLOPT_TIMEOUT, 10);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+
         $start = microtime(true);
         $response = curl_exec($ch);
         $end = microtime(true);
@@ -1735,6 +1775,17 @@ function other_local_backup(){
     require DIR . '/system/UseFew/local_backup.php';
     exit;
 }
+//读文章
+function read_article(){
+    require DIR . '/system/api_article.php';
+    exit;
+}
+//写文章
+function write_article(){
+    require DIR . '/system/api_article.php';
+    exit;
+}
+
 //获取链接信息
 function other_get_link_info(){
     global $global_config;
