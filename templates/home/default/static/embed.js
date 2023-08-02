@@ -33,17 +33,19 @@ var menu = {
         var link_id = $(this).attr('id');
         link_id = link_id.replace('id_','');
         var tempwindow=window.open('_blank');
-        tempwindow.location='./index.php?c=click&id='+link_id+"&u="+u;
+        tempwindow.location = $(this).attr('link-url');
     }},
     "edit": {name: "编辑", icon: "edit",callback:function(key,opt){
         var link_id = $(this).attr('id');
         link_id = link_id.replace('id_','');
+        if(link_id == '0'){mdui.alert('非常规链接,无法操作');return true;}
         var tempwindow=window.open('_blank');
         tempwindow.location='./index.php?c=admin&page=link_edit&id='+link_id+"&u="+u;
     }},
     "delete": {name: "删除", icon: "delete",callback:function(){
         var link_id = $(this).attr('id');
         link_id = link_id.replace('id_','');
+        if(link_id == '0'){mdui.alert('非常规链接,无法操作');return true;}
         mdui.confirm('确认删除？'
             ,function(){
                 $.post(get_api('write_link','del'),{lid:link_id},function(data,status){

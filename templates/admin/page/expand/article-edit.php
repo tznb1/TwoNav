@@ -18,13 +18,6 @@ if($mode == 'edit'){
 
 $title = $mode == 'add' ? '添加文章' : '编辑文章';
 
-function echo_article_category(){
-    $where['uid'] = UID; 
-    foreach (select_db('user_article_categorys','*',$where) as $category) {
-        echo "<option value=\"{$category['id']}\">{$category['name']}</option>";
-    }
-}
-
 require dirname(__DIR__).'/header.php'  ?>
 <link href="<?php echo $libs?>/wangEditor/wangEditor.css" rel="stylesheet">
 <style type="text/css">
@@ -32,6 +25,11 @@ require dirname(__DIR__).'/header.php'  ?>
   #toolbar-container { border-bottom: 1px solid #ccc; }
   #editor-container { height: 400px; }
   .w40{width:40px;}
+  .layui-upload-drag .layui-icon{font-size: 40px;color: #c2c2c2;}
+  .layui-upload-drag{padding: 10px;}
+  .badge{display:inline-block;min-width:10px;padding:3px 7px;font-size:11px;font-weight:700;color:#fff;line-height:1;vertical-align:middle;white-space:nowrap;text-align:center;background-color:#777;border-radius:10px}
+  .bg-red{background-color:#e74c3c!important}
+  .uploads-delete-tip{position: absolute;right: 10px;font-size: 12px;}
   .layui-input-block{margin-left: 70px;}
   @media screen and (max-width: 768px) {
       .layui-input-block {margin-left: 12px;}
@@ -55,7 +53,7 @@ require dirname(__DIR__).'/header.php'  ?>
          <label class="layui-form-label w40">分类:</label>
           <div class="layui-input-block">
             <select name="category" lay-search>
-                <?php echo_article_category(); ?>
+                <?php echo_category(true); ?>
             </select>
           </div>
         </div>
@@ -75,7 +73,7 @@ require dirname(__DIR__).'/header.php'  ?>
         <div class="layui-form-item">
          <label class="layui-form-label w40">摘要:</label>
           <div class="layui-input-block">
-            <textarea name="summary" rows ="2" placeholder="文章摘要,留空时自动获取" class="layui-textarea"><?php echo $data['summary'];?></textarea>
+            <textarea name="summary" rows ="2" placeholder="文章摘要,留空时自动获取" class="layui-textarea" style="min-height: 45px;"><?php echo $data['summary'];?></textarea>
           </div>
         </div>
     
@@ -86,6 +84,17 @@ require dirname(__DIR__).'/header.php'  ?>
             <div id="editor-container"></div>
             <textarea name="content" id="content" class="layui-textarea layui-hide"><?php echo $data['content'] ?? '<p><br></p>';?></textarea>
           </div>
+        </div>
+        
+        <div class="layui-form-item">
+            <label class="layui-form-label w40">封面:</label>
+            <div class="layui-upload-drag">
+                <input type="text" name="cover_url" id="cover_url" style="display: none;" value="<?php echo $data['cover'];?>">
+                <small class="uploads-delete-tip bg-red badge" style="cursor:pointer;display: none;" id="del_cover_view">×</small>
+                <i class="up_cover layui-icon layui-icon-add-1" id="up_cover" style="padding-right: 20px; padding-left: 20px;color: #e2e2e2;"></i>
+                <p class="up_cover">上传封面</p>
+                <div id="cover_view" style="display: none;"><img src="<?php echo $data['cover'];?>" style="max-width: 196px"></div>
+            </div>
         </div>
         
       </form>
@@ -180,7 +189,7 @@ const editor = createEditor({
     mode: 'default'
 })
 
-const toolbarConfig = {excludeKeys: ['fullScreen','group-video']}
+const toolbarConfig = {excludeKeys: ['fullScreen','uploadVideo']}
 
 const toolbar = createToolbar({
     editor,
@@ -190,8 +199,9 @@ const toolbar = createToolbar({
 })
 
 
-layui.use(['form'], function () {
-    var form = layui.form;
+layui.use(['form','upload'], function () {
+    var form = layui.form,
+        upload = layui.upload;
 
 <?php if($mode == 'edit'){ ?>
     form.val('form',{category:<?php echo $data['category'];?>,state:<?php echo $data['state'];?>});
@@ -211,6 +221,55 @@ layui.use(['form'], function () {
         return false;
     });
     
+    //如果存在封面则加载
+    if($("#cover_url").val() != ''){
+        layui.$('#cover_view img').attr('src', $("#cover_url").val());
+        layui.$('#cover_view').show();
+        layui.$('#del_cover_view').show();
+        layui.$('.up_cover').hide();
+    }
+    
+    //上传
+    var uploadInst = upload.render({
+        elem: '.up_cover'
+        ,url: get_api('write_article','uploadImage')
+        ,accept: 'images'
+        ,acceptMime: 'image/*'
+        ,exts:'jpg|png|gif|bmp|jpeg|svg|webp'
+        ,size: 5*1024
+        ,done: function(res){
+            if(res.errno == 0){
+                $("#cover_url").val(res.data.url); 
+                layui.$('#cover_view img').attr('src', res.data.url);
+                layui.$('#cover_view').show();
+                layui.$('#del_cover_view').show();
+                layui.$('.up_cover').hide();
+                layer.msg('上传成功', {icon: 1});
+            }else{
+                layer.msg(res.message || '上传失败', {icon: 5});
+            }
+        },error: function(){
+            layer.msg("上传异常,请刷新重试", {icon: 5});
+        }
+    });
+    
+    //删除封面
+    $(document).on('click', '#del_cover_view', function() {
+        $.post(get_api('write_article','deleteImage'),{'path':$("#cover_url").val()},function(data,status){
+            if(data.code == 1) {
+                $("#cover_url").val(''); 
+                layui.$('#cover_view').hide();
+                layui.$('#del_cover_view').hide();
+                layui.$('.up_cover').show();
+                uploadInst.config.elem.next()[1].value = '';
+                layer.msg("删除成功",{icon:1});
+            }else{
+                layer.msg(data.msg || '未知错误',{icon: 5});
+            }
+        });
+    });
+
+
     $('#save').click(function () {
         let data = form.val('form');
         if(data.title == ''){

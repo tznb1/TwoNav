@@ -259,7 +259,7 @@ $title='系统设置';require(dirname(__DIR__).'/header.php');
                         <option value="1" >开启</option>
                     </select>
                 </div>
-                <div class="layui-form-mid layui-word-aux">简易文章管理功能 ( 请勿和专业的比,暂无前端模板支持,视情况逐渐优化 )</div>
+                <div class="layui-form-mid layui-word-aux">简易文章管理功能 ( 请勿和专业的比,首次开启时自动下载相关资源 )</div>
             </div>
             
             <fieldset class="layui-elem-field layui-field-title" style="margin-top: 30px;"><legend>相关限制</legend></fieldset>

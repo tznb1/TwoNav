@@ -1,6 +1,5 @@
 <?php if(!defined('DIR')){header('HTTP/1.1 404 Not Found');header("status: 404 Not Found");exit;}
-//登录入口
-require "./system/templates.php";
+
 //如果是Get请求则载入登录模板
 if($_SERVER['REQUEST_METHOD'] === 'GET'){
     require DIR ."/system/templates.php";

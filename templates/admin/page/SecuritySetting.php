@@ -83,10 +83,9 @@
                     <select name="api_model">
                         <option value="security" selected>安全模式</option>
                         <option value="compatible">兼容模式</option>
-                        <option value="compatible+open">兼容模式+开放</option>
                     </select>
                 </div>
-                <div class="layui-form-mid layui-word-aux">部分主题和插件需设为兼容+开放模式 <a href="javascript:;" layuimini-content-href="Token" data-title="Token"><font color="red"> 获取API ( Token )</font></a></div>
+                <div class="layui-form-mid layui-word-aux">部分主题和插件需设为兼容 <a href="javascript:;" layuimini-content-href="Token" data-title="Token"><font color="red"> 获取API ( Token )</font></a></div>
             </div>
             
             <div class="layui-form-item">

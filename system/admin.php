@@ -64,7 +64,7 @@ if($page == 'config_home'){
     $theme_config = empty($theme_config['config']) ? []:$theme_config['config'];
     
     //读取用户主题配置
-    if(!in_array($_GET['fn'],['home','login','register','transit','guide'])){
+    if(!in_array($_GET['fn'],['home','login','register','transit','guide','article'])){
         msg(-1,"参数错误");
     }
     $theme_config_db = get_db('user_config','v',['t'=>'theme_'.$_GET['fn'],'k'=>$theme,'uid'=>UID]);

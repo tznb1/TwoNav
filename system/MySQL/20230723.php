@@ -1,13 +1,5 @@
 <?php if(!defined('DIR')){header('HTTP/1.1 404 Not Found');header("status: 404 Not Found");exit;}
 $sql =<<<EOF
-CREATE TABLE IF NOT EXISTS `user_article_categorys` (
-  `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT,
-  `uid` varchar(32) NOT NULL COMMENT '用户id',
-  `name` varchar(64) NOT NULL COMMENT '名称',
-  `weight` int(11) NOT NULL DEFAULT '0' COMMENT '权重',
-  `add_time` int(10) UNSIGNED NOT NULL COMMENT '创建时间',
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4;
 
 CREATE TABLE IF NOT EXISTS `user_article_list` (
   `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT,

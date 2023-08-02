@@ -4,40 +4,28 @@ header("Access-Control-Allow-Origin: *");
 header("Access-Control-Allow-Headers: Access-Control-Allow-Private-Network,Content-Type, AccessToken, X-CSRF-Token, Authorization, Token,X-Token,X-Cid");
 AccessControl();
 //鉴权验证 Cookie验证通过,验证二级密码,Cookie验证失败时尝试验证token
-
 if(!empty(trim($_REQUEST['token']))){ $_COOKIE = []; } //兼容浏览器插件,避免干扰
 
 //获取请求方法
 $method = htmlspecialchars(trim($_GET['method']),ENT_QUOTES); 
 $LoginConfig = unserialize($USER_DB['LoginConfig']);
+$api_model = $LoginConfig['api_model']; //API模式
+
 if(!is_login()){
-    //没登录,根据API模式来限制
-    $api_model = $LoginConfig['api_model']; //API模式
-    $token = trim($_REQUEST['token']); //尝试获取令牌
-    
-    if( empty($USER_DB['Token']) && $api_model != 'compatible+open' ){
-        Amsg(-1,'未设置token'); 
+    //没登录,尝试验证token
+    if( empty($USER_DB['Token']) ){
+        msg(-1,'鉴权失败:未登录且未设置token'); 
     }
+    //获取请求token
+    $token = trim($_REQUEST['token']);
     if(empty($token)){
-        if($api_model != 'compatible+open'){
-            Amsg(-1,'非开放模式,token不能为空!'); 
-        }
-        if(in_array($method,['link_list','get_a_link','q_category_link','category_list','get_a_category','check_login','app_info'])){
-            define('Access_Type','open'); //数据访问类型:仅开放
-            require 'api_compatible.php';
-            exit;
-        }else{
-            Amsg(-1,'token为空时不允许访问此接口');
-        }
+        msg(-1,'鉴权失败:未登录且请求未携带token'); 
     }else{
         if($token === $USER_DB['Token']){
-            define('Access_Type','all');
+            //验证通过
         }else{
-            Amsg(-1,'token验证失败'); 
+            msg(-1,'鉴权失败:未登录且token错误'); 
         }
-    }
-    if($api_model === 'compatible' || $api_model ==='compatible+open'){
-        require 'api_compatible.php';
     }
 //Cookie登录验证OK,验证二级密码
 }elseif(Check_Password2($LoginConfig)){
@@ -45,9 +33,17 @@ if(!is_login()){
 }else{
     msg(-1,'请先验证二级密码!');
 }
-//是否加载扩展API
+
+//扩展API
 if($global_config['api_extend'] == 1 && is_file('./system/api_extend.php')){
     require './system/api_extend.php';
+}
+
+//兼容API
+$compatible_list = ['add_link','edit_link','del_link','link_list','get_a_link','q_category_link','category_list','get_a_category','add_category','edit_category','app_info','check_login','global_search'];
+if(in_array($api_model,['compatible','compatible+open']) && in_array($method,$compatible_list)){
+    require 'api_compatible.php';
+    exit;
 }
 
 //站长相关方法名
@@ -63,9 +59,7 @@ if(in_array($method,$root)){
 if ( preg_match("/^read_|^write_|^other_/",$method) && function_exists($method) ) {
     $method();
 }else{
-    if($api_model == 'security'){
-        Amsg(-1,'方法未找到 >> '.$method);
-    }
+    Amsg(-1,'方法未找到 >> '.$method);
 }
 
 //读分类列表
@@ -661,7 +655,7 @@ function write_link(){
             unset($data['keywords']);
         }
         //更新数据
-        update_db('user_links',$data,['uid'=>UID,'lid'=>intval($_POST['lid']) ]);
+        update_db('user_links',$data,['uid'=>UID,'lid'=>$lid ]);
         msgA(['code'=>1,'msg'=>'修改成功','icon' => $icon]);
     //删除
     }elseif($_GET['type'] === 'del'){
@@ -953,7 +947,7 @@ function write_security_setting(){
         'HttpOnly'=>['int'=>true,'min'=>0,'max'=>1,'msg'=>'HttpOnly参数错误'],
         'KeySecurity'=>['int'=>true,'min'=>0,'max'=>2,'msg'=>'Key安全参数错误'],
         'KeyClear'=>['int'=>true,'min'=>1,'max'=>60,'msg'=>'Key清理参数错误'],
-        'api_model'=>['v'=>['security','compatible','compatible+open'],'msg'=>'API模式参数错误'],
+        'api_model'=>['v'=>['security','compatible'],'msg'=>'API模式参数错误'],
         'login_page'=>['v'=>['admin','index','auto'],'msg'=>'登录成功参数错误'],
         'Password2'=>['empty'=>true]
         ];

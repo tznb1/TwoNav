@@ -245,15 +245,7 @@ CREATE TABLE IF NOT EXISTS "global_icon" (
   "extend" text NOT NULL DEFAULT "",
   CONSTRAINT "id" UNIQUE ("id" ASC)
 );
--- 用户文章分类
-CREATE TABLE IF NOT EXISTS "user_article_categorys" (
-  "id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
-  "uid" integer(10) NOT NULL,
-  "name" text NOT NULL DEFAULT "",
-  "weight" integer NOT NULL,
-  "add_time" integer(10) NOT NULL,
-  CONSTRAINT "id" UNIQUE ("id" ASC)
-);
+
 -- 用户文章列表
 CREATE TABLE "user_article_list" (
   "id" integer PRIMARY KEY AUTOINCREMENT,

@@ -192,10 +192,8 @@ body{
 				<!--定义一个卡片-->
 				<div class="mdui-card link-line mdui-hoverable CBC">
 						<!-- 如果是私有链接，则显示角标 -->
-						<?php if($link['property'] == 1 ) { ?>
-						<div class="angle">
-							<span> </span>
-						</div>
+						<?php if($link['property'] == 1 || $link['type'] == 'article') { ?>
+						<div class="angle" <?php echo $link['type'] == 'article' ? 'style="background: #000000;"':'';?>><span> </span></div>
 						<?php } ?>
 						<!-- 角标END -->
 						<a class="TFC" href="<?php echo $link['url']; ?>" target="_blank" <?php echo $protectA; ?> title = "<?php echo $link['description']; ?>">

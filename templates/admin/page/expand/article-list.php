@@ -3,14 +3,11 @@ if($global_config['article'] != 1 || !check_purview('article',1)){
     require(DIR.'/templates/admin/page/404.php');
     exit;
 }
-
+//读取设置
+$s_site = unserialize(get_db('user_config','v',['uid'=>UID,'k'=>'s_site']));
+$set['visual'] = $s_site['article_visual'] ?? '1';
+$set['icon'] = $s_site['article_icon'] ?? '1';
 $title='文章列表';
-function echo_article_category(){
-    $where['uid'] = UID; 
-    foreach (select_db('user_article_categorys','*',$where) as $category) {
-        echo "<option value=\"{$category['id']}\">{$category['name']}</option>";
-    }
-}
 require dirname(__DIR__).'/header.php'  ?>
 <body>
 <div class="layuimini-container">
@@ -22,7 +19,7 @@ require dirname(__DIR__).'/header.php'  ?>
                 <select name="category" lay-search>
                     <option value="0" selected="">全部</option>
                     <optgroup label="用户分类">
-                    <?php echo_article_category(); ?>
+                    <?php echo_category(true); ?>
                     </optgroup>
                 </select>
             </div>
@@ -63,48 +60,77 @@ require dirname(__DIR__).'/header.php'  ?>
 <!-- 表头工具栏 -->
 <script type="text/html" id="toolbar">
     <div class="layui-btn-group">
-        <button class="layui-btn layui-btn-sm layui-btn-danger layui-hide-xs" lay-event="batch_del">删除选中</button>
+        <button class="layui-btn layui-btn-sm layui-btn-danger" id="batch_operation"><span>批量操作</span><i class="layui-icon layui-icon-down layui-font-12"></i></button>
         <button class="layui-btn layui-btn-sm layui-btn-normal" lay-event="add_article">添加文章</button>
-        <button class="layui-btn layui-btn-sm layui-btn-normal" lay-event="category">分类管理</button>
+        <button class="layui-btn layui-btn-sm " lay-event="set">设置</button>
     </div>
 </script>
 <script src = "<?php echo $libs;?>/jquery/jquery-3.6.0.min.js"></script>
 <script src = "./templates/admin/js/public.js?v=<?php echo $Ver;?>"></script>
 <?php load_static('js');?>
-
-<ul class="category" style="margin-top: 18px;display:none;padding-right: 10px;padding-left: 10px;">
-    <div class="layui-btn-container">
-        <button class="layui-btn layui-btn-sm layui-btn-normal" lay-submit id="to_article_list">返回</button>
-        <button class="layui-btn layui-btn-sm layui-btn-normal" lay-submit id="add_category">添加</button>
-        <button class="layui-btn layui-btn-sm layui-btn-normal" lay-submit id="refresh_category">刷新</button>
-        <button class="layui-btn layui-btn-sm layui-btn-normal" lay-submit id="category_tip">权重提示</button>
-    </div>
-    <table id="category_list" lay-filter="category_list"></table>
-</ul>
-
-<ul class="edit_category" style="margin-top: 18px;display:none;padding-right: 10px;padding-left: 10px;">
-    <form class="layui-form" lay-filter="edit_category_form">
-        <input type="text" name="id" autocomplete="off" class="layui-input" style="display:none;">
+<!--批量修改分类-->
+<ul class="batch_category" style="margin-top: 18px;display:none;padding-right: 10px;padding-left: 10px;">
+    <form class="layui-form" lay-filter="batch_category">
         <div class="layui-form-item">
-            <label class="layui-form-label" style="width: 40px;">名称</label>
-            <div class="layui-input-block" style="margin-left: 70px">
-                <input type="text" name="name" autocomplete="off" class="layui-input">
-            </div>
-        </div>
-        <div class="layui-form-item">
-            <label class="layui-form-label" style="width: 40px;">权重</label>
-            <div class="layui-input-block" style="margin-left: 70px">
-                <input type="number" name="weight" autocomplete="off" class="layui-input">
-            </div>
-        </div>
-        <div class="layui-form-item" style="padding-top: 10px;">
+            <label class="layui-form-label">父级分类</label>
             <div class="layui-input-block">
-                <button class="layui-btn" lay-submit id="save_category">保存</button>
+                <select id="batch_category_fid">
+                    <?php echo_category(true); ?>
+                </select> 
             </div>
         </div>
+        <div class="layui-form-item">
+            <div class="layui-input-block">
+                <button class="layui-btn layui-btn-normal layui-btn-danger cancel" type="button">取消</button>
+                <button class="layui-btn" type="button" id="batch_category" >确定修改</button>
+            </div>
+        </div>
+    </form>
+</ul>
+<!--设置-->
+<ul class="set" style="margin-top: 18px;display:none;padding-right: 10px;padding-left: 10px;">
+    <form class="layui-form" lay-filter="set_form">
+        <div class="layui-form-item">
+            <label class="layui-form-label">显示文章</label>
+            <div class="layui-input-inline">
+                <select name="visual">
+                    <option value="1">显示靠前</option>
+                    <option value="2">显示靠后</option>
+                    <option value="0">隐藏</option>
+                </select>
+            </div>
+            <div class="layui-form-mid layui-word-aux">是否在主页显示文章链接</div>
+        </div>
+        
+        <div class="layui-form-item">
+            <label class="layui-form-label">链接图标</label>
+            <div class="layui-input-inline">
+                <select name="icon">
+                    <option value="0">首字图标</option>
+                    <option value="1">站点图标</option>
+                    <option value="2">文章封面</option>
+                </select>
+            </div>
+            <div class="layui-form-mid layui-word-aux">设为文章封面且无封面时显示站点图标</div>
+        </div>
+        
+        <div class="layui-form-item" style="padding-top: 10px;">
+            
+            <div class="layui-input-block">
+                <button class="layui-btn layui-btn-normal layui-btn-danger cancel">取消</button>
+                <button class="layui-btn" lay-submit id="save_set">保存</button>
+            </div>
+        </div>
+        <pre class="layui-code" >
+小提示: 
+1.文章所属分类加密时不会对文章加密 (暂不支持文章加密,不想被看到可将文章设为私有)
+2.文章所属分类私有且未登录时不显示文章链接 (通过文章链接访问不受限制,不想被看到可将文章设为私有)
+3.上传图片支持格式:jpg|png|gif|bmp|jpeg|svg 大小限制:5M
+4.编辑器中上传图片小于128KB时使用base64编码存入数据库,大于128KB时将以文件的方式上传到服务器
+5.显示文章选项中的靠前/靠后是指文章链接在所属分类下的位置,隐藏则不在主页显示
+        </pre>
    </form>
 </ul>
-
 <script>
 layui.use(['form','table','dropdown','miniTab'], function () {
     var $ = layui.jquery;
@@ -117,10 +143,9 @@ layui.use(['form','table','dropdown','miniTab'], function () {
     var state_data = ["Null","公开", "私有", "草稿", "废弃"];
     var cols=[ //表头
       {type:'checkbox'} //开启复选框
-      //,{field: 'id', title: 'ID', width:80, sort: true}
       ,{ title:'操作', toolbar: '#tablebar',width:110}
       ,{field: 'title', title: '标题', minWidth:200,templet: function(d){
-          return '<a style="color:#3c78d8" target="_blank" href="/index.php?c=article&id=' +d.id + '&u=' + u + '">'+d.title+'</a>'
+          return '<a style="color:#3c78d8" target="_blank" href="./?c=article&id=' +d.id + '&u=' + u + '" title="' + d.summary + '">'+d.title+'</a>'
       }}
       ,{field:'category',title:'分类',width:100,templet: function(d){
           return d.category_name;
@@ -153,6 +178,7 @@ layui.use(['form','table','dropdown','miniTab'], function () {
         ,method: 'post'
         ,response: {statusCode: 1 } 
         ,done: function (res, curr, count) {
+            batch_operation();//初始化批量操作菜单
             //获取当前每页显示数量.并写入本都储存
             var temp_limit = $(".layui-laypage-limits option:selected").val();
             if(temp_limit > 0 && localStorage.getItem(u + "_limit") != temp_limit){
@@ -160,7 +186,80 @@ layui.use(['form','table','dropdown','miniTab'], function () {
             }
         }
     });
-    
+    //批量操作
+    function batch_operation(){
+        dropdown.render({
+            elem: '#batch_operation',
+            data: [{
+              title: ' 修改分类 ',
+              id: 'up_category'
+            },{
+              title: '修改状态',
+              child: [{
+                  title: '设为公开',
+                  id: "up_state",
+                  value: 1
+                },{
+                  title: '设为私有',
+                  id: "up_state",
+                  value: 2
+                },{
+                    title: '设为草稿',
+                    id: "up_state",
+                  value: 3
+                },{
+                    title: '设为废弃',
+                    id: "up_state",
+                  value: 4
+                }]
+            },{
+              title: '批量删除',
+              id: 'del_article'
+            }],
+            click: function(obj){
+                let checkStatus = table.checkStatus('table').data;
+                if( checkStatus.length == 0 ) {
+                    layer.msg('未选中任何数据！');
+                    return;
+                }
+                //获取被选ID并格式化
+                tableIds = checkStatus.map(function (value) {return value.id;});
+                tableIds = JSON.stringify(tableIds);
+                //删除文章
+                if(obj.id == 'del_article'){
+                    layer.confirm('确认删除?',{icon: 3, title:'温馨提示'}, function(index){
+                        $.post(get_api('write_article','del_article'),{id:tableIds},function(data,status){
+                            if(data.code == 1) {
+                                search();
+                                layer.msg(data.msg, {icon: 1});
+                            }else{
+                                layer.msg(data.msg, {icon: 5});
+                            }
+                        });
+                    });
+                }else if(obj.id == 'up_category'){
+                    index = layer.open({type: 1,scrollbar: false,shadeClose: true,title: false ,area : ['100%', '100%'],closeBtn:0,content: $('.batch_category')});
+                }else if(obj.id == 'up_state'){
+                    $.post(get_api('write_article','up_state'),{'id':tableIds,'state_id':obj.value},function(data,status){
+                        if(data.code == 1) {
+                            search();
+                            layer.msg('操作成功', {icon: 1});
+                        }else{
+                            layer.msg(data.msg || '未知错误',{icon: 5});
+                        }
+                    });
+                }
+            }
+        });
+    }
+
+    //输入框回车事件和搜索按钮点击事件
+    $('#keyword, #search').on('keydown click', function(e) {
+        if ( (e.target.id === 'keyword' &&  e.keyCode === 13) || (e.target.id === 'search' && e.type === 'click') ) {
+          search();
+        }
+    });
+    //搜索
     function search(){
         let data = form.val('form');
         table.reload('table', {
@@ -171,16 +270,10 @@ layui.use(['form','table','dropdown','miniTab'], function () {
             ,page: {curr: 1}
         });
     }
-    
-    //关键字回车搜索
-    $('#keyword').keydown(function (e){if(e.keyCode === 13){search();}}); 
-    //搜索按钮点击
-    $('#search').on('click', function(){search();});
-    
-    //监听工具栏 - 文章列表
+    //监听工具栏
     table.on('toolbar(table)', function (obj) {
         var btn = obj.event;
-        if (btn == 'add_article') {
+        if (btn == 'add_article') { //添加文章
             layer.open({
                 title: false,
                 type: 2,
@@ -190,23 +283,21 @@ layui.use(['form','table','dropdown','miniTab'], function () {
                 shadeClose: true,
                 closeBtn:0,
                 area: ['100%', '100%'],
-                content: './index.php?c=admin&page=expand/article-edit&u=' + u,
+                content: './?c=admin&page=expand/article-edit&u=' + u,
                 end: function(){
                     search();
                 }
             });
-        }else if(btn == 'category'){
-            category_index = layer.open({type: 1,scrollbar: false,shadeClose: true,title: false ,area : ['100%', '100%'],closeBtn:0,content: $('.category'),
-                success: function(layero, index, that){
-                    category_list();
-                }
-            });
-        }else{
+        }else if(btn == 'set'){ //设置
+            index = layer.open({type: 1,scrollbar: false,shadeClose: true,title: false ,area : ['100%', '100%'],closeBtn:0,content: $('.set')});
+        }else{ //综合批量操作
+            //取选中数据
             var checkStatus = table.checkStatus(obj.config.id);
             if( checkStatus.data.length == 0 && ['LAYTABLE_COLS','LAYTABLE_EXPORT','LAYTABLE_PRINT'].indexOf(btn) == -1 ) {
                 layer.msg('未选中任何数据！');
                 return;
             }
+            //批量删除
             if(btn == 'batch_del'){
                 tableIds = checkStatus.data.map(function (value) {return value.id;});
                 tableIds = JSON.stringify(tableIds);
@@ -221,12 +312,12 @@ layui.use(['form','table','dropdown','miniTab'], function () {
                     });
                 });
             }
-            
-
         }
-
     });
-    //监听行工具 - 文章列表
+
+    
+    
+    //监听行工具
     table.on('tool(table)', function (obj) {
         let btn = obj.event;
         let data = obj.data;
@@ -251,117 +342,46 @@ layui.use(['form','table','dropdown','miniTab'], function () {
                 shadeClose: true,
                 closeBtn:0,
                 area: ['100%', '100%'],
-                content: './index.php?c=admin&page=expand/article-edit&id='+data.id+'&u=' + u,
+                content: './?c=admin&page=expand/article-edit&id='+data.id+'&u=' + u,
                 end: function(){
                     search();
                 }
             });
         }
     });
-    //监听行工具 - 分类列表
-    table.on('tool(category_list)', function (obj) {
-        let btn = obj.event;
-        let data = obj.data;
-        if (btn === 'del') {
-            layer.confirm('确认删除?',{icon: 3, title:'温馨提示'}, function(index){
-                $.post(get_api('write_article','del_category'),{id:data.id},function(data,status){
-                    if(data.code == 1) {
-                        obj.del();
-                        layer.msg(data.msg, {icon: 1});
-                    }else{
-                        layer.msg(data.msg, {icon: 5});
-                    }
-                });
-            });
-        }else if(btn === 'edit'){
-            form.val('edit_category_form', data);
-            edit_category_index = layer.open({type: 1,scrollbar: false,shadeClose: true,title: '编辑分类',area : ['auto', 'auto'],content: $('.edit_category')});
-        }
-    });
-    //添加分类
-    $('#add_category').click(function () {
-        add_category_index = layer.prompt({formType: 0,value: '',title: '请输入分类名称:',shadeClose: false,"success":function(){
-            $("input.layui-layer-input").on('keydown',function(e){
-                if(e.which == 13) {add_category();}
-            });
-        }},function(){
-            add_category()
-        }); 
-    });
-    //返回
-    $('#to_article_list').click(function () {
-        layer.close(category_index);
-        location.reload();
-    });
-    //刷新
-    $('#refresh_category').click(function () {
-        category_list();
-    });
-    //分类提示
-    $('#category_tip').click(function () {
-        layer.alert("权重越小越靠前",{title:'提示',anim: 2,closeBtn: 0});
-    });
-    
-    //编辑分类-保存
-    $('#save_category').click(function () {
-        $.post(get_api('write_article','save_category'),form.val('edit_category_form'),function(data,status){
-            $("input.layui-layer-input").val("");
+    //设置相关
+    form.val('set_form', <?php echo json_encode($set);?>);
+    $('#save_set').on('click', function(){
+        $.post(get_api('write_article','save_article_set'),form.val('set_form'),function(data,status){
             if(data.code == 1) {
-                category_list();
+                layer.close(index);
                 layer.msg('操作成功', {icon: 1});
-                layer.close(edit_category_index); 
             }else{
-                $("input.layui-layer-input").focus();
                 layer.msg(data.msg || '未知错误',{icon: 5});
             }
         });
         return false;
     });
+    //取消按钮
+    $('.cancel').click(function () {
+        layer.close(index);
+        return false;
+    });
     
-    function add_category(){
-        let name = $("input.layui-layer-input").val();
-        if(name == ''){ return false; }
-        $("*").blur();
-        let loading = layer.msg('正在添加文章分类,请稍后..', {icon: 16,time: 1000*300,shadeClose: false});
-        $.post(get_api('write_article','add_category'),{'name':name},function(data,status){
-            layer.close(loading); layer.close(add_category_index); 
-            $("input.layui-layer-input").val("");
+    //批量修改分类
+    $('#batch_category').click(function () {
+        fid = $('#batch_category_fid').val();
+        $.post(get_api('write_article','up_category'),{'id':tableIds,'category_id':fid},function(data,status){
             if(data.code == 1) {
-                category_list();
+                search();
+                layer.close(index);
                 layer.msg('操作成功', {icon: 1});
             }else{
-                $("input.layui-layer-input").focus();
                 layer.msg(data.msg || '未知错误',{icon: 5});
             }
         });
-    }
-    function category_list(){
-        table.render({
-            elem: '#category_list'
-            ,height: 'full-70'
-            ,url: get_api('read_article','category_list')
-            ,page: false 
-            ,limit:999
-            ,limits: [999]
-            ,even:true
-            ,loading:true
-            ,id:'category_list'
-            ,cols: [[ 
-                {title:'操作', toolbar: '#tablebar', width:110}
-                ,{field: 'name', title: '分类名称', minWidth:200,width:300}
-                ,{field: 'weight', title: '权重', minWidth:100,width:160}
-            ]]
-            ,method: 'post'
-            ,response: {statusCode: 1 } 
-            ,done: function (res, curr, count) {
-                //获取当前每页显示数量.并写入本都储存
-                var temp_limit = $(".layui-laypage-limits option:selected").val();
-                if(temp_limit > 0 && localStorage.getItem(u + "_limit") != temp_limit){
-                    localStorage.setItem(u + "_limit",temp_limit);
-                }
-            }
-        });
-    }
+        return false;
+    });
     
 });
 

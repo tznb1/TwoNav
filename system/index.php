@@ -77,7 +77,7 @@ $theme_ver = !Debug?$theme_info['version']:$theme_info['version'].'.'.time();
 $site['ex_theme'] = in_array($theme,['snail-nav','heimdall']); //例外主题,不支持热门网址/最新网址/输出上限
 //分类查找条件
 $categorys = []; //声明一个空数组
-$content = ['cid(id)','name','property','font_icon','icon','description'];//需要的内容
+$content = ['cid(id)','fid','name','property','font_icon','icon','description'];//需要的内容
 $where['uid'] = UID; 
 $where['fid'] = 0;
 $where['status'] = 1;
@@ -102,7 +102,7 @@ function get_category_sub($id) {
     if(!empty($share)){
         $where['cid'] = $data;
     }
-    $content = ['cid(id)','name','property','font_icon','icon','description'];
+    $content = ['cid(id)','name','fid','property','font_icon','icon','description'];
     $where['uid'] = UID;
     $where['fid'] = intval($id);
     $where['status'] = 1;
@@ -197,6 +197,7 @@ function get_links($fid) {
 
         //获取图标链接
         $links[$key]['ico'] = $lock ? $GLOBALS['libs'].'/Other/lock.svg' : geticourl($site['link_icon'],$link);
+        $links[$key]['type'] = 'link';
     }
     //处理扩展信息
     if($GLOBALS['global_config']['link_extend'] == 1 && check_purview('link_extend',1) && in_array($GLOBALS['theme_info']['support']['link_extend'],["true","1"])){
@@ -207,6 +208,30 @@ function get_links($fid) {
         }
 
     }
+    //生成文章链接, 条件:非隐藏,且主题未声明不显示文章
+    if( intval($site['article_visual'] ?? '1') > 0 && $GLOBALS['theme_info']['support']['article'] != 'notdisplay'){
+        $articles = get_article_list($fid);
+        foreach ($articles['data'] as $article) {
+            $url = "./index.php?c=article&id={$article['id']}&u={$u}";
+            if($site['article_icon'] == '1'){ //站点图标
+                $icon = $GLOBALS['favicon'];
+            }elseif($site['article_icon'] == '2' && !empty($article['cover'])){ //封面
+                $icon = $article['cover'];
+            }else{ //首字
+                $icon = './system/ico.php?text='.mb_strtoupper(mb_substr($article['title'], 0, 1));
+            }
+            $article_link = ['type'=>'article','id'=>0,'title'=>$article['title'],'url'=>$url,'real_url'=>$url,'description'=>$article['summary'],'ico'=>$icon,'icon'=>$icon];
+            //判断靠前还是靠后
+            if($site['article_visual'] == '1'){
+                array_unshift($links,$article_link);
+            }else{
+                array_push($links,$article_link);
+            }
+            
+        }
+    }
+    
+    
     if($max_link && $count > $site['max_link']){
         $oc_url = "./index.php?u={$u}&oc={$fid}" . (empty($_GET['theme']) ? '':"&theme={$_GET['theme']}");
         array_push($links,['id'=>0,'title'=>'查看全部','url'=>$oc_url,'real_url'=>$oc_url,'description'=>'该分类共有'.$count.'条数据','ico'=>'./favicon.ico']);

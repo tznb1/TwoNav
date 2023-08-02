@@ -1,9 +1,12 @@
 {
     "name":"默认",
-    "description":"待优化",
+    "description":"系统默认的文章模板,支持代码段上色,支持自适应!",
     "homepage":"https://gitee.com/tznb/TwoNav",
     "version":"2.0.0",
-    "update":"2023/07/27",
+    "update":"2023/07/01",
     "author":"TwoNav",
-    "screenshot":"https://s3.bmp.ovh/imgs/2022/04/17/8cac968a8cc8135c.png"
+    "screenshot":"https://img.lm21.top/article_default.jpg",
+    "config": {
+        "container_width":""
+    }
 }

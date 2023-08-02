@@ -23,7 +23,7 @@ function uploadImage(){
     
     //取后缀并判断是否支持
     $suffix = strtolower(end(explode('.',$_FILES["file"]["name"])));
-    if(!preg_match('/^(jpg|png|gif|bmp|jpeg|svg)$/',$suffix)){
+    if(!preg_match('/^(jpg|png|gif|bmp|jpeg|svg|webp)$/',$suffix)){
         @unlink($_FILES["file"]["tmp_name"]);
         msgA(['errno'=>-1,'message'=>'文件格式不被支持']);
     }
@@ -46,7 +46,26 @@ function uploadImage(){
         msgA(['errno'=>0,'data'=>['url'=>"./data/user/{$u}/upload/{$ym}/$tmp_name",'alt'=>$_FILES["file"]["name"],'href'=>''],'message'=>'上传成功']);
     }
 }
-
+//删除图片
+function deleteImage(){
+    global $u;
+    if(empty($_POST['path'])){
+        msg(-1,'请求参数错误');
+    }
+    $path = $_POST['path'];
+    $pattern = "/^\.\/data\/user\/{$u}\/upload\/\d{6}\/AI_[A-Za-z0-9_]+\.(jpg|png|gif|bmp|jpeg|svg|webp)$/i";
+    if(preg_match($pattern,$path) && is_file($path)){
+        @unlink($path);
+    }else{
+        msg(-1,'请求参数错误');
+    }
+    //需考虑编辑文章删除封面时未点击保存的情况
+    if(is_file($path)){
+        msg(-1,'删除失败');
+    }else{
+        msg(1,'删除成功');
+    }
+}
 //上传视频
 function uploadVideo(){
     msgA(['errno'=>-1,'message'=>'未开放']);
@@ -107,25 +126,26 @@ function article_list(){
     $limit  = empty(intval($_REQUEST['limit'])) ? 50 : intval($_REQUEST['limit']);
     $offset = ($page - 1) * $limit; //起始行号
     $where['LIMIT'] = [$offset,$limit];
-    $where['ORDER']['weight'] = 'ASC';
-    
-    $datas = select_db('user_article_list',['id','title','category','category_name','state','password','top','add_time','up_time','browse_count','summary'],$where);
 
-    $categorys = select_db('user_article_categorys',['id','name'],['uid'=>UID]);
-    
-    foreach (select_db('user_article_categorys',['id','name'],['uid'=>UID]) as $data) {
-        $categorys[$data['id']] = $data['name'];
-    }
-    
+    $datas = select_db('user_article_list',['id','title','category','state','password','top','add_time','up_time','browse_count','summary','cover'],$where);
+
+    //查询分类
+    $categorys = select_db('user_categorys',['cid(id)','name'],['uid'=>UID]);
+    $categorys = array_column($categorys,'name','id');
+    //为文章添加分类名称
     foreach ($datas as &$data) {
-        $data['category_name'] = $categorys[$data['category']];
+        $data['category_name'] = $categorys[$data['category']] ?? 'Null';
     }
     msgA(['code'=>1,'count'=>$count,'data'=>$datas]);
 }
 
 //保存文章
 function save_article(){
-    check_category($_POST['category']);$time = time();
+    if(empty($_POST['category']) || !has_db('user_categorys',['uid'=>UID,'cid'=>$_POST['category']])){
+        msg(-1,'分类不存在');
+    }
+    $time = time();
+    //id为空,添加文章
     if(empty($_POST['id'])){
         insert_db('user_article_list',[
             'uid'=>UID,
@@ -139,9 +159,10 @@ function save_article(){
             'browse_count'=>0,
             'summary'=>$_POST['summary'],
             'content'=>$_POST['content'],
-            'cover'=>'',
+            'cover'=>$_POST['cover_url'],
             'extend'=>''
-            ],[1,'保存成功']);
+        ],[1,'保存成功']);
+    //存在id,更新文章数据
     }else{
         if(!has_db('user_article_list',['uid'=>UID,'id'=>$_POST['id']])){
             msg(-1,'文章id错误');
@@ -153,7 +174,8 @@ function save_article(){
             'up_time'=>$time,
             'summary'=>$_POST['summary'],
             'content'=>$_POST['content'],
-            ],['uid'=>UID,'id'=>$_POST['id']],[1,'保存成功']);
+            'cover'=>$_POST['cover_url']
+        ],['uid'=>UID,'id'=>$_POST['id']],[1,'保存成功']);
     }
     
 
@@ -161,50 +183,40 @@ function save_article(){
 //删除文章
 function del_article(){
     $id = json_decode($_POST['id']);
-    delete_db('user_article_list',['uid'=>UID,'id'=>$id],[1,'删除成功']);
+    if(empty($id)) msg(-1,'参数错误');
+    delete_db('user_article_list',['uid'=>UID,'id'=>$id],[1,'操作成功']);
 }
-//分类列表
-function category_list(){
-    $where['uid'] = UID;
-    $where['ORDER']['weight'] = 'ASC';
-    $data = select_db('user_article_categorys',['id','name','weight','add_time'],$where);
-    msgA(['code'=>1,'count'=>count($data),'data'=>$data]);
-}
-//添加分类
-function add_category(){
-    $name = trim($_POST['name']);
-    $time = time();
-    if(empty($name)){
-        msg(-1,'分类名称不能为空');
-    }
-    if(has_db('user_article_categorys',['uid'=>UID,'name'=>$name])){
-        msg(-1,'分类名称已存在');
-    }
-    insert_db('user_article_categorys',[
-        'uid'=>UID,
-        'name'=>$name,
-        'weight'=>0,
-        'add_time'=>$time
-        ],[1,'添加成功']);
-    msg(-1,'添加失败');
-}
-//删除分类
-function del_category(){
-    check_category($_POST['id']);
-    delete_db('user_article_categorys',['uid'=>UID,'id'=>$_POST['id']],[1,'删除成功']);
-}
-//保存分类
-function save_category(){
-    check_category($_POST['id']);
-    update_db('user_article_categorys',['name'=>$_POST['name'],'weight'=>$_POST['weight']],['uid'=>UID,'id'=>$_POST['id']],[1,'更新成功']);
-}
-//检查分类
-function check_category($id){
-    if(empty($id)){
-        msg(-1,'分类ID不能为空');
-    }
-    if(!has_db('user_article_categorys',['uid'=>UID,'id'=>$id])){
+//修改分类
+function up_category(){
+    $id = json_decode($_POST['id']);
+    if(empty($id)) msg(-1,'参数错误');
+    if(empty($_POST['category_id']) || !has_db('user_categorys',['uid'=>UID,'cid'=>$_POST['category_id']])){
         msg(-1,'分类不存在');
     }
+    update_db('user_article_list',['category'=>$_POST['category_id']],['uid'=>UID,'id'=>$id],[1,'操作成功']);
 }
+//修改状态
+function up_state(){
+    $id = json_decode($_POST['id']);
+    if(empty($id)) msg(-1,'参数错误');
+    if(!in_array($_POST['state_id'],['1','2','3','4'])){
+        msg(-1,'状态参数错误');
+    }
+    update_db('user_article_list',['state'=>$_POST['state_id']],['uid'=>UID,'id'=>$id],[1,'操作成功']);
+}
+
+
+//保存设置 (与站点配置共享)
+function save_article_set(){
+    //检查配置参数
+    if(!in_array($_POST['visual'],['0','1','2']) || !in_array($_POST['icon'],['0','1','2'])){
+        msg(-1,'参数错误');
+    }
+    //读取站点配置
+    $s_site = unserialize(get_db('user_config','v',['uid'=>UID,'k'=>'s_site']));
+    $s_site['article_visual'] = $_POST['visual'];
+    $s_site['article_icon'] = $_POST['icon'];
+    update_db("user_config",["v"=>$s_site],["k"=>'s_site',"uid"=>UID],[1,'保存成功']);
+}
+
 

@@ -5,10 +5,29 @@
     <li class="layui-timeline-item">
         <i class="layui-icon layui-timeline-axis"></i>
         <div class="layui-timeline-content layui-text">
+            <h4 class="layui-timeline-title">v2.0.33-20230802</h4>
+            <ul>
+                <li>[新增] 文章编辑新增封面上传功能,插入网络视频功能</li>
+                <li>[新增] 文章列表以链接的方式展现到主页( 已登录时显示公开和私有,未登录时显示公开文章 )</li>
+                <li>[新增] 文章列表新增批量操作,支持批量删除,批量修改文章分类和状态</li>
+                <li>[修复] 文章相关功能的已知问题</li>
+                <li>[变更] 移除文章功能的独立分类机制,改为使用链接分类 ( 已存在的文章需手动更新分类 )</li>
+                <li>[变更] API接口鉴权逻辑调整,新增几个兼容API,移除API模式中的兼容+开放模式</li>
+                <li>[变更] 默认主页模板右键对查看全部或文章链接操作给出提示,给文章链接添加黑色角标</li>
+                <li>[新增] 主页模板:简约主题 ( 需将安全设置>API模式>改为兼容模式才能使用全部功能 ) 作者:涂山</li>
+                <li>[新增] 主页模板:花森主页( 自带文章浏览功能 ),作者:花森JioJio</li>
+                <li>[新增] 文章模板:挽风导航,作者:凌云</li>
+                <li>[优化] 默认文章模板样式</li>
+            </ul>
+        </div>
+    </li>
+    <li class="layui-timeline-item">
+        <i class="layui-icon layui-timeline-axis"></i>
+        <div class="layui-timeline-content layui-text">
             <h4 class="layui-timeline-title">v2.0.32-20230727</h4>
             <ul>
                 <li>[新增] 扩展功能新增简易文章管理 [ 半成品,尚未完善 ]</li>
-                <li>[新增] 链接自定义字段类型新增up_img,该类型支持上传1M大小的图片,权限于上传图标共享</li>
+                <li>[新增] 链接自定义字段类型新增up_img,该类型支持上传1M大小的图片,权限与上传图标共享</li>
                 <li>[新增] 链接自定义字段新增提示内容</li>
                 <li>[变更] 主页模板前置处理,若模板支持链接扩展时提供扩展信息</li>
                 <li>[跟进] 支持onenav新版浏览器插件的兼容</li>

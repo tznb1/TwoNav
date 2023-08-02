@@ -14,7 +14,7 @@ if(empty($s_templates)){
 }
 
 //载入辅助函数
-if(empty($c) || in_array($c,['index','click'])){
+if(empty($c) || in_array($c,['index','click','article'])){
     //将URL转换为base64编码
     function base64($url){
         $urls = parse_url($url);
@@ -98,3 +98,83 @@ if(empty($c) || in_array($c,['index','click'])){
 
 }
 
+//获取文章列表
+function get_article_list($category = 0,$limit = 0){
+    $where['uid'] = UID; 
+    if(!is_login()){
+        $where['AND']['state'] = 1; //状态筛选
+    }else{
+        $where['AND']['OR']['state'] = [1,2]; //状态筛选
+    }
+    
+    //分类筛选
+    if($category > 0){
+        $where['AND']['category'] = $category;
+    }
+    //统计条数
+    $count = count_db('user_article_list',$where);
+    //获取条数
+    if($limit > 0){
+        $where['LIMIT'] = [0,$limit];
+    }
+    //获取文章列表
+    $datas = select_db('user_article_list','*',$where);
+    
+    //查询分类
+    $categorys = select_db('user_categorys',['cid(id)','name'],['uid'=>UID]);
+    $categorys = array_column($categorys,'name','id');
+    //为文章添加分类名称
+    foreach ($datas as &$data) {
+        $data['category_name'] = $categorys[$data['category']] ?? 'Null';
+    }
+    return ['data'=>$datas,'count'=>$count];
+}
+//根据文章id获取内容
+function get_article_content($id){
+    $where['uid'] = UID;
+    if(!is_login()){
+        $where['AND']['state'] = 1; //状态筛选
+    }else{
+        $where['AND']['OR']['state'] = [1,2]; //状态筛选
+    }
+    $where['id'] = $id;
+    $data = get_db('user_article_list','*',$where);
+    $data['category_name'] = get_db('user_categorys','name',['uid'=>UID,'cid'=>$data['category']]);
+    return $data;
+}
+
+//获取分类列表
+function get_category_list($layer = false){
+    //查询条件
+    $where = [];
+    $where['uid'] = UID; 
+    $where['fid'] = 0;
+    $where['status'] = 1;
+    $where['ORDER'] = ['weight'=>'ASC'];
+    if(!is_login()){
+        $where['property'] = 0;
+    }
+    //查找一级分类
+    $content = ['cid(id)','name','property','font_icon','icon','description'];
+    $category_parent = select_db('user_categorys',$content,$where);
+    //查找二级分类
+    $categorys = [];
+    if($layer === true){
+        foreach ($category_parent as $key => $category) {
+            $where['fid'] = $category['id'];
+            $category_subitem = select_db('user_categorys',$content,$where);
+            $category['subitem_count'] = count($category_subitem);
+            $category['subitem'] = $category_subitem;
+            array_push($categorys,$category);
+        }
+    }else{
+        foreach ($category_parent as $key => $category) {
+            $where['fid'] = $category['id'];
+            $category_subitem = select_db('user_categorys',$content,$where);
+            $category['subitem_count'] = count($category_subitem);
+            array_push($categorys,$category);
+            $categorys = array_merge ($categorys,$category_subitem);
+        }
+    }
+    return $categorys;
+}

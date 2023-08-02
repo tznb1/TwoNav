@@ -280,15 +280,6 @@ CREATE TABLE IF NOT EXISTS `global_icon` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4;
 
--- 用户文章分类
-CREATE TABLE IF NOT EXISTS `user_article_categorys` (
-  `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT,
-  `uid` varchar(32) NOT NULL COMMENT '用户id',
-  `name` varchar(64) NOT NULL COMMENT '名称',
-  `weight` int(11) NOT NULL DEFAULT '0' COMMENT '权重',
-  `add_time` int(10) UNSIGNED NOT NULL COMMENT '创建时间',
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4;
 
 -- 用户文章列表
 CREATE TABLE IF NOT EXISTS `user_article_list` (

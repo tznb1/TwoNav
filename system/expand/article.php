@@ -1,4 +1,8 @@
 <?php if(!defined('DIR')){Not_Found();}AccessControl();
+if($global_config['article'] == 0 | !check_purview('article',1)){ 
+    Not_Found();
+}
+
 $id = intval($_GET['id']);
 //IP数统计
 count_ip();
@@ -7,7 +11,9 @@ if(empty($id)){Not_Found();}
 
 //查询文章
 $where['uid'] = UID;
-$where['state'] = 1; //1表示公开
+if(!is_login()){
+    $where['state'] = 1; //状态筛选
+}
 $where['id'] = $id;
 $data = get_db('user_article_list','*',$where);
 
@@ -33,6 +39,7 @@ $path = $dir_path.'/index.php';
 //检查是否存在,不存在则使用默认
 if(!is_file($path)){
     $path= DIR.'/templates/article/default/index.php';
+    $theme_dir = './templates/article/default';
 }
 
 //统计点击数
@@ -42,7 +49,7 @@ update_db("user_article_list", ["browse_count[+]"=>1],['uid'=>UID,'id'=>$id]);
 $theme_config_db = unserialize(get_db('user_config','v',['t'=>'theme_article','k'=>$s_templates['article'],'uid'=>UID]));
 
 //读取默认主题配置
-$theme_info = json_decode(@file_get_contents($dir_path.'/info.json'),true);
+$theme_info = json_decode(@file_get_contents($theme_dir.'/info.json'),true);
 $theme_config = empty($theme_info['config']) ? []:$theme_info['config'];
 $theme_ver = !Debug?$theme_info['version']:$theme_info['version'].'.'.time();
 
