@@ -951,7 +951,7 @@ function write_security_setting(){
         'login_page'=>['v'=>['admin','index','auto'],'msg'=>'登录成功参数错误'],
         'Password2'=>['empty'=>true]
         ];
-    
+    $LoginConfig = unserialize($USER_DB['LoginConfig']);
     foreach ($datas as $key => $data){
         if($data['int']){
             $LoginConfig[$key] = ($_POST[$key] >= $data['min'] && $_POST[$key] <= $data['max'])?intval($_POST[$key]):msg(-1,$data['msg']);
@@ -1210,6 +1210,65 @@ function write_user_password(){
     Set_key($USER_DB);//生成新的Key
     msg(1,'修改成功');
 }
+
+
+//读双重验证
+function read_totp(){
+    global $USER_DB;
+    if($USER_DB['Password'] !== Get_MD5_Password($_POST['Password'],$USER_DB['RegTime'])){
+        msg(-1102,'密码错误,请核对后再试！');
+    }
+    $LoginConfig = unserialize($USER_DB['LoginConfig']);
+    if(empty($LoginConfig['totp_key'])){
+        require DIR . '/system/Authenticator.php';
+        $totp = new PHPGangsta_GoogleAuthenticator();
+        $key = $totp->createSecret();
+        msgA(['code'=>2,'msg'=>'未开启双重验证','key'=> $key ]);
+    }
+    msgA(['code'=>1,'msg'=>'已开启双重验证']);
+}
+
+//写双重验证
+function write_totp(){
+    global $USER_DB;
+    if($USER_DB['Password'] !== Get_MD5_Password($_POST['Password'],$USER_DB['RegTime'])){
+        msg(-1102,'密码错误,请核对后再试！');
+    }
+    
+    if($_GET['type'] === 'delete'){ //删除双重验证
+        $LoginConfig = unserialize($USER_DB['LoginConfig']);
+        if(empty($LoginConfig['totp_key'])){
+            msgA(['code'=>-1,'msg'=>'未开启双重验证',]);
+        }
+        $LoginConfig['totp_key'] = '';
+        update_db("global_user", ["LoginConfig"=>$LoginConfig],["ID"=>UID],[1,'操作成功']); 
+    }elseif($_GET['type'] === 'set'){ //设置双重验证
+        //必填项验证
+        if(empty($_POST['key'])){
+            msgA(['code'=>-1,'msg'=>'Key不能为空']);
+        }elseif(empty($_POST['code'])){
+            msgA(['code'=>-1,'msg'=>'验证码不能为空']);
+        }
+        $LoginConfig = unserialize($USER_DB['LoginConfig']);
+        if(!empty($LoginConfig['totp_key'])){
+            msgA(['code'=>-1,'msg'=>'已开启双重验证,无法继续开启!']);
+        }
+        //载入totp库
+        require DIR . '/system/Authenticator.php';
+        $totp = new PHPGangsta_GoogleAuthenticator();
+        $checkResult = $totp->verifyCode($_POST['key'], $_POST['code'], 2);
+        if(!$checkResult){
+            msgA(['code'=>-1,'msg'=>'验证失败,请重试']);
+        }
+        //写入数据库
+        $LoginConfig = unserialize($USER_DB['LoginConfig']);
+        $LoginConfig['totp_key'] = $_POST['key'];
+        update_db("global_user", ["LoginConfig"=>$LoginConfig],["ID"=>UID],[1,'操作成功']); 
+    }else{
+        msg(-1,'请求参数有误');
+    }
+}
+
 
 //查Token
 function read_token(){

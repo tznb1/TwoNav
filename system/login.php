@@ -40,11 +40,25 @@ if(strlen($Password)!==32){
     msg(-1,"浏览器UA长度异常,请更换浏览器!");
 }
 
+$LoginConfig = unserialize( $USER_DB['LoginConfig'] );
+//开启双重验证时验证OTP验证码
+if(!empty($LoginConfig['totp_key'])){
+    if(empty($_POST['otp_code'])){
+        msgA(['code'=>-1,'msg'=>'您已开启双重验证,请输入OTP验证码']);
+    }
+    require DIR . '/system/Authenticator.php';
+    $totp = new PHPGangsta_GoogleAuthenticator();
+    $checkResult = $totp->verifyCode($LoginConfig['totp_key'], $_POST['otp_code'], 2);
+    if(!$checkResult){
+        msgA(['code'=>-1,'msg'=>'OTP验证码错误,请重试!']);
+    }
+}
+
 //计算请求密码和数据库的对比
 if(Get_MD5_Password($Password,$USER_DB["RegTime"]) === $USER_DB["Password"]){
     update_db("user_log", ["description" => "请求登录>登录成功"], ["id"=>$log_id]);
     Set_key($USER_DB);
-    $LoginConfig = unserialize( $USER_DB['LoginConfig'] );
+    
     if(empty($LoginConfig['login_page']) || $LoginConfig['login_page'] == 'admin'){
         $url = "./?c=admin&u={$USER_DB['User']}";
     }elseif($LoginConfig['login_page'] == 'index'){

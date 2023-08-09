@@ -5,6 +5,19 @@
     <li class="layui-timeline-item">
         <i class="layui-icon layui-timeline-axis"></i>
         <div class="layui-timeline-content layui-text">
+            <h4 class="layui-timeline-title">v2.0.34-20230809</h4>
+            <ul>
+                <li>[新增] 安全设置新增OTP双重验证</li>
+                <li>[模板] 所有登录模板:已开启双重验证时,支持输入OTP验证码,版本:2.0.4 </li>
+                <li>[警告] 如果您正在使用非默认登录模板,请立即更新登录模板,以免因模板不支持输入OTP验证码造成无法登录</li>
+                <li>[新增] 导出导入>清空数据>支持清空文章和上传目录(upload)</li>
+                <li>[新增] 导出导入>本地备份>支持备份和回滚文章列表</li>
+            </ul>
+        </div>
+    </li>
+    <li class="layui-timeline-item">
+        <i class="layui-icon layui-timeline-axis"></i>
+        <div class="layui-timeline-content layui-text">
             <h4 class="layui-timeline-title">v2.0.33-20230802</h4>
             <ul>
                 <li>[新增] 文章编辑新增封面上传功能,插入网络视频功能</li>

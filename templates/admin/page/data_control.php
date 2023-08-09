@@ -175,7 +175,7 @@
         </blockquote>
         
         <fieldset class="layui-elem-field layui-field-title" style="margin-top: 30px;"><legend>本地备份 (订阅可用)</legend></fieldset> 
-        <blockquote class="layui-elem-quote" style="margin-top: 10px;border-left: 2px solid #FF5722; color: #FF5722;">1.备份数据库仅保存最近20份数据<br />2.该功能仅辅助备份使用，无法确保100%数据安全，因此定期对整个站点打包备份仍然是必要的</blockquote>
+        <blockquote class="layui-elem-quote" style="margin-top: 10px;border-left: 2px solid #FF5722; color: #FF5722;">1.备份数据库仅保存最近20份数据<br />2.该功能仅辅助备份使用，无法确保100%数据安全，因此定期对整个站点打包备份仍然是必要的<br />3.不支持将新版本备份回滚到旧版本中,不建议跨数据库类型回滚</blockquote>
         <!-- 数据表格 -->
         <table class="layui-hide" id="list" lay-filter="list"></table>
         <!--本地备份备注输入-->
@@ -233,8 +233,10 @@
                         <input type="checkbox" name="TABLE[user_pwd_group]" title="加密" checked>
                         <input type="checkbox" name="TABLE[user_share]" title="分享" checked>
                         <input type="checkbox" name="TABLE[user_apply]" title="收录" checked>
+                        <input type="checkbox" name="TABLE[user_article_list]" title="文章" checked>
                         <input type="checkbox" name="FILE[MessageBoard]" title="留言" checked>
                         <input type="checkbox" name="FILE[favicon]" title="图标" checked>
+                        <input type="checkbox" name="FILE[upload]" title="上传目录(如文章图片)" checked>
                     </div>
                 </div>
                 <div class="layui-form-item">

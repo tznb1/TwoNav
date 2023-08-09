@@ -47,7 +47,7 @@ if(!defined('DIR')){
         $info['file_db'] = $info['backup_dir'] .'/'. $info['file'].'.db3';
         $info['file_info'] = $info['backup_dir'] .'/'. $info['file'].'.info';
         $info['file_gz'] = $info['backup_dir'] .'/'. $info['file'].'.tar';
-        $info['table_arr'] = ['user_config','user_categorys','user_links','user_pwd_group','user_apply','user_share'];
+        $info['table_arr'] = ['user_config','user_categorys','user_links','user_pwd_group','user_apply','user_share','user_article_list'];
         $info['lock'] = DIR.'/data/user/'.U.'/lock.'.UID;
         if (!extension_loaded('phar')) {
             msg(-1,'不支持phar扩展');
@@ -167,7 +167,7 @@ if(!defined('DIR')){
                 }
                 
                 //遍历删除用户数据
-                $info['table_arr'] = ['user_config','user_categorys','user_links','user_pwd_group','user_apply','user_share'];
+                $info['table_arr'] = ['user_config','user_categorys','user_links','user_pwd_group','user_apply','user_share','user_article_list'];
                 foreach($info['table_arr'] as $table_name){
                     
                     //删除数据
@@ -186,8 +186,15 @@ if(!defined('DIR')){
                         $where['name'] = $table_name;
                         $where['LIMIT'] = [($page - 1) * $limit,$limit];
                         $datas = $MyDB->select('backup','data',$where);
-                        foreach($datas as $data){
+                        foreach($datas as $key => $data){
                             $data = unserialize($data);
+                            //处理null
+                            foreach ($data as $key => $value) {
+                                if ($value === null) {
+                                    $data[$key] = ''; 
+                                }
+                            }
+                            
                             if(isset($data['id'])){
                                 unset($data['id']);
                             }

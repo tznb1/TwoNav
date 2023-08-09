@@ -1,4 +1,5 @@
-<?php if(!defined('DIR')){header('HTTP/1.1 404 Not Found');header("status: 404 Not Found");exit;}?>
+<?php if(!defined('DIR')){header('HTTP/1.1 404 Not Found');header("status: 404 Not Found");exit;}
+$LoginConfig = unserialize($USER_DB['LoginConfig']);?>
 <!DOCTYPE html>
 <html>
 <head>
@@ -29,16 +30,21 @@
         <form class="layui-form login-bottom">
             <div class="center">
                 <div class="item">
-                    <span class="icon icon-2"></span>
+                    <span class="icon layui-icon layui-icon-username"></span>
                     <input type="text" name="User" lay-verify="required"  placeholder="请输入账号">
                 </div>
 
                 <div class="item">
-                    <span class="icon icon-3"></span>
+                    <span class="icon layui-icon layui-icon-password"></span>
                     <input type="password" name="Password" lay-verify="required"  placeholder="请输入密码">
                     <span class="bind-password icon icon-4"></span>
                 </div>
-
+<?php if(!empty($LoginConfig['totp_key'])){ ?>
+                <div class="item">
+                    <span class="icon layui-icon layui-icon-vercode"></span>
+                    <input type="text" name="otp_code" lay-verify="required"  placeholder="请输入OTP验证码">
+                </div>
+<?php }?>
             </div>
             <div class="tip">
 <?php

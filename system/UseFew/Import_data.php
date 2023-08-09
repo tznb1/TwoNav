@@ -392,7 +392,7 @@ if($_GET['type'] == 'upload'){
     }
     //数据库清除
     if(!empty($_POST['TABLE'])){
-        $TABLE = ["user_categorys","user_links","user_pwd_group","user_share","user_apply"];
+        $TABLE = ["user_categorys","user_links","user_pwd_group","user_share","user_apply","user_article_list"];
         foreach($_POST['TABLE'] as $key =>$value){
             if(in_array($key,$TABLE)){
                 delete_db($key,['uid'=>UID]);
@@ -418,7 +418,7 @@ if($_GET['type'] == 'upload'){
     
     //文件删除
     if(!empty($_POST['FILE'])){
-        $FILE = ["MessageBoard","favicon"];
+        $FILE = ["MessageBoard","favicon","upload"];
         foreach($_POST['FILE'] as $key =>$value){
             $path = DIR.'/data/user/'.U.'/'.$key;
             if(in_array($key,$FILE) && is_dir($path)){
