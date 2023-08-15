@@ -129,7 +129,6 @@ function get_links($fid) {
     $where['ORDER']['lid'] = 'ASC';
     if(!is_login){
         $where['property'] = 0;
-
     }
     //书签分享>私有可见
     if(isset($share['pv']) && $share['pv'] == 1){

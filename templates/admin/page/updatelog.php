@@ -5,6 +5,21 @@
     <li class="layui-timeline-item">
         <i class="layui-icon layui-timeline-axis"></i>
         <div class="layui-timeline-content layui-text">
+            <h4 class="layui-timeline-title">v2.0.35-20230816</h4>
+            <ul>
+                <li>[新增] Atool工具箱增加关闭OTP双重验证选项(删OTP),用于解决站长丢失OTP令牌造成无法登录</li>
+                <li>[新增] 用户管理支持关闭OTP双重验证选项,用于站长帮助用户关闭OTP双重验证</li>
+                <li>[优化] 邮件配置发送人只填发送人名称未按要求格式填写邮箱时由系统自动完成拼接</li>
+                <li>[优化] 文章管理特定情况造成缺少资源时提醒用户如何解决</li>
+                <li>[模板] 新增爱导航V1主页模板,轻量化设计简洁不卡顿/支持缓存/自适应/站内搜索,适合书签多的用户使用</li>
+                <li>[模板] WebStack-Hugo主页模板新增:夜间背景图/炫彩横幅</li>
+                <li>[模板] 修复默认过度模板兼容问题</li>
+            </ul>
+        </div>
+    </li>
+    <li class="layui-timeline-item">
+        <i class="layui-icon layui-timeline-axis"></i>
+        <div class="layui-timeline-content layui-text">
             <h4 class="layui-timeline-title">v2.0.34-20230809</h4>
             <ul>
                 <li>[新增] 安全设置新增OTP双重验证</li>

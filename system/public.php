@@ -713,10 +713,10 @@ function send_email($config){
         $mail->SMTPSecure = $config['secure'];
         $mail->Port = intval($config['port']);
         
-        if(preg_match('/(.+)<(.+)>/', $config['sender'], $match)){
+        if(preg_match('/(.+)<(.+@.+)>$/', $config['sender'], $match)){
             $mail->setFrom($match[2],$match[1]);
         }else{
-            $mail->setFrom($config['sender']);
+            $mail->setFrom($config['user'],empty($config['sender'])?'TwoNav':$config['sender']);
         }
         
         $mail->addAddress($config['addressee']); //收件人

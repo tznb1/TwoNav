@@ -165,6 +165,14 @@ if(!empty($_GET['type'])){
         update_db("user_login_info", ["user" => $_POST['new_user_name']], ["user" => $USER['User']]);
         update_db("user_log", ["user" => $_POST['new_user_name']], ["user" => $USER['User']]);
         update_db("global_user", ["User" => $_POST['new_user_name']], ["ID" => $_POST['ID']],[1,'操作成功']);
+    }elseif($_GET['type'] == 'del_otp'){
+        $user_data = get_db('global_user','*',['ID'=>$_POST['ID']]);
+        $LoginConfig = unserialize($user_data['LoginConfig']);
+        if(empty($LoginConfig['totp_key'])){
+            msgA(['code'=>-1,'msg'=>'当前账号未开启OTP双重验证']);
+        }
+        $LoginConfig['totp_key'] = '';
+        update_db("global_user", ["LoginConfig" => $LoginConfig], ["ID" => $_POST['ID']],[1,'操作成功']);
     }
     
     msgA(['code'=>-1,'msg'=>'请求类型错误']);
@@ -267,6 +275,7 @@ function echo_Atool(){
         <a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="set_pwd">改密码</a>
         <a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="set_root">设站长</a>
         <a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="set_user_name">改账号</a>
+        <a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="del_otp" title="移除OTP登录验证">删OTP</a>
     </div>
 </script>
 <script src="../static/Layui/v2.8.10/layui.js"></script>
@@ -280,7 +289,7 @@ function echo_Atool(){
         var table = layui.table;
         var cols = [[
             {field:'ID',title:'ID',width:60,sort:true}
-            ,{title:'操作',toolbar:'#tablebar',width:175}
+            ,{title:'操作',toolbar:'#tablebar',width:220}
             ,{field:'User',title:'账号',minWidth:120,templet:function(d){
                 return '<a style="color:#3c78d8" title="打开用户主页" target="_blank" href="../?u='+d.User+'">'+d.User+'</a>'
             }}
@@ -358,6 +367,14 @@ function echo_Atool(){
                             layer.msg(data.msg, {icon: 5});
                         }
                     });
+                });
+            }else if(obj.event == 'del_otp'){
+                $.post('./ATool.php?type=del_otp',{ID:data.ID},function(data,status){
+                    if(data.code == 1) {
+                        layer.msg(data.msg, {icon: 1});
+                    }else{
+                        layer.msg(data.msg, {icon: 5});
+                    }
                 });
             }
         });

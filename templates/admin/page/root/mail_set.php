@@ -56,9 +56,9 @@ $title='系统设置';require(dirname(__DIR__).'/header.php');
             <div class="layui-form-item">
                 <label class="layui-form-label">发送人</label>
                 <div class="layui-input-inline">
-                    <input type="text" name="sender" lay-verify="required" lay-reqtext="发送人邮箱不能为空" placeholder='' autocomplete="off" class="layui-input">
+                    <input type="text" name="sender" lay-verify="required" lay-reqtext="发送人名称不能为空" placeholder='' autocomplete="off" class="layui-input">
                 </div>
-                <div class="layui-form-mid layui-word-aux">例如: TwoNav书签&lt;test@qq.com&gt;</div>
+                <div class="layui-form-mid layui-word-aux">例如: TwoNav</div>
             </div>
             
             <div class="layui-form-item">

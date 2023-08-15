@@ -3,6 +3,12 @@ if($global_config['article'] != 1 || !check_purview('article',1)){
     require(DIR.'/templates/admin/page/404.php');
     exit;
 }
+if(!is_file(DIR.'/static/wangEditor/wangEditor.css') || !is_file(DIR.'/static/wangEditor/wangEditor.js')){
+    $content = '由于缺少静态资源,当前无法加载编辑器!<br />如果您是站长,请在系统设置页面点击确定保存,系统将自动下载相关资源!<br />如果您是用户,请联系站长处理或耐心等候!';
+    require DIR.'/templates/admin/page/404.php';
+    exit;
+}
+
 $article_id = Get('id');
 $mode = empty($article_id) ? 'add' : 'edit' ;
 

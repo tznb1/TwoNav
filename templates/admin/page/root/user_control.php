@@ -35,6 +35,7 @@ $user_groups = select_db('user_group',['id','code','name'],'');
 <script type="text/html" id="user_tool">
         <div class="layui-btn-group">
             <button class="layui-btn layui-btn-sm layui-btn-danger" lay-event="Del">删除</button>
+            <button class="layui-btn layui-btn-sm layui-btn-danger" lay-event="Del_OTP" title="移除OTP双重验证">移除OTP验证</button>
             <button class="layui-btn layui-btn-sm" lay-event="register" <?php  echo $global_config['RegOption'] == 0? 'style = "display:none;"':'' ?> >注册账号</button>
             <button class="layui-btn layui-btn-sm" lay-event="set_UserGroup">设用户组</button>
             <button class="layui-btn layui-btn-sm" lay-event="username_retain">账号保留</button>
@@ -163,6 +164,16 @@ layui.use(['table','layer','form'], function () {
         }else if(event == 'set_UserGroup'){
             IDs = tableIds;
             index = layer.open({type: 1,scrollbar: false,shadeClose: true,title: '修改用户组',area : ['100%', '100%'],content: $('.set_UserGroup')});
+        }else if(event == 'Del_OTP'){
+            layer.alert("以下账号将被移除OTP双重验证,确定继续吗?<br />"+table_Users,{icon:3,title:'确认操作',anim: 2,closeBtn: 0,btn: ['确定','取消']},function () {
+                $.post(get_api('write_user_info','Del_OTP'),{ID:tableIds},function(data,status){
+                    if(data.code == 1){
+                        layer.msg(data.msg,{icon: 1})
+                    } else{
+                        layer.msg(data.msg,{icon: 5});
+                    }
+                });
+            });
         }
     });
     //行工具

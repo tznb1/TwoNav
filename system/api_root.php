@@ -352,6 +352,25 @@ function write_user_info(){
         delete_db('global_user',["ID" => $uids]);
         msg(1,'删除成功');
         break;
+    //删除OTP验证
+    case "Del_OTP":
+        $uids = json_decode($_POST['ID']);
+        $USER_S = select_db('global_user',['LoginConfig','ID','User'],['ID'=>$uids]);
+        $fail = 0;
+        foreach($USER_S as $USER){
+            $LoginConfig = unserialize($USER['LoginConfig']);
+            if(empty($LoginConfig['totp_key'])){
+                $fail ++;
+                continue;
+            }
+            $LoginConfig['totp_key'] = '';
+            update_db("global_user", ["LoginConfig" => $LoginConfig], ["ID" => $USER['ID']]);
+        }
+        if($fail > 0){
+            msg(1,'操作完毕,有'.$fail.'个账号未开启OTP双重验证');
+        }
+        msg(1,'操作成功');
+        break;
     //设用户组
     case "set_UserGroup":
         if(empty($_POST['UserGroup'])){
