@@ -242,7 +242,7 @@ require 'header.php';
                         <div class="layui-card">
                             <div class="layui-card-header">
                                 <div style="display: flex; justify-content: space-between;">
-                                    <div><i class="fa fa-line-chart icon"></i>报表统计</div>
+                                    <div id="tongji" style="cursor: pointer;"><i class="fa fa-line-chart icon" ></i>报表统计</div>
                                     <div>
                                         <button class="layui-btn layui-btn-primary echarts" style="border: none;display:none;"><span>最近7天</span><i class="layui-icon layui-icon-down layui-font-12"></i></button>
                                     </div>
@@ -359,6 +359,26 @@ if($USER_DB['UserGroup'] == 'root'){
           }
         });
         
+        $('#tongji').on('click', function(){
+            $.post('./index.php?c=api&method=read_data&date='+home_echarts+'&type=tongji_ip_list&u='+u,function(data,status){
+                if(data.code == 1){
+                    var content = '<table class="layui-table" border="1"><thead><tr><th>日期</th><th>IP列表</th></tr></thead><tbody>';
+                    $.each(data.data, function (date, ipAddresses) {
+                        content += '<tr><td>' + date + '</td><td>';
+                        $.each(ipAddresses, function (index, ipAddress) {
+                            content += ipAddress + '<br>';
+                        });
+                        content += '</td></tr>';
+                    });
+                    content += '</tbody></table>';
+                    layer.open({
+                        title: '访问IP列表',
+                        content: content,
+                        area: ['100%', '100%']
+                    });
+                }
+            });
+        });
         //加载报表统计
         function load_echarts(){
             var echartsRecords = echarts.init(document.getElementById('echarts-records'), 'walden');

@@ -5,6 +5,20 @@
     <li class="layui-timeline-item">
         <i class="layui-icon layui-timeline-axis"></i>
         <div class="layui-timeline-content layui-text">
+            <h4 class="layui-timeline-title">v2.0.36-20230823</h4>
+            <ul>
+                <li>[修复] 判断是否显示收录的逻辑错误(导致设为无需审核时不显示)</li>
+                <li>[变更] 移除2个链接图标API,因稳定性欠佳</li>
+                <li>[修复] WebStack-Hugo主页模板悬停提示不显示</li> 
+                <li>[新增] 挽风导航主页模板(内置文章模板/拟态风格),注:内置文章模板在预览状态下是不生效的!</li>
+                <li>[新增] 挽风导航登录模板/过度模板</li>
+                <li>[新增] 后台概要页可以点击报表统计获取访问的IP列表</li>
+            </ul>
+        </div>
+    </li>
+    <li class="layui-timeline-item">
+        <i class="layui-icon layui-timeline-axis"></i>
+        <div class="layui-timeline-content layui-text">
             <h4 class="layui-timeline-title">v2.0.35-20230816</h4>
             <ul>
                 <li>[新增] Atool工具箱增加关闭OTP双重验证选项(删OTP),用于解决站长丢失OTP令牌造成无法登录</li>

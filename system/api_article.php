@@ -3,7 +3,7 @@
 $type = htmlspecialchars(trim($_GET['type']),ENT_QUOTES); 
 
 if (function_exists($type) ) {
-    if($GLOBALS['global_config']['article'] != 1 || !check_purview('article',1)){
+    if($GLOBALS['global_config']['article'] < 1 || !check_purview('article',1)){
         msg(-1,'无权限');
     }
     $type();

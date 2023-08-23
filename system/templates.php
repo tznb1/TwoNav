@@ -28,7 +28,7 @@ if(empty($c) || in_array($c,['index','click','article'])){
     function is_apply(){
         global $global_config;
         $apply_user = unserialize( get_db("user_config", "v", ["k" => "apply","uid"=>UID]));
-        return ($global_config['apply'] == 1 && $apply_user['apply'] == 1);
+        return ($global_config['apply'] == 1 && $apply_user['apply'] > 0);
     }
     //是否启用留言
     function is_guestbook(){

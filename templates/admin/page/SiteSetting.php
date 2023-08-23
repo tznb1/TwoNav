@@ -69,15 +69,16 @@
                 <label class="layui-form-label">链接图标</label>
                 <div class="layui-input-inline" >
                     <select name="link_icon">
-                        <option value="0" selected>离线图标</option>
+                        <option value="0" selected>离线图标(首字图标)</option>
                         <option value="20" >本地服务</option>
                         <option value="21" >本地服务(伪静态)</option>
                         <option value="2" >favicon.png.pub (小图标)</option>
-                        <option value="4" >api.15777.cn</option>
-                        <option value="5" >favicon.cccyun.cc</option>
+                        <!--<option value="4" >api.15777.cn</option>-->
+                        <!--<option value="5" >favicon.cccyun.cc</option>-->
                         <option value="6" >api.iowen.cn</option>
                         <!--<option value="7" >toolb.cn</option>-->
                         <!--<option value="8" >apis.jxcxin.cn</option>-->
+                        <!--<option value="9" >ico.kucat.cn</option>-->
                     </select>
                 </div>
                 <div class="layui-form-mid layui-word-aux">所有API接口均由其他大佬提供!若有异常请尝试更换接口!</div>

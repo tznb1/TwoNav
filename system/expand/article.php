@@ -1,5 +1,5 @@
 <?php if(!defined('DIR')){Not_Found();}AccessControl();
-if($global_config['article'] == 0 | !check_purview('article',1)){ 
+if($global_config['article'] < 1 | !check_purview('article',1)){ 
     Not_Found();
 }
 

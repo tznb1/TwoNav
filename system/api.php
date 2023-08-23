@@ -1820,6 +1820,22 @@ function read_data(){
         
         $data = ['dates'=>$dates,'day_data'=>$day_data];
         msgA(['code'=>1,'data'=>$data]);
+    }elseif($_GET['type'] == 'tongji_ip_list'){
+        $days = isset($_GET['date']) && !empty($_GET['date']) ? $_GET['date'] : 7;
+        $dates = [];
+        for ($i = 0; $i < $days; $i++) {
+            $date = date('Ymd', strtotime("-$i days"));
+            $dates[] = $date;
+        }
+        
+        $dates = array_reverse($dates);
+        $day_data = [];
+        foreach ($dates as $date) {
+            $list = get_db('user_count', 'e', ['uid' => UID, 'k' => $date, 't' => 'ip_list']);
+            $list = unserialize($list);
+            $day_data[$date] = empty($list) ? [] : $list ;
+        }
+        msgA(['code'=>1,'data'=>$day_data]);
     }
 }
 

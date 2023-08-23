@@ -1,5 +1,5 @@
 <?php 
-if($global_config['article'] != 1 || !check_purview('article',1)){
+if($global_config['article'] < 1 || !check_purview('article',1)){
     require(DIR.'/templates/admin/page/404.php');
     exit;
 }

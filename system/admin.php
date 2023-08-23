@@ -208,7 +208,7 @@ if ($page == 'menu') {
     if($global_config['guestbook'] == 1 && check_purview('guestbook',1)){ 
         array_push($extend,['title'=>'留言管理','href'=>'expand/guestbook-admin','icon'=>'fa fa-commenting-o']);
     }
-    if($global_config['article'] == 1 && check_purview('article',1)){ 
+    if($global_config['article'] > 0 && check_purview('article',1)){ 
         array_push($extend,['title'=>'文章管理','href'=>'expand/article-list','icon'=>'fa fa-file-text-o']);
     }
     if(!empty($extend)){
