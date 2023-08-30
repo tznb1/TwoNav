@@ -11,7 +11,9 @@ if(!is_login){
     exit;
 }//已登录,检查是否需要验证二级密码
 elseif(!empty($LoginConfig['Password2']) && !Check_Password2($LoginConfig)){
-    require DIR.'/templates/admin/other/verify_pwd2.php';
+    $c = 'verify';$_GET['c'] = 'pwd2';
+    require DIR."/system/templates.php";
+    require $index_path;
     exit;
 }
 
@@ -64,7 +66,7 @@ if($page == 'config_home'){
     $theme_config = empty($theme_config['config']) ? []:$theme_config['config'];
     
     //读取用户主题配置
-    if(!in_array($_GET['fn'],['home','login','register','transit','guide','article'])){
+    if(!in_array($_GET['fn'],['home','login','register','transit','guide','article','verify','guestbook','apply'])){
         msg(-1,"参数错误");
     }
     $theme_config_db = get_db('user_config','v',['t'=>'theme_'.$_GET['fn'],'k'=>$theme,'uid'=>UID]);
@@ -176,64 +178,6 @@ if( $page == 'theme_home' || $page == 'theme_login' || $page == 'theme_transit' 
             define('referrer',$data['referrer']);
         }
     }
-}
-
-
-//菜单接口
-if ($page == 'menu') {
-    $menu = [];
-    if(check_purview('site_info',1)){
-        array_push($menu,['title'=>'站点设置','href'=>'SiteSetting','icon'=>'fa fa-cog']);
-    }
-    if(check_purview('theme_in',1)){
-        array_push($menu,['title'=>'主题设置','href'=>'theme_home','icon'=>'fa fa-magic']);
-    }
-    array_push($menu,
-        ['title'=>'分类管理','href'=>'category_list','icon'=>'fa fa-list-ul'],
-        ['title'=>'加密管理','href'=>'pwd_group','icon'=>'fa fa-lock'],
-        ['title'=>'链接管理','icon'=>'fa fa-folder-open-o','href'=>'','child'=>
-          [
-            ['title'=>'链接列表','href'=>'link_list','icon'=>'fa fa-link'],
-            ['title'=>'添加链接','href'=>'link_add','icon'=>'fa fa-plus-square-o'],
-            ['title'=>'书签分享','href'=>'share','icon'=>'fa fa-external-link'],
-            ['title'=>'导出导入','href'=>'data_control','icon'=>'fa fa-retweet'],
-          ]
-        ]);
-    
-    //扩展功能
-    $extend = [];
-    if($global_config['apply'] == 1 && check_purview('apply',1)){
-        array_push($extend,['title'=>'收录管理','href'=>'expand/apply-admin','icon'=>'fa fa-pencil']);
-    }
-    if($global_config['guestbook'] == 1 && check_purview('guestbook',1)){ 
-        array_push($extend,['title'=>'留言管理','href'=>'expand/guestbook-admin','icon'=>'fa fa-commenting-o']);
-    }
-    if($global_config['article'] > 0 && check_purview('article',1)){ 
-        array_push($extend,['title'=>'文章管理','href'=>'expand/article-list','icon'=>'fa fa-file-text-o']);
-    }
-    if(!empty($extend)){
-        $extend = ['title'=>'扩展功能','icon'=>'fa fa-folder-open-o','href'=>'','child'=> $extend];
-        array_push($menu,$extend);
-    }
-
-    //如果是管理员则追加菜单
-    if($USER_DB['UserGroup'] == 'root'){
-        array_push($menu,
-        ['title'=>'网站管理','icon'=>'fa fa-wrench','href'=>'','child'=>
-          [
-            ['title'=>'系统设置','href'=>'root/sys_setting','icon'=>'fa fa-gears'],
-            ['title'=>'授权管理','href'=>'root/vip','icon'=>'fa fa-diamond'],
-            //['title'=>'默认设置','href'=>'root/default_setting','icon'=>'fa fa-heart-o'],
-            ['title'=>'用户管理','href'=>'root/user_control','icon'=>'fa fa-user'],
-            ['title'=>'用户分组','href'=>'root/users_control','icon'=>'fa fa-users'],
-            ['title'=>'注册管理','href'=>'root/reg_control','icon'=>'fa fa-user-plus'],
-            ['title'=>'站长工具','href'=>'root/tool','icon'=>'fa fa-exclamation-triangle'],
-          ]
-        ]);
-    }
-    $init = array( 'homeInfo'=>['title'=>'概要','href'=>'home'],'logoInfo'=>['title'=>'TwoNav','image'=>'./templates/admin/img/logo.png','href'=>'./?u='.U],'menuInfo'=>$menu);
-    header('Content-Type:application/json; charset=utf-8');
-    exit(json_encode($init));
 }
 
 //不带参数是载入框架

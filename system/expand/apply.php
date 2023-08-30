@@ -18,7 +18,8 @@ if ( $apply['apply'] == 0 ){
 }
 //get请求载入页面
 if($_SERVER['REQUEST_METHOD'] === 'GET'){
-    require DIR.'/templates/admin/page/expand/apply-user.php';
+    require DIR."/system/templates.php";
+    require($index_path);
     exit;
 }
 //载入提示页

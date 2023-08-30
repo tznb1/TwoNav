@@ -23,8 +23,8 @@ switch ($type) {
         break;
     case "pwd2":
         $LoginConfig = unserialize($USER_DB['LoginConfig']);
-        if($_POST['Password2'] === $LoginConfig['Password2']){
-            setcookie($USER_DB['User'].'_Password2', md5($USER_DB['Password'].$_COOKIE[U.'_key'].$_POST['Password2']), 0,'','',false,true);
+        if($_POST['Password'] === $LoginConfig['Password2']){
+            setcookie($USER_DB['User'].'_Password2', md5($USER_DB['Password'].$_COOKIE[U.'_key'].$_POST['Password']), 0,'','',false,true);
             msg(1,'二级密码正确!');
         }else{
             msg(-1,'二级密码错误!');
@@ -32,7 +32,7 @@ switch ($type) {
         break;
     case "link_pwd":
         //读取链接信息
-        $link = get_db('user_links',['pid','fid','property'],['uid'=>UID,'lid'=>$_POST['id'],'status'=>1]);
+        $link = get_db('user_links',['pid','fid','property'],['uid'=>UID,'lid'=>$_GET['id'],'status'=>1]);
         if(empty($link)){
             msg(-1,'链接不存在'); //查找链接失败
         }
@@ -44,7 +44,7 @@ switch ($type) {
             }
             if($password == $_POST['Password']){
                 session_start();
-                $_SESSION['verify']['link'][$_POST['id']] = $password;
+                $_SESSION['verify']['link'][$_GET['id']] = $password;
                 msg(1,'验证通过');
             }else{
                 msg(-1,'密码错误!');

@@ -62,7 +62,7 @@ require dirname(__DIR__).'/header.php'  ?>
         <div class="layui-form-item ">
          <label class="layui-form-label w40">标题:</label>
           <div class="layui-input-block">
-           <input class="layui-input" name="title" placeholder='请输入文章标题' autocomplete="off" value="<?php echo $data['title'];?>">
+           <input class="layui-input" name="title" placeholder='请输入文章标题' autocomplete="off" value="<?php echo htmlspecialchars($data['title'],ENT_QUOTES);?>">
           </div>
         </div>
         
@@ -90,7 +90,7 @@ require dirname(__DIR__).'/header.php'  ?>
         <div class="layui-form-item">
          <label class="layui-form-label w40">摘要:</label>
           <div class="layui-input-block">
-            <textarea name="summary" rows ="2" placeholder="文章摘要,留空时自动获取" class="layui-textarea" style="min-height: 45px;"><?php echo $data['summary'];?></textarea>
+            <textarea name="summary" rows ="2" placeholder="文章摘要,留空时自动获取" class="layui-textarea" style="min-height: 45px;"><?php echo htmlspecialchars($data['summary'],ENT_QUOTES);?></textarea>
           </div>
         </div>
     
@@ -99,7 +99,7 @@ require dirname(__DIR__).'/header.php'  ?>
           <div class="layui-input-block" id="editor—wrapper">
             <div id="toolbar-container"></div>
             <div id="editor-container"></div>
-            <textarea name="content" id="content" class="layui-textarea layui-hide"><?php echo $data['content'] ?? '<p><br></p>';?></textarea>
+            <textarea name="content" id="content" class="layui-textarea layui-hide"><?php echo htmlspecialchars($data['content'],ENT_QUOTES) ?? '<p><br></p>';?></textarea>
           </div>
         </div>
         

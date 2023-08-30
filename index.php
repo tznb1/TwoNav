@@ -67,6 +67,7 @@ if(!in_array($c,[$global_config["Register"],'ico','icon'])){
 
 session_name('TwoNavSID');
 if(empty($c) || $c == 'index'){
+    $c = 'index';
     require "./system/index.php";//主页
 }elseif($c == $global_config["Register"]){
     require "./system/Register.php";//注册

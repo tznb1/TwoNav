@@ -145,7 +145,7 @@ layui.use(['form','table','dropdown','miniTab'], function () {
       {type:'checkbox'} //开启复选框
       ,{ title:'操作', toolbar: '#tablebar',width:110}
       ,{field: 'title', title: '标题', minWidth:200,templet: function(d){
-          return '<a style="color:#3c78d8" target="_blank" href="./?c=article&id=' +d.id + '&u=' + u + '" title="' + d.summary + '">'+d.title+'</a>'
+          return '<a style="color:#3c78d8" target="_blank" href="./?c=article&id=' +d.id + '&u=' + u + '" title="' + htmlspecialchars(d.summary) + '">'+htmlspecialchars(d.title)+'</a>'
       }}
       ,{field:'category',title:'分类',width:100,templet: function(d){
           return d.category_name;
@@ -383,6 +383,9 @@ layui.use(['form','table','dropdown','miniTab'], function () {
         return false;
     });
     
+    function htmlspecialchars(str) {
+        return $('<div/>').text(str).html();
+    }
 });
 
 </script>

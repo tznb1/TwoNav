@@ -2,15 +2,8 @@
 
 //如果是Get请求则载入登录模板
 if($_SERVER['REQUEST_METHOD'] === 'GET'){
-    require DIR ."/system/templates.php";
-    $t_path = DIR ."/templates/login/{$s_templates['login']}/index.php"; //模板路径
-    $copyright = empty($global_config['copyright'])?'<a target="_blank" href="https://gitee.com/tznb/TwoNav">Copyright © TwoNav</a>':$global_config['copyright'];
-    $ICP = empty($global_config['ICP'])?'':'<a target="_blank" href="https://beian.miit.gov.cn">'.$global_config['ICP'].'</a>';
-    //检查是否存在,不存在则使用默认
-    if(!is_file($t_path)){
-        $t_path = DIR.'/templates/login/default/index.php';
-    }
-    require $t_path;
+    require DIR."/system/templates.php";
+    require $index_path;
     exit;
 }
 

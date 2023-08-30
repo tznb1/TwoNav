@@ -161,7 +161,8 @@ $db_config = array(
                 'port' => $_POST['db_port'],
                 'database' => $_POST['db_name'],
                 'username' => $_POST['db_user'],
-                'password' => $_POST['db_password']
+                'password' => $_POST['db_password'],
+                'charset' => 'utf8mb4'
             ]);
 
             //判断版本,目前基于5.6.50开发,其他版本兼容性未知,若您需要强制安装请屏蔽检测

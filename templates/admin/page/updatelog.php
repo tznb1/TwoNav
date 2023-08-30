@@ -5,7 +5,24 @@
     <li class="layui-timeline-item">
         <i class="layui-icon layui-timeline-axis"></i>
         <div class="layui-timeline-content layui-text">
-            <h4 class="layui-timeline-title">v2.0.36-20230823</h4>
+            <h4 class="layui-timeline-title">v2.0.37-20230830</h4>
+            <ul>
+                <li>[变更] 优化前端前置处理代码,让模板调用数据更加灵活</li>
+                <li>[新增] 支持更换验证模板/收录模板/留言模板</li>
+                <li>[新增] 验证模板支持设置提示内容,如获取密码的提示</li>
+                <li>[新增] 挽风导航V1的收录模板和留言模板</li>
+                <li>[新增] 4个简约风格的验证模板</li>
+                <li>[修复] 文章编辑器输入HTML代码时在编辑存在异常的问题</li>
+                <li>[修复] 文章标题/摘要存在HTML标签时被解析的问题</li>
+                <li>[修复] WebStack-Hugo主页模板4个已知问题</li>
+                <li>[修复] 特定情况下安装时使用MySQL数据库可能乱码的问题</li>
+            </ul>
+        </div>
+    </li>
+    <li class="layui-timeline-item">
+        <i class="layui-icon layui-timeline-axis"></i>
+        <div class="layui-timeline-content layui-text">
+            <h4 class="layui-timeline-title">v2.0.36-20230824</h4>
             <ul>
                 <li>[修复] 判断是否显示收录的逻辑错误(导致设为无需审核时不显示)</li>
                 <li>[变更] 移除2个链接图标API,因稳定性欠佳</li>
@@ -13,6 +30,7 @@
                 <li>[新增] 挽风导航主页模板(内置文章模板/拟态风格),注:内置文章模板在预览状态下是不生效的!</li>
                 <li>[新增] 挽风导航登录模板/过度模板</li>
                 <li>[新增] 后台概要页可以点击报表统计获取访问的IP列表</li>
+                <li>[修复] 文章状态非公开且已登录无法预览文章</li>
             </ul>
         </div>
     </li>

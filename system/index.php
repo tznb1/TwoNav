@@ -1,6 +1,60 @@
 <?php if(!defined('DIR')){header('HTTP/1.1 404 Not Found');header("status: 404 Not Found");exit;}AccessControl();
-//主页入口
-define('is_login',is_login());
+
+//是否载入引导页
+if(@$global_config['default_page'] == 2){
+    if(empty(Get('u')) && empty($_COOKIE['Default_User'])){
+        $c = 'guide';
+        require DIR."/system/templates.php";
+        require $index_path;
+        exit;
+    }
+}
+
+//书签分享
+$share = Get('share');
+if(!empty($share)){
+    $share = get_db('user_share','*',['uid'=>UID,'sid'=>$share]);
+    if(empty($share)){
+        $content = '分享已被删除,请联系作者!';
+        require DIR.'/templates/admin/page/404.php';
+        exit;
+    }
+    //判断是否过期
+    if(time() > $share['expire_time']){
+        $content = '分享已过期,请联系作者!';
+        require DIR.'/templates/admin/page/404.php';;
+        exit;
+    }
+    //判断是否加密
+    if(!empty($share['pwd']) && !is_login()){
+        session_start();
+        if($_SESSION['verify']['share'][$share['id']] != $share['pwd']){
+            $c = 'verify';$_GET['c'] = 'share';
+            require DIR."/system/templates.php";
+            require $index_path;
+            exit;
+        }
+    }
+    
+    $data = json_decode($share['data']);
+    //判断分享类型(1.分类 2.链接)
+    if($share['type'] == 1){
+        $where['cid'] = $data;
+        if($share['pv'] == 1){
+            unset($where['property']);
+        }
+    }else if($share['type'] == 2){
+        $category_parent = [['name' => $share['name'] ,"font_icon" =>"fa fa-bookmark-o" , "id" => 'share' ,"description" => "书签分享"]];
+        $categorys = $category_parent;
+    }
+    
+    //浏览计次
+    update_db("user_share", ["views[+]"=>1],['uid'=>UID,'id'=>$share['id']]);
+}
+
+
+//通用数据初始化
+require DIR."/system/templates.php";
 
 //判断用户组,是否允许未登录时访问主页
 if(!is_login && ($global_config['Privacy'] == 1 || !check_purview('Common_home',1))){
@@ -8,73 +62,10 @@ if(!is_login && ($global_config['Privacy'] == 1 || !check_purview('Common_home',
     header("Location: ./?c=admin&u=".U);
     exit;
 }
-//载入站点设置
-$site = unserialize(get_db('user_config','v',['uid'=>UID,'k'=>'s_site']));
-//如果没有权限则清除自定义代码
-if(!check_purview('header',1)){$site['custom_header'] = '';}
-if(!check_purview('footer',1)){$site['custom_footer'] = '';}
 
-$site['Title']  =  $site['title'].(empty($site['subtitle'])?'':' - '.$site['subtitle']);
-//免费用户请保留版权,谢谢!
-$copyright = empty($global_config['copyright'])?'<a target="_blank" href="https://gitee.com/tznb/TwoNav">Copyright © TwoNav</a>':$global_config['copyright'];
-$ICP = empty($global_config['ICP'])?'':'<a target="_blank" href="https://beian.miit.gov.cn">'.$global_config['ICP'].'</a>';
-$favicon = ( !empty($site['site_icon_file'])) ? $site['site_icon'] : './favicon.ico';
+//例外主题,不支持热门网址/最新网址/输出上限
+$site['ex_theme'] = in_array($theme,['snail-nav','heimdall']); 
 
-//读取默认模板信息
-require DIR ."/system/templates.php";
-//引导页
-if(!empty($global_config['default_page']) && $global_config['default_page'] == 2){
-    if(empty(Get('u')) && empty($_COOKIE['Default_User'])){
-        $theme = $global_templates['guide'];
-        $dir_path = DIR.'/templates/guide/'.$global_templates['guide'];
-        $index_path = $dir_path.'/index.php';
-        if(!is_file($index_path)){
-            $dir_path= DIR.'/templates/guide/default';
-            $index_path = $dir_path.'/index.php';
-        }
-        $theme_dir = str_replace(DIR.'/templates/guide',"./templates/guide",$dir_path);
-        $theme_info = json_decode(@file_get_contents($dir_path.'/info.json'),true);
-        $theme_config = empty($theme_info['config']) ? []:$theme_info['config'];
-        $theme_config_db = get_db('user_config','v',['t'=>'theme_guide','k'=>$theme,'uid'=>UID]);
-        $theme_config_db = unserialize($theme_config_db);
-        $theme_config = empty($theme_config_db) ? $theme_config : array_merge ($theme_config,$theme_config_db);
-        require($index_path);
-        exit;
-    }
-}
-//参数指定主题优先
-$theme = trim(@$_GET['theme']);
-if ( !empty ($theme) && check_purview('theme_in',1)){
-    $dir_path = DIR.'/templates/home/'.$theme;
-    $index_path = $dir_path.'/index.php';
-}else{
-    $is_Pad = preg_match('/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i',$_SERVER['HTTP_USER_AGENT']);
-    $theme = $is_Pad?$s_templates['home_pad']:$s_templates['home_pc'];
-    $dir_path = DIR.'/templates/home/'.$theme;
-    $index_path = $dir_path.'/index.php';
-}
-//检查是否存在,不存在则使用默认
-if(!is_file($index_path)){
-    $dir_path= DIR.'/templates/home/default';
-    $index_path = $dir_path.'/index.php';
-}
-//相对路径
-$theme_dir = str_replace(DIR.'/templates/home',"./templates/home",$dir_path);
-//主题信息
-$theme_info = json_decode(@file_get_contents($dir_path.'/info.json'),true);
-//支持属性
-$support_subitem = $theme_info['support']['subitem']??0; //0.不支持子分类 1.分类栏支持 2.链接栏支持 3.都支持
-$support_category_svg = $theme_info['support']['category_svg']??0; //0.不支持 1.支持
-//主题配置(默认)
-$theme_config = empty($theme_info['config']) ? []:$theme_info['config'];
-//主题配置(用户)
-$theme_config_db = get_db('user_config','v',['t'=>'theme_home','k'=>$theme,'uid'=>UID]);
-$theme_config_db = unserialize($theme_config_db);
-//合并配置数据
-$theme_config = empty($theme_config_db) ? $theme_config : array_merge ($theme_config,$theme_config_db);
-//主题版本(调试时追加时间戳)
-$theme_ver = !Debug?$theme_info['version']:$theme_info['version'].'.'.time();
-$site['ex_theme'] = in_array($theme,['snail-nav','heimdall']); //例外主题,不支持热门网址/最新网址/输出上限
 //分类查找条件
 $categorys = []; //声明一个空数组
 $content = ['cid(id)','fid','name','property','font_icon','icon','description'];//需要的内容
@@ -219,7 +210,7 @@ function get_links($fid) {
             }else{ //首字
                 $icon = './system/ico.php?text='.mb_strtoupper(mb_substr($article['title'], 0, 1));
             }
-            $article_link = ['type'=>'article','id'=>0,'title'=>$article['title'],'url'=>$url,'real_url'=>$url,'description'=>$article['summary'],'ico'=>$icon,'icon'=>$icon];
+            $article_link = ['type'=>'article','id'=>0,'title'=>htmlspecialchars($article['title'],ENT_QUOTES),'url'=>$url,'real_url'=>$url,'description'=> htmlspecialchars($article['summary'],ENT_QUOTES),'ico'=>$icon,'icon'=>$icon];
             //判断靠前还是靠后
             if($site['article_visual'] == '1'){
                 array_unshift($links,$article_link);
@@ -239,45 +230,7 @@ function get_links($fid) {
     return $links;
 }
 
-//书签分享
-$share = Get('share');
-if(!empty($share)){
-    $share = get_db('user_share','*',['uid'=>UID,'sid'=>$share]);
-    if(empty($share)){
-        $content = '分享已被删除,请联系作者!';
-        require DIR.'/templates/admin/page/404.php';
-        exit;
-    }
-    //判断是否过期
-    if(time() > $share['expire_time']){
-        $content = '分享已过期,请联系作者!';
-        require DIR.'/templates/admin/page/404.php';;
-        exit;
-    }
-    //判断是否加密
-    if(!empty($share['pwd']) && !is_login){
-        session_start();
-        if($_SESSION['verify']['share'][$share['id']] != $share['pwd']){
-            require DIR.'/templates/admin/other/verify_share_pwd.php';
-            exit;
-        }
-    }
-    
-    $data = json_decode($share['data']);
-    //判断分享类型(1.分类 2.链接)
-    if($share['type'] == 1){
-        $where['cid'] = $data;
-        if($share['pv'] == 1){
-            unset($where['property']);
-        }
-    }else if($share['type'] == 2){
-        $category_parent = [['name' => $share['name'] ,"font_icon" =>"fa fa-bookmark-o" , "id" => 'share' ,"description" => "书签分享"]];
-        $categorys = $category_parent;
-    }
-    
-    //浏览计次
-    update_db("user_share", ["views[+]"=>1],['uid'=>UID,'id'=>$share['id']]);
-}
+
 
 //如果为空则查找分类
 if($category_parent == []){

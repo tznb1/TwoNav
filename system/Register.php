@@ -4,21 +4,10 @@ if($global_config['Maintenance'] != 0){Amsg(-1,'网站正在进行维护,请稍�
 $global_templates = unserialize(get_db("global_config",'v', ["k" => "s_templates"]));
 //如果是Get请求则载入登录模板
 if($_SERVER['REQUEST_METHOD'] === 'GET'){
-    $t_name = $global_templates['register'];
-    $t_dir = "./templates/register/".$t_name; //模板目录
-    $t_path = "./templates/register/{$t_name}/index.php"; //模板路径
-    //如果不存在则使用默认模板
-    if(!file_exists($t_path)){
-        $t_name = 'default';
-        $t_dir ='./templates/register/default';
-        $t_path = './templates/register/default/index.php';
-        $global_templates['register'] = 'default';
-        update_db("global_config", ["v" => $global_templates], ["k"=>"s_templates"]);
-    }
-    $copyright = empty($global_config['copyright'])?'<a target="_blank" href="https://gitee.com/tznb/TwoNav">Copyright © TwoNav</a>':$global_config['copyright'];
-    $ICP = empty($global_config['ICP'])?'':'<a target="_blank" href="https://beian.miit.gov.cn">'.$global_config['ICP'].'</a>';
-    $reg_tips = get_db('global_config','v',['k'=>'reg_tips']);
-    require $t_path;
+    //通用数据初始化
+    require DIR."/system/templates.php";
+    $reg_tips = get_db('global_config','v',['k'=>'reg_tips']); //注册提示
+    require $index_path;
     exit;
 }
 

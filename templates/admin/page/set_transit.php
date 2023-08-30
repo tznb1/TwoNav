@@ -4,7 +4,7 @@
     <div class="layuimini-main">
         <form class="layui-form" lay-filter="form">
         <div class="layui-form layuimini-form layui-form-pane">
-            <blockquote class="layui-elem-quote layui-text">注意: 存在备用链接时停留时间可能无效!</blockquote>
+            <blockquote class="layui-elem-quote layui-text">注意: 存在备用链接时停留时间可能无效,需模板支持!</blockquote>
             <div class="layui-form-item">
                 <label class="layui-form-label">访客停留</label>
                 <div class="layui-input-inline">
@@ -33,7 +33,7 @@
             </div>
             
             <div class="layui-form-item">
-                <div class="layui-input-block"><button class="layui-btn layui-btn-normal" lay-submit lay-filter="save">保存</button></div>
+                <div class="layui-input-block"><button class="layui-btn layui-btn-warm" type="button" id="close" >关闭</button><button class="layui-btn layui-btn-normal" lay-submit lay-filter="save">保存</button></div>
             </div>
         </div>
     </form>
@@ -60,6 +60,10 @@ layui.use(['jquery','form'], function () {
         });
         return false;
     }); 
+    //关闭按钮
+    $(document).on('click', '#close', function() {
+        parent.layer.close(parent.layer.getFrameIndex(window.name));
+    });
 });
 </script>
 </body>

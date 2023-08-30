@@ -82,7 +82,7 @@ layui.config({version:"<?php echo $Ver;?>"});
 layui.use(['layer','miniAdmin'], function () {
     var layer = layui.layer;
     layui.miniAdmin.render({
-        iniUrl: "./index.php?c=admin&page=menu&u="+u,
+        iniUrl: "./index.php?c=api&method=read_data&type=menu&u="+u,
         urlHashLocation: true,
         bgColorDefault: false,
         menuChildOpen: true,

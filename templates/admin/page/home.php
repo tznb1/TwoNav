@@ -202,7 +202,7 @@ require 'header.php';
                                         </div>
 <?php if(check_purview('theme_in',1)){ ?> 
                                         <div class="layui-col-xs3 layuimini-qiuck-module">
-                                            <a href="javascript:;" layuimini-content-href="theme_home" data-title="主题设置" data-icon="fa fa-magic">
+                                            <a href="javascript:;" layuimini-content-href="theme" data-title="主题设置" data-icon="fa fa-magic">
                                                 <i class="fa fa-magic"></i>
                                                 <cite>主题设置</cite>
                                             </a>

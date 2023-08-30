@@ -16,23 +16,23 @@ if(!Check_Path("data/user/{$u}/MessageBoard")){
 
 //POST提交留言
 if($_SERVER['REQUEST_METHOD'] === 'POST'){
-     if($s['allow'] != '1'){ msg(-1015,'提交失败,当前禁止留言!');  }
+     if($s['allow'] != '1'){ msg(-1,'提交失败,当前禁止留言!');  }
      $type = $_POST['type']; //类型
      $contact = $_POST['contact']; //联系方式
      $title = $_POST['title']; //标题
      $content = $_POST['content']; //内容
      if(empty($type)){
-         msg(-1015,'提交失败,类型不能为空');
+         msg(-1,'提交失败,类型不能为空');
      }elseif(empty($contact)){
-         msg(-1015,'提交失败,联系方式不能为空');
+         msg(-1,'提交失败,联系方式不能为空');
      }elseif(empty($title)){
-         msg(-1015,'提交失败,标题不能为空');
+         msg(-1,'提交失败,标题不能为空');
      }elseif(empty($content)){
-         msg(-1015,'提交失败,内容不能为空');
+         msg(-1,'提交失败,内容不能为空');
      }elseif(strlen($type) >= 32 || strlen($contact) >= 64 || strlen($title) >= 128 || strlen($content) >= 2048){
-         msg(-1015,'提交失败,长度超限');
+         msg(-1,'提交失败,长度超限');
      }elseif(ShuLiang("data/user/{$u}/MessageBoard/") > 256){
-         msg(-1015,'提交失败,留言太多了请稍后再试');
+         msg(-1,'提交失败,留言太多了请稍后再试');
      }
      
      $json_arr = array(
@@ -48,9 +48,9 @@ if($_SERVER['REQUEST_METHOD'] === 'POST'){
      $json = json_encode($json_arr);
      $path = "data/user/{$u}/MessageBoard/".time().'_'.crc32($json).'.json';
      if( Check_Path("data/user/{$u}/MessageBoard") && file_put_contents($path, $json)){
-        msg(0,'提交成功'); 
+        msg(1,'提交成功'); 
     }else{
-        msg(-1015,'系统错误,提交失败'); //创建目录或写入文件失败,请检查权限
+        msg(-1,'系统错误,提交失败'); //创建目录或写入文件失败,请检查权限
     }
  } 
 
@@ -67,5 +67,8 @@ function ShuLiang($path){
     }
     return $sl;
 }
-require DIR.'/templates/admin/page/expand/guestbook-user.php';
+
+//通用数据初始化
+require DIR."/system/templates.php";
+require $index_path;
 exit;

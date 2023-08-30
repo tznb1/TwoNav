@@ -680,10 +680,6 @@ function write_link(){
             update_db('user_links',['weight'=>$key[1]],['uid'=>UID,'lid'=>$key[0]]);
         }
         msg(1,'保存成功');
-        
-        msg(-1,'未支持');
-    
-
     //私有切换
     }elseif($_GET['type'] === 'property_sw' ){
         update_db('user_links',['property'=>intval($_POST['property']) ],['uid'=>UID,'lid'=>intval($_POST['lid']) ],[1,'保存成功']);
@@ -1175,20 +1171,21 @@ function write_transit_setting(){
         'admin_stay_time'=>['int'=>true,'min'=>0,'max'=>60,'msg'=>'管理员停留时间范围0-60'],
         'default_keywords'=>['int'=>true,'min'=>0,'max'=>1,'msg'=>'默认关键字参数错误']
         ];
-    
-    foreach ($datas as $key => $data){
-        if($data['int']){
-            $s[$key] = ($_POST[$key] >= $data['min'] && $_POST[$key] <= $data['max'])?intval($_POST[$key]):msg(-1,$data['msg']);
-        }elseif(isset($data['v'])){
-            $s[$key] = in_array($_POST[$key],$data['v']) ? $_POST[$key]:msg(-1,$data['msg']);
-        }else{
-            $s[$key] = $data['empty']?$_POST[$key]:(!empty($_POST[$key])?$_POST[$key]:msg(-1,$data['msg']));
-        }
-    }
+    $s = Post_data_filter($datas);
     write_user_config('s_transition_page',$s,'config','过渡页配置');
     msg(1,"保存成功！");
 }
 
+//写验证页配置
+function write_verify_page(){ 
+    $datas = [
+        'link_tip'=>['empty'=>true],
+        'share_tip'=>['empty'=>true]
+        ];
+    $s = Post_data_filter($datas);
+    write_user_config('s_verify_page',$s,'config','验证页配置');
+    msg(1,"保存成功！");
+}
 
 //修改密码
 function write_user_password(){
@@ -1358,10 +1355,137 @@ function other_testing_link(){
     msgA(['code' => 0 ,'StatusCode'=> $code]);
 }
 
+//读主题信息
+function read_theme(){
+    global $global_config;
+    global $USER_DB;
+    // 检查权限
+    if(!check_purview('theme_in',1)){
+        msg(-1,'无权限');
+    }
+    
+    $check_dirs = ['home','login','transit','register','guide','article','apply','verify','guestbook'];
+    $request_dir = $_GET['dir'];
+    if(in_array($request_dir,$check_dirs)){
+        if(in_array($request_dir,['register','guide']) && $USER_DB['UserGroup'] != 'root' ){
+            msg(-1,'管理此模板需管理员权限');
+        }
+    }else{
+        msg(-1,'dir参数错误');
+    }
+    $son_dirs = get_dir_list(DIR.'/templates/'.$request_dir);
+    
+    foreach ($son_dirs as $son_dir) {
+        $path = DIR.'/templates/'.$request_dir.'/'.$son_dir; //目录完整路径
+        //没有信息文件则跳过
+        if(!is_file($path.'/info.json') ) {continue;}
+        //读取主题信息
+        $themes[$son_dir] = json_decode(@file_get_contents($path.'/info.json'),true);
+        //是否支持配置
+        $themes[$son_dir]['config'] = is_file($path.'/config.php') ? '1':'0';
+        //预览图优先顺序:png>jpg>info>default
+        if(is_file($path.'/screenshot.jpg')){
+            $themes[$son_dir]['screenshot'] = "./templates/$request_dir/$son_dir/screenshot.jpg";
+        }elseif(is_file($path.'/screenshot.png')){
+            $themes[$son_dir]['screenshot'] = "./templates/$request_dir/$son_dir/screenshot.png";
+        }elseif(empty($themes[$son_dir]['screenshot'])){ 
+            $themes[$son_dir]['screenshot'] = "./templates/admin/static/42ed3ef2c4a50f6d.png";
+        }
+    }
+    
+    function filter($arr){
+        foreach($arr as $key => $data){
+            $new[$key]['name'] = $data['name'] ?? 'null';
+            $new[$key]['description']= $data['description'] ?? 'null';
+            $new[$key]['homepage']= $data['homepage'] ?? 'null';
+            $new[$key]['version']= $data['version'] ?? 'null';
+            $new[$key]['update']= $data['update'] ?? 'null';
+            $new[$key]['author']= $data['author'] ?? 'null';
+            $new[$key]['screenshot']= $data['screenshot'] ?? 'null';
+            $new[$key]['config'] = $data['config'] ?? '0';
+            $new[$key]['state'] = $data['up'] == 1 ? 'up' : (empty($data['dir']) ? 'local' : 'dw');
+        }
+        return $new;
+    }
+
+    //在线主题处理
+    if ( !$global_config['offline'] && $USER_DB['UserGroup'] === 'root'){ 
+        
+        if(preg_match('/^v.+-(\d{8})$/i',SysVer,$matches)){
+            $sysver = intval( $matches[1] );//取版本中的日期
+        }else{
+            msg(-1,'获取程序版本异常');
+        }
+        
+        //读取缓存
+        $page = 'theme_'.$request_dir;
+        $template = get_db('global_config','v',['k'=>$page.'_cache']);
+        if(!empty($template)){
+            $data = json_decode($template, true);
+        }
+        
+        //没有缓存 或 禁止缓存 或 缓存过时
+        if(empty($template) ||   $_GET['cache'] === 'no'  || time() -  $data["time"] > 1800 ){ 
+            $urls = [
+                "lm21" => "https://update.lm21.top/TwoNav/{$request_dir}_template.json",
+                "gitee" => "https://gitee.com/tznb/twonav_updata/raw/master/{$request_dir}_template.json"
+            ];
+            $Source = $global_config['Update_Source'] ?? '';
+            if (!empty($Source) && isset($urls[$Source])) {
+                $urls = [$Source => $urls[$Source]];
+            }
+        }else{
+            $cache = true;
+        }
+        //读取超时参数
+        $overtime = !isset($global_config['Update_Overtime']) ? 3 : ($global_config['Update_Overtime'] < 3 || $global_config['Update_Overtime'] > 60 ? 3 : $global_config['Update_Overtime']);
+        //远程获取
+        foreach($urls as $key => $url){ 
+            $Res = ccurl($url,$overtime);
+            $data = json_decode($Res["content"], true);
+            if($data["code"] == 200 ){ //如果获取成功
+                $data["time"] = time(); //记录当前时间
+                write_global_config($page.'_cache',json_encode($data),$request_dir.'_模板缓存');
+                break; //跳出循环.
+            } 
+        }
+        //解析
+        foreach($data["data"] as $key){
+            $path = DIR.'/templates/'.$request_dir.'/'.$key["dir"];
+            if( is_dir($path) ) {  //本地存在
+                $value = $key["dir"];
+                //检查是否可以更新
+                $update = str_replace('/','',$themes[$value]['update']); //本地主题版本
+                $update_new = str_replace('/','',$key["update"]); //远程主题版本
+                if( $sysver >= intval($key["low"])  && $sysver <= intval($key["high"]) &&  $update < $update_new ){
+                    $themes[$value]['up'] = '1';
+                }
+            }else{
+                //判断是否适配当前系统版本
+                if( $sysver >= intval($key["low"])  && $sysver <= intval($key["high"]) ){
+                    $value = $key["dir"];
+                    $themes[$value] = json_decode(json_encode($key),true);
+                }
+            }
+        }
+    }
+    
+    //取正在使用的模板
+    $s_templates = unserialize(get_db("user_config", "v", ["uid"=>UID,"k"=>"s_templates"]));
+    if($request_dir == 'home'){
+        $current['home_pad'] = $s_templates['home_pad'] ?? 'default';
+        $current['home_pc'] = $s_templates['home_pc'] ?? 'default';
+    }else{
+        $current[$request_dir] = $s_templates[$request_dir] ?? 'default';
+    }
+    
+    $themes = filter($themes);
+    msgA(['code'=>1,'data'=>$themes,'current'=>$current,'referrer'=>($data['referrer'] ?? '')]);
+}
 //主题下载/更新/删除
 function write_theme(){
     global $global_config;
-    $fn = $_POST['fn'];if($_GET['type'] != 'config' && !in_array($fn,['home','login','transit','register','guide','article'])){msg(-1,'fn参数错误');}
+    $fn = $_POST['fn'];if($_GET['type'] != 'config' && !in_array($fn,['home','login','transit','register','guide','article','verify','guestbook','apply'])){msg(-1,'fn参数错误');}
     if($_GET['type'] == 'download'){
         is_root();
         if($global_config['offline']){msg(-1,"离线模式禁止下载主题!");} //离线模式
@@ -1466,6 +1590,11 @@ function write_theme(){
         
         //读取用户模板配置
         require DIR."/system/templates.php";
+        if($fn == 'register' || $fn == 'guide'){
+            $global_templates[$fn] = $name;
+            update_db('global_config',['v'=>$global_templates],['k'=>'s_templates'],[1,'操作成功']);
+        }
+        
         //判断设置的类型
         if($fn == 'home'){
             if( $type == 'PC/Pad'){
@@ -1478,18 +1607,8 @@ function write_theme(){
             }else{
                 msg(-1,'参数错误');
             }
-        }elseif($fn == 'login'){
-            $s_templates['login'] = $name;
-        }elseif($fn == 'transit'){
-            $s_templates['transit'] = $name;
-        }elseif($fn == 'article'){
-            $s_templates['article'] = $name;
-        }elseif($fn == 'register'){
-            $global_templates['register'] = $name;
-            update_db('global_config',['v'=>$global_templates],['k'=>'s_templates'],[1,'注册模板设置成功']);
-        }elseif($fn == 'guide'){
-            $global_templates['guide'] = $name;
-            update_db('global_config',['v'=>$global_templates],['k'=>'s_templates'],[1,'引导页模板设置成功']);
+        }else{
+            $s_templates[$fn] = $name;
         }
         //更新数据
         update_db('user_config',['v'=>$s_templates],['uid'=>UID,'k'=>'s_templates'],[1,'设置成功']);
@@ -1508,7 +1627,7 @@ function write_theme(){
             msg(-1,"获取模板类型错误");
         }
         $fn = empty($GET['fn']) ? $_GET['template_type'] : $GET['fn'];
-        if(!in_array($fn,['home','login','register','transit','guide','article'])){
+        if(!in_array($fn,['home','login','transit','register','guide','article','verify','guestbook','apply'])){
             msg(-1,"参数错误");
         }
         //0420 END
@@ -1836,6 +1955,59 @@ function read_data(){
             $day_data[$date] = empty($list) ? [] : $list ;
         }
         msgA(['code'=>1,'data'=>$day_data]);
+    }elseif($_GET['type'] == 'menu'){
+        global $global_config;
+        $menu = [];
+        if(check_purview('site_info',1)){
+            array_push($menu,['title'=>'站点设置','href'=>'SiteSetting','icon'=>'fa fa-cog']);
+        }
+        if(check_purview('theme_in',1)){
+            array_push($menu,['title'=>'主题管理','href'=>'theme','icon'=>'fa fa-magic']);
+        }
+        array_push($menu,
+            ['title'=>'分类管理','href'=>'category_list','icon'=>'fa fa-list-ul'],
+            ['title'=>'加密管理','href'=>'pwd_group','icon'=>'fa fa-lock'],
+            ['title'=>'链接管理','icon'=>'fa fa-folder-open-o','href'=>'','child'=>
+              [
+                ['title'=>'链接列表','href'=>'link_list','icon'=>'fa fa-link'],
+                ['title'=>'添加链接','href'=>'link_add','icon'=>'fa fa-plus-square-o'],
+                ['title'=>'书签分享','href'=>'share','icon'=>'fa fa-external-link'],
+                ['title'=>'导出导入','href'=>'data_control','icon'=>'fa fa-retweet'],
+              ]
+            ]);
+        
+        //扩展功能
+        $extend = [];
+        if($global_config['apply'] == 1 && check_purview('apply',1)){
+            array_push($extend,['title'=>'收录管理','href'=>'expand/apply-admin','icon'=>'fa fa-pencil']);
+        }
+        if($global_config['guestbook'] == 1 && check_purview('guestbook',1)){ 
+            array_push($extend,['title'=>'留言管理','href'=>'expand/guestbook-admin','icon'=>'fa fa-commenting-o']);
+        }
+        if($global_config['article'] > 0 && check_purview('article',1)){ 
+            array_push($extend,['title'=>'文章管理','href'=>'expand/article-list','icon'=>'fa fa-file-text-o']);
+        }
+        if(!empty($extend)){
+            $extend = ['title'=>'扩展功能','icon'=>'fa fa-folder-open-o','href'=>'','child'=> $extend];
+            array_push($menu,$extend);
+        }
+        
+        //如果是管理员则追加菜单
+        if($USER_DB['UserGroup'] == 'root'){
+            array_push($menu,
+            ['title'=>'网站管理','icon'=>'fa fa-wrench','href'=>'','child'=>
+              [
+                ['title'=>'系统设置','href'=>'root/sys_setting','icon'=>'fa fa-gears'],
+                ['title'=>'授权管理','href'=>'root/vip','icon'=>'fa fa-diamond'],
+                ['title'=>'用户管理','href'=>'root/user_control','icon'=>'fa fa-user'],
+                ['title'=>'用户分组','href'=>'root/users_control','icon'=>'fa fa-users'],
+                ['title'=>'注册管理','href'=>'root/reg_control','icon'=>'fa fa-user-plus'],
+                ['title'=>'站长工具','href'=>'root/tool','icon'=>'fa fa-exclamation-triangle'],
+              ]
+            ]);
+        }
+        $init = array( 'homeInfo'=>['title'=>'概要','href'=>'home'],'logoInfo'=>['title'=>'TwoNav','image'=>'./templates/admin/img/logo.png','href'=>'./?u='.U],'menuInfo'=>$menu);
+        msgA($init);
     }
 }
 
@@ -1886,4 +2058,18 @@ function other_get_link_info(){
     $link['keywords'] = $info['site_keywords'];
     $link['description'] = $info['site_description'];
     msgA(['code'=>1,'data'=>$link]);
+}
+
+//POST数据过滤
+function Post_data_filter($datas){
+    foreach ($datas as $key => $data){
+        if($data['int']){
+            $s[$key] = ($_POST[$key] >= $data['min'] && $_POST[$key] <= $data['max'])?intval($_POST[$key]):msg(-1,$data['msg']);
+        }elseif(isset($data['v'])){
+            $s[$key] = in_array($_POST[$key],$data['v']) ? $_POST[$key]:msg(-1,$data['msg']);
+        }else{
+            $s[$key] = $data['empty']?$_POST[$key]:(!empty($_POST[$key])?$_POST[$key]:msg(-1,$data['msg']));
+        }
+    }
+    return $s;
 }
