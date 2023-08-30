@@ -4,7 +4,6 @@ $page = trim($_GET['page']); //获取请求参数
 $Ver = !Debug?SysVer:SysVer.'.'.time(); //版本
 $LoginConfig = unserialize($USER_DB['LoginConfig']); //登录配置
 define('offline',$global_config['offline'] == 1); //是否离线模式
-define('is_login',is_login()); //是否已登录
 //未登录,载入登录提示页
 if(!is_login){
     require(DIR.'/templates/admin/page/LoginPrompt.php');

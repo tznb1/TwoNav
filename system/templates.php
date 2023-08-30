@@ -11,8 +11,6 @@ if(defined('UID')){
         $s_templates = $global_templates;
         insert_db("user_config", ["uid" => UID,"k"=>"s_templates","v"=>$global_templates,"t"=>"config","d" => '默认模板']);
     }
-    //声明是否已登录
-    define('is_login',is_login()); $is_login = is_login;
 }
 
 //根据请求来读取模板名

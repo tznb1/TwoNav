@@ -66,6 +66,10 @@ if(!in_array($c,[$global_config["Register"],'ico','icon'])){
 }
 
 session_name('TwoNavSID');
+if(defined('UID')){
+    define('is_login',is_login()); $is_login = is_login;
+}
+
 if(empty($c) || $c == 'index'){
     $c = 'index';
     require "./system/index.php";//主页
