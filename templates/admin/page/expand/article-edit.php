@@ -216,6 +216,7 @@ const toolbar = createToolbar({
 })
 
 
+    
 layui.use(['form','upload'], function () {
     var form = layui.form,
         upload = layui.upload;
@@ -307,6 +308,18 @@ layui.use(['form','upload'], function () {
             }
         });
         return false;
+    });
+    $(".content").dblclick(function(){
+        layer.prompt({
+            formType: 2,
+            value: editor.getHtml(),
+            maxlength:9999999,
+            title: 'HTML代码编辑',
+            area: ['800px', '350px']
+        }, function(value, index, elem){
+            editor.setHtml(value);
+            layer.close(index); // 关闭层
+        });
     });
 });
 

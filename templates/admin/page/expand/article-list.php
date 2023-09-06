@@ -131,6 +131,30 @@ require dirname(__DIR__).'/header.php'  ?>
         </pre>
    </form>
 </ul>
+<ul class="push" style="margin-top: 18px;display:none;padding-right: 10px;padding-left: 10px;">
+    <form class="layui-form layuimini-form" lay-filter="push">
+        <pre class="layui-code" >使用API推送功能会达到怎样效果
+及时发现：可以缩短百度爬虫发现您站点新链接的时间，使新发布的页面可以在第一时间被百度收录
+保护原创：对于网站的最新原创内容，使用API推送功能可以快速通知到百度，使内容可以在转发之前被百度发现
+百度官方说明: https://ziyuan.baidu.com/linksubmit/index
+注意事项: 推送的URL是静态格式,所以请务必正确配置好伪静态!
+伪静态配置: 请前往站长工具>生成伪静态,并复制内容配置到服务器 (仅针对Nginx)
+</pre>
+        <div class="layui-form-item">
+            <label class="layui-form-label">接口地址</label>
+                <div class="layui-input-block">
+                    <input type="text" name="push_api" id="push_api" placeholder="请输入接口调用地址如 http://data.zz.baidu.com/urls?site=lm21.top&token=xxxxxx" 
+                    value="<?php echo get_db("user_config", "v", ["k" => "baidu_push_api","uid"=>UID]); ?>" class="layui-input">
+                </div>
+        </div>
+        <div class="layui-form-item">
+            <div class="layui-input-block">
+                <button class="layui-btn layui-btn-warm" type="button" id="close" >关闭</button>
+                <button class="layui-btn layui-btn-normal" lay-submit lay-filter="start_push" id="start_push">开始</button>
+            </div>
+        </div>
+    </form>
+</ul>
 <script>
 layui.use(['form','table','dropdown','miniTab'], function () {
     var $ = layui.jquery;
@@ -215,6 +239,9 @@ layui.use(['form','table','dropdown','miniTab'], function () {
             },{
               title: '批量删除',
               id: 'del_article'
+            },{
+              title: '百度推送',
+              id: 'push'
             }],
             click: function(obj){
                 let checkStatus = table.checkStatus('table').data;
@@ -248,11 +275,32 @@ layui.use(['form','table','dropdown','miniTab'], function () {
                             layer.msg(data.msg || '未知错误',{icon: 5});
                         }
                     });
+                }else if(obj.id == 'push'){
+                    index = layer.open({type: 1,scrollbar: false,shadeClose: true,title: '推送工具',area : ['100%', '100%'],content: $('.push')});
                 }
             }
         });
     }
-
+    //开始推送
+    $('#start_push').click(function () {
+        let checkStatus = table.checkStatus('table');
+        tableIds = checkStatus.data.map(function (value) {return value.id;});
+        tableIds = JSON.stringify(tableIds);
+        $.post(get_api('other_baidu_push'),{'type':'article','push_api':$('#push_api').val(),'id':tableIds},function(data,status){
+            if(data.code == -1){
+                layer.msg(data.msg,{icon: 5});
+            }else if(data.code == 200){
+                layer.alert('成功推送的条数: ' + data.data.success + '<br />当天剩余的可推送条数: ' + data.data.remain + (data.data.not_same_site && data.data.not_same_site.length > 0 ? "<br />未处理的条数(非本站URL): " + data.data.not_same_site.length:'') + (data.data.not_valid && data.data.not_valid.length  > 0 ? "<br />不合法的URL条数: " + data.data.not_valid.length:''));
+            }else{
+                layer.alert('错误代码: ' + data.data.error + '<br />错误描述: ' + data.data.message);
+            }
+        });
+        return false;
+    });
+    //关闭按钮
+    $(document).on('click', '#close', function() {
+        layer.close(index);//关闭当前页
+    });
     //输入框回车事件和搜索按钮点击事件
     $('#keyword, #search').on('keydown click', function(e) {
         if ( (e.target.id === 'keyword' &&  e.keyCode === 13) || (e.target.id === 'search' && e.type === 'click') ) {

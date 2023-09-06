@@ -798,6 +798,12 @@ function other_root(){
         }
         
         msg(1,'操作成功');
+    }elseif($_GET['type'] == 'write_sitemap_config'){
+        if(!is_subscribe('bool')){
+            msg(-1,'未检测到有效授权');
+        }
+        write_global_config('sitemap_config',$_POST,'站点地图配置');
+        msg(1,'保存成功');
     }
 }
 

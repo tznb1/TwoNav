@@ -143,7 +143,7 @@ layui.use(function(){
                                 ${upordw}
                                 ${t.state == 'local' ||  t.state == 'up' ? '<button type="button" class="layui-btn layui-btn-sm layui-btn-danger" id="set">使用</button>':''}
                                 <button type="button" class="layui-btn layui-btn-sm layui-btn-normal" id="detail">详情</button>
-                                ${t.state == 'local' &&  active == 'home' ? '<button type="button" class="layui-btn layui-btn-sm layui-btn-normal" id="preview">预览</button>':''} 
+                                ${(t.state == 'local' || t.state == 'up') &&  active == 'home' ? '<button type="button" class="layui-btn layui-btn-sm layui-btn-normal" id="preview">预览</button>':''} 
                                 ${t.config == '1' && theme_set == true ? '<button type="button" class="layui-btn layui-btn-sm layui-btn-normal" id="config">配置</button>':''} 
                                 ${(t.state == 'local' || t.state == 'up' ) && is_admin == true ? '<button type="button" class="layui-btn layui-btn-sm layui-btn-danger" id="del">删除</button>':''} 
                             </div>

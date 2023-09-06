@@ -5,7 +5,22 @@
     <li class="layui-timeline-item">
         <i class="layui-icon layui-timeline-axis"></i>
         <div class="layui-timeline-content layui-text">
-            <h4 class="layui-timeline-title">v2.0.37-20230830</h4>
+            <h4 class="layui-timeline-title">v2.0.38-20230906</h4>
+            <ul>
+                <li>[变更] 初始化安装默认关闭防XSS和SQL(个人使用没必要开启,会导致自定义代码时被拦截)</li>
+                <li>[变更] 后台概要页获取IP列表时对IP进行排序,以方便观察非正常访问的IP(如爬虫)</li>
+                <li>[变更] Nginx部分伪静态规则由程序接管,避免更新规则时用户需手动配置伪静态 (需将生成的规则重新配置到服务器)</li>
+                <li>[变更] 授权管理页面内容更新</li>
+                <li>[新增] 系统设置中新增站点地图入口,可配置生成sitemap.xml站点地图的参数! (首次使用请看顶部说明)</li>
+                <li>[新增] 链接列表和文章链接新增百度推送,用于将链接推送到百度搜索 (首次使用请看顶部说明)</li>
+                <li>[修复] 可更新的主页模板没有显示预览按钮</li>
+            </ul>
+        </div>
+    </li>
+    <li class="layui-timeline-item">
+        <i class="layui-icon layui-timeline-axis"></i>
+        <div class="layui-timeline-content layui-text">
+            <h4 class="layui-timeline-title">v2.0.37-20230831</h4>
             <ul>
                 <li>[变更] 优化前端前置处理代码,让模板调用数据更加灵活</li>
                 <li>[新增] 支持更换验证模板/收录模板/留言模板</li>

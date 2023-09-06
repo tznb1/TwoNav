@@ -73,8 +73,9 @@
 <?php }?> 
 <?php if($global_config['offline']  != 1 ){ ?> 
         <button class="layui-btn layui-btn-sm layui-btn-normal layui-btn-danger layui-hide-xs" lay-event="testing" id="testing">检测</button>
-<?php }?> 
         <button class="layui-btn layui-btn-sm layui-btn-normal layui-btn-danger layui-hide-xs" lay-event="msg_pull" id="msg_pull">识别</button>
+        <button class="layui-btn layui-btn-sm layui-btn-normal layui-btn-danger layui-hide-xs" lay-event="push" id="push">推送</button>
+<?php }?> 
         <button class="layui-btn layui-btn-sm layui-btn-normal layui-btn-danger" layuimini-content-href="link_sort" data-title="链接排序">排序模式</button>
     </div>
 </script>
@@ -113,6 +114,7 @@
         </div>
     </script>
 </ul>
+<?php if($global_config['offline']  != 1 ){ ?> 
 <ul class="msg_pull" style="margin-top: 18px;display:none;padding-right: 10px;padding-left: 10px;">
     <form class="layui-form layuimini-form" lay-filter="msg_pull">
         <pre class="layui-code" id="tip" >提示: 自动识别仅针对http/https有效,且不能保证百分百成功!未成功识别时不会对链接信息进行修改!大批量识别前建议先备份数据,效果不理想时可以回退!</pre>
@@ -163,5 +165,30 @@
         </div>
     </form>
 </ul>
+<ul class="push" style="margin-top: 18px;display:none;padding-right: 10px;padding-left: 10px;">
+    <form class="layui-form layuimini-form" lay-filter="push">
+        <pre class="layui-code" >使用API推送功能会达到怎样效果
+及时发现：可以缩短百度爬虫发现您站点新链接的时间，使新发布的页面可以在第一时间被百度收录
+保护原创：对于网站的最新原创内容，使用API推送功能可以快速通知到百度，使内容可以在转发之前被百度发现
+百度官方说明: https://ziyuan.baidu.com/linksubmit/index
+注意事项: 推送的URL是静态格式,所以请务必正确配置好伪静态!
+伪静态配置: 请前往站长工具>生成伪静态,并复制内容配置到服务器 (仅针对Nginx)
+</pre>
+        <div class="layui-form-item">
+            <label class="layui-form-label">接口地址</label>
+                <div class="layui-input-block">
+                    <input type="text" name="push_api" id="push_api" placeholder="请输入接口调用地址如 http://data.zz.baidu.com/urls?site=lm21.top&token=xxxxxx" 
+                    value="<?php echo get_db("user_config", "v", ["k" => "baidu_push_api","uid"=>UID]); ?>" class="layui-input">
+                </div>
+        </div>
+        <div class="layui-form-item">
+            <div class="layui-input-block">
+                <button class="layui-btn layui-btn-warm" type="button" id="close" >关闭</button>
+                <button class="layui-btn layui-btn-normal" lay-submit lay-filter="start_push" id="start_push">开始</button>
+            </div>
+        </div>
+    </form>
+</ul>
+<?php }?> 
 </body>
 </html>

@@ -12,6 +12,7 @@ $title='系统设置';require(dirname(__DIR__).'/header.php');
             <button type="button" class="layui-btn" layuimini-content-href="root/default_setting" data-title="默认设置">默认设置</button>
             <button type="button" class="layui-btn" layuimini-content-href="root/mail_set" data-title="邮件配置">邮件配置</button>
             <button type="button" class="layui-btn" layuimini-content-href="root/icon_set" data-title="图标配置">图标配置</button>
+            <button type="button" class="layui-btn" layuimini-content-href="expand/sitemap" data-title="站点地图">站点地图</button>
         </div>
     <form class="layui-form" lay-filter="form">
         <div class="layui-form layuimini-form layui-form-pane">
@@ -119,7 +120,7 @@ $title='系统设置';require(dirname(__DIR__).'/header.php');
                         <option value="1" >开启</option>
                     </select>
                 </div>
-                <div class="layui-form-mid layui-word-aux">开启将禁止服务器访问互联网,部分功能将被禁用(如:更新提示,公告,在线主题,链接识别,书签克隆等)</div>
+                <div class="layui-form-mid layui-word-aux">开启将禁止服务器访问互联网,部分功能将被禁用(如:更新提示,公告,在线主题,链接识别等)</div>
             </div>
             
             <div class="layui-form-item">

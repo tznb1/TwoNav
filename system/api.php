@@ -441,6 +441,16 @@ function write_link(){
         }
         //插入数据库
         insert_db('user_links',$data);
+        //读取站点地图配置并判断是否需要更新
+        $sitemap_config = unserialize( get_db("global_config", "v", ["k" => "sitemap_config"]));
+        if(isset($sitemap_config['zhudong']) && $sitemap_config['zhudong'] == '1'){
+            $sitemap_path = DIR . "/data/user/{$u}/sitemap.php";
+            require DIR .'/system/expand/sitemap_create.php';
+            if(is_Update_Sitemap($sitemap_config,$sitemap_path)){
+                create_sitemap($sitemap_config,$sitemap_path,$u);
+            }
+        }
+        
         msgA(['code'=>1,'msg'=>'添加成功','id'=>$lid]);
     //上传图标
     }elseif($_GET['type'] === 'upload_images'){
@@ -1823,6 +1833,9 @@ function read_data(){
         msgA( ['code'=>1,'data'=>[$category_count,$link_count,$index_count,$click_count] ]);
     //连通测试
     }elseif($_GET['type'] == 'connectivity_test'){
+        if($GLOBALS['global_config']['offline'] == '1'){
+            msg(1,'您已开启离线模式,无法使用该功能!');
+        }
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_URL, $_POST['url']);
         curl_setopt($ch, CURLOPT_TIMEOUT, 10);
@@ -2026,7 +2039,63 @@ function write_article(){
     require DIR . '/system/api_article.php';
     exit;
 }
-
+//百度推送
+function other_baidu_push(){
+    global $u,$global_config;
+    if ( $global_config['offline'] == '1'){ 
+        msg(-1,"离线模式无法使用此功能"); 
+    }
+    if(!is_subscribe('bool')){
+        msg(-1,"未检测到有效授权,无法使用该功能!");
+    }
+    if(empty($_POST['push_api'])){
+        msg(-1,'请输入接口地址');
+    }
+    if(empty($_POST['id'])){
+        msg(-1,'请提交链接ID');
+    }
+    $host = $_SERVER['HTTP_HOST']; // 获取主机名
+    $port = isset($_SERVER['SERVER_PORT']) ? ($_SERVER['SERVER_PORT'] == 80 ? '' : ':'.$_SERVER['SERVER_PORT']) : ''; // 获取端口号
+    $scheme = isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? 'https://' : 'http://'; // 获取协议
+    $host = $scheme.$host.$port;
+    $ids = json_decode($_POST['id']) ?? 0;
+    if(count($ids)<1){
+        msg(-1,'解析数据失败,请检查格式是否正确');
+    }
+    $urls=[];
+    if($_POST['type'] == 'link'){
+        foreach($ids as $id){
+            $urls[] = "{$host}/{$u}/click/{$id}.html";
+        }
+    }elseif($_POST['type'] == 'article'){
+        foreach($ids as $id){
+            $urls[] = "{$host}/{$u}/article/{$id}.html";
+        }
+    }else{
+        msg(-1,'无效类型');
+    }
+    
+    if(!empty($urls)){
+        $api = $_POST['push_api'];
+        write_user_config('baidu_push_api',$api,'config','百度推送API');
+        $ch = curl_init();
+        $options =  array(
+            CURLOPT_URL => $api,
+            CURLOPT_POST => true,
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_POSTFIELDS => implode("\n", $urls),
+            CURLOPT_HTTPHEADER => array('Content-Type: text/plain'),
+        );
+        curl_setopt_array($ch, $options);
+        $result = curl_exec($ch);
+        $result = json_decode($result,true) ?? '';
+        if(empty($result)){
+            msg(-1,'推送失败');
+        }else{
+            msgA(['code'=>curl_getinfo($ch, CURLINFO_HTTP_CODE),'data'=>$result]);
+        }
+    }
+}
 //获取链接信息
 function other_get_link_info(){
     global $global_config;

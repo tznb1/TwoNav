@@ -365,6 +365,7 @@ if($USER_DB['UserGroup'] == 'root'){
                     var content = '<table class="layui-table" border="1"><thead><tr><th>日期</th><th>IP列表</th></tr></thead><tbody>';
                     $.each(data.data, function (date, ipAddresses) {
                         content += '<tr><td>' + date + '</td><td>';
+                        ipAddresses.sort((ip1, ip2) => ip1.localeCompare(ip2, undefined, { numeric: true })); //IP排序
                         $.each(ipAddresses, function (index, ipAddress) {
                             content += ipAddress + '<br>';
                         });

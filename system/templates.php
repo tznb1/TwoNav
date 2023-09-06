@@ -55,7 +55,7 @@ if($c == 'index'){
     $dir_path = DIR.'/templates/guestbook';
 }elseif($c == 'apply'){ //收录
     $theme = $s_templates['apply'];
-    $dir_path = DIR.'/templates/guestbook/';
+    $dir_path = DIR.'/templates/apply/';
 }elseif($c == $global_config['Login']  || $c == $USER_DB['Login']){ //登录
     $theme = $s_templates['login'];
     $dir_path = DIR.'/templates/login';

@@ -288,8 +288,8 @@ function Write_Config(){
     $o_config['RegOption'] = '0'; //注册配置
     $o_config['Libs'] = './static'; //静态库路径
     $o_config['Default_User'] = $_POST['User']; //默认用户
-    $o_config['XSS_WAF'] = '1'; //防XSS脚本
-    $o_config['SQL_WAF'] = '1'; //防SQL注入
+    $o_config['XSS_WAF'] = '0'; //防XSS脚本
+    $o_config['SQL_WAF'] = '0'; //防SQL注入
     $o_config['offline'] = '0'; //离线模式
     $o_config['Debug']   = '0'; //调试模式
     $o_config['Maintenance'] = '0'; //维护模式

@@ -270,45 +270,6 @@ layui.use(['form','table','dropdown','miniTab'], function () {
                 return true;
             }
           })
-        }else if(event === 'icon_pull'){
-            layer.alert('存在链接图标时如何处理 ?', {icon: 3, title:'请选择',btn: ['保持原样', '重新拉取', '取消'],
-              btnAlign: 'c', 
-              btn1: function(){icon_pull_test('0')}, //跳过
-              btn2: function(){icon_pull_test('1')} //覆盖
-            });
-            function icon_pull_test(cover){
-                let i = 0;
-                let success = 0;
-                let skip = 0;
-                let fail = 0;
-                let total = checkStatus.data.length;
-                layer.load(1, {shade:[0.5,'#fff']});//加载层
-                let msg_id = layer.msg('正在拉取中', {icon: 16,time: 1000*300});
-                icon_pull(i);
-                function icon_pull(id){
-                    if(i >= total){
-                        layer.closeAll();
-                        layer.alert('总计:' + total +',成功:' + success + ',失败:'+ fail + (skip > 0 ? (',跳过:' + skip):'' ),{icon:1,title:'信息',anim: 2,shadeClose: false,closeBtn: 0});
-                        return true;
-                    }
-                    $("#layui-layer"+ msg_id+" .layui-layer-padding").html('<i class="layui-layer-face layui-icon layui-icon layui-icon-loading layui-anim layui-anim-rotate layui-anim-loop"></i>[ ' + i + ' / ' + total + ' ]     正在拉取图标');
-                    $.post(get_api('write_link','icon_pull'),{id:checkStatus.data[i].lid,cover:cover},function(data,status){
-                        if(data.msg == 'success'){
-                            success ++;
-                        }else if(data.msg == 'fail'){
-                            fail ++;
-                        }else if(data.msg == 'skip'){
-                            skip ++;
-                        }else{
-                            layer.closeAll();
-                            layer.alert(data.msg,{icon:2,title:'信息',anim: 2,shadeClose: false,closeBtn: 0});
-                            return true;
-                        }
-                        i ++;
-                        icon_pull(i);
-                    });
-                }
-            }
         }else if(event === 'link_extend'){
             extend_data = '';
             index = layer.open({type: 1,scrollbar: false,shadeClose: true,title: '编辑扩展字段',area : ['100%', '100%'],content: $('.link_extend')});
@@ -322,6 +283,8 @@ layui.use(['form','table','dropdown','miniTab'], function () {
             });
         }else if(event === 'msg_pull'){
             index = layer.open({type: 1,scrollbar: false,shadeClose: true,title: '批量识别链接信息',area : ['100%', '100%'],content: $('.msg_pull')});
+        }else if(event === 'push'){
+            index = layer.open({type: 1,scrollbar: false,shadeClose: true,title: '推送工具',area : ['100%', '100%'],content: $('.push')});
         }
     });
 
@@ -356,6 +319,23 @@ layui.use(['form','table','dropdown','miniTab'], function () {
         }
             
         
+        return false;
+    });
+    
+    //开始推送
+    $('#start_push').click(function () {
+        let checkStatus = table.checkStatus('table');
+        tableIds = checkStatus.data.map(function (value) {return value.lid;});
+        tableIds = JSON.stringify(tableIds);
+        $.post(get_api('other_baidu_push'),{'type':'link','push_api':$('#push_api').val(),'id':tableIds},function(data,status){
+            if(data.code == -1){
+                layer.msg(data.msg,{icon: 5});
+            }else if(data.code == 200){
+                layer.alert('成功推送的条数: ' + data.data.success + '<br />当天剩余的可推送条数: ' + data.data.remain + (data.data.not_same_site && data.data.not_same_site.length > 0 ? "<br />未处理的条数(非本站URL): " + data.data.not_same_site.length:'') + (data.data.not_valid && data.data.not_valid.length  > 0 ? "<br />不合法的URL条数: " + data.data.not_valid.length:''));
+            }else{
+                layer.alert('错误代码: ' + data.data.error + '<br />错误描述: ' + data.data.message);
+            }
+        });
         return false;
     });
     

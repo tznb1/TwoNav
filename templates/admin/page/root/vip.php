@@ -3,18 +3,16 @@ if($USER_DB['UserGroup'] != 'root'){$content='您没有权限访问此页面'; r
 $title='授权管理';require(dirname(__DIR__).'/header.php'); 
 $subscribe = unserialize(get_db('global_config','v',["k" => "s_subscribe"])); 
 $HTTP_HOST = preg_replace('/:\d+$/','',$_SERVER['HTTP_HOST']); //去除端口号
+$Notice = get_db('global_config','v',['k'=>'notice']);
+if(!empty($Notice)){
+    $data = json_decode($Notice, true);
+}
 ?>
 <body>
 <div class="layuimini-container">
   <div class="layuimini-main">
     <div class="layui-form layuimini-form layui-form-pane">
-        <blockquote class="layui-elem-quote layui-text">
-            <li>1. 查询授权时当前域名必须和订阅填写一致</li>
-            <li>2. 其他二级域名使用时请手动输入订单号/邮箱保存</li>
-            <li>3. 授权未绑定邮箱时邮箱留空,已绑定时请输入正确邮箱</li>
-            <li>4. 如有其他疑问联系技术支持</li>
-        </blockquote>
-        <h3 style = "margin-bottom:1em;">当前域名：<font color="red"><?php echo $HTTP_HOST; ?></font> (订阅时填写)</h3>
+        <h3 style = "margin-bottom:1em;">当前域名：<font color="red"><?php echo $HTTP_HOST; ?></font></h3>
         
         <div class="layui-form-item">
             <label class="layui-form-label">订单号</label>
@@ -47,23 +45,34 @@ $HTTP_HOST = preg_replace('/:\d+$/','',$_SERVER['HTTP_HOST']); //去除端口号
         <div class="layui-btn-group">
             <button class="layui-btn layui-btn-normal" lay-submit lay-filter="set_subscribe">保存设置</button>
             <button class="layui-btn layui-btn-warm" lay-submit lay-filter="reset_subscribe">删除</button>
-            <button class="layui-btn layui-btn-danger" id="help" sort_id="7968669">购买授权</button>
+            <button class="layui-btn layui-btn-danger" lay-submit lay-filter="buy_vip" data-url="<?php echo empty($data['pay_rul']) ?'':$data['pay_rul']?>" >购买授权</button>
             <button class="layui-btn" lay-submit lay-filter="get_subscribe">查询授权</button>
         </div>
 
         <fieldset class="layui-elem-field layui-field-title" style="margin-top:30px;"><legend>授权用户专享</legend></fieldset>
         <blockquote class="layui-elem-quote layui-text">
-          <li>1. 可使用一键更新功能</li>
-          <li>2. 可使用二级域名绑定账号功能</li>
-          <li>3. 可使用链接检测功能</li>
-          <li>4. 可自定义版权/用户组/默认配置等</li>
-          <li>5. 可使用邀请码注册功能</li>
-          <li>6. 可使用本地备份功能</li>
-          <li>7. 可无限次数下载主题和系统更新</li>
-          <li>8. 解锁全部功能和服务</li>
-          <li>9. 更多专属功能开发中</li>
-          <li>10. 可帮助TwoNav持续发展</li>
-          <li>#. 技术支持:QQ 271152681  </li>
+            <ul>
+                <li>在线更新系统 ( 免费只能手动更新 )</li>
+                <li>在线下载和更新主题模板</li>
+                <li>批量更新链接标题/关键字/描述/图标</li>
+                <li>批量识别链接是否可以访问</li>
+                <li>可使用本地备份功能支持回滚等操作</li>
+                <li>扩展功能:收录管理/留言管理/文章管理/链接扩展字段</li>
+                <li>可配置邮件服务用于注册时发送验证</li>
+                <li>可配置初始设置 (新用户注册后的默认配置) </li>
+                <li>可配置本地获取图标服务并支持缓存防盗链等配置</li>
+                <li>可开启全站私有模式降低因用户添加违规链接导致封站的风险</li>
+                <li>可自定义用户组权限,对不可信的用户禁止使用高危功能(如自定义代码)</li>
+                <li>可自定义主页版权信息,可使用二级域名直接访问用户主页</li>
+                <li>可自定义全局header代码和footer代码</li>
+                <li>可限制用户添加链接标题描述等长度</li>
+                <li>可设置保留账号,支持正字表达式 (保留账号列表不可以被用户注册)</li>
+                <li>可设置生成注册码/配置注册提示等 (如需关注公众号或付费购买注册码才可以注册)</li>
+                <li>支持生成sitemap.xml网站地图用于优化SEO,提高收录效果</li>
+                <li>支持百度推送API(链接列表和文章列表),提高收录效果</li>
+                <li>还有其他细节就不逐一举例了,TwoNav的发展离不开大家的支持</li>
+                <li>未来还会增加更多专属功能, 技术支持:QQ 271152681  </li>
+            </ul>
         </blockquote>
     </div>
   </div>
@@ -115,6 +124,13 @@ layui.use(['jquery','form'], function () {
             }
         });
         console.log(data.field) 
+        return false;
+    });
+    //购买授权
+    form.on('submit(buy_vip)', function(data){
+        let url = $(this).attr('data-url');
+        url = url.length > 0 ? url : 'https://gitee.com/tznb/TwoNav/wikis/pages?sort_id=7968669&doc_id=3767990';
+        window.open($(this).attr('data-url'));
         return false;
     });
     
