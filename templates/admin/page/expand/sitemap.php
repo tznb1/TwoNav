@@ -71,8 +71,8 @@ $title='站点地图';require(dirname(__DIR__).'/header.php');
                 <div class="layui-input-block" >
                     <select name="user_homepage">
                         <option value="0" >不生成</option>
-                        <option value="1" selected="">动态地址 | http://example.com/index.php?u=user</option>
-                        <option value="2" >静态地址 | http://example.com/user.html</option>
+                        <option value="1" >动态地址 | http://example.com/index.php?u=user</option>
+                        <option value="2" selected="">静态地址 | http://example.com/user.html</option>
                         <option value="3" >二级域名 | http://user.example.com</option>
                     </select>
                 </div>
@@ -98,8 +98,8 @@ $title='站点地图';require(dirname(__DIR__).'/header.php');
                 <div class="layui-input-block" >
                     <select name="click_page">
                         <option value="0" >不生成</option>
-                        <option value="1" selected="">动态地址 | http://example.com/index.php?c=click&id=1&u=user</option>
-                        <option value="2" >静态地址 | http://example.com/user/click/1.html</option>
+                        <option value="1" >动态地址 | http://example.com/index.php?c=click&id=1&u=user</option>
+                        <option value="2" selected="">静态地址 | http://example.com/user/click/1.html</option>
                     </select>
                 </div>
             </div>
@@ -118,31 +118,31 @@ $title='站点地图';require(dirname(__DIR__).'/header.php');
                 </div>
             </div>
             
-            <!--<fieldset class="layui-elem-field layui-field-title" style="margin-top: 30px;"><legend>文章页面</legend></fieldset>-->
-            <!--<div class="layui-form-item">-->
-            <!--    <label class="layui-form-label">URL格式</label>-->
-            <!--    <div class="layui-input-block" >-->
-            <!--        <select name="article_page">-->
-            <!--            <option value="0" >不生成</option>-->
-            <!--            <option value="1" selected="">动态地址 | http://example.com/index.php?c=article&id=1&u=user</option>-->
-            <!--            <option value="2" >静态地址 | http://example.com/user/article/1.html</option>-->
-            <!--        </select>-->
-            <!--    </div>-->
-            <!--</div>-->
+            <fieldset class="layui-elem-field layui-field-title" style="margin-top: 30px;"><legend>文章页面</legend></fieldset>
+            <div class="layui-form-item">
+                <label class="layui-form-label">URL格式</label>
+                <div class="layui-input-block" >
+                    <select name="article_page">
+                        <option value="0" >不生成</option>
+                        <option value="1" >动态地址 | http://example.com/index.php?c=article&id=1&u=user</option>
+                        <option value="2" selected="">静态地址 | http://example.com/user/article/1.html</option>
+                    </select>
+                </div>
+            </div>
             
-            <!--<div class="layui-form-item">-->
-            <!--    <label class="layui-form-label">权重</label>-->
-            <!--    <div class="layui-input-inline">-->
-            <!--        <input type="text" name="article_page_weight" lay-verify="required" value="0.8" autocomplete="off" class="layui-input">-->
-            <!--    </div>-->
-            <!--</div>-->
+            <div class="layui-form-item">
+                <label class="layui-form-label">权重</label>
+                <div class="layui-input-inline">
+                    <input type="text" name="article_page_weight" lay-verify="required" value="0.8" autocomplete="off" class="layui-input">
+                </div>
+            </div>
             
-            <!--<div class="layui-form-item">-->
-            <!--    <label class="layui-form-label">更新频率</label>-->
-            <!--    <div class="layui-input-inline" >-->
-            <!--        <select name="article_page_changefreq"></select>-->
-            <!--    </div>-->
-            <!--</div>-->
+            <div class="layui-form-item">
+                <label class="layui-form-label">更新频率</label>
+                <div class="layui-input-inline" >
+                    <select name="article_page_changefreq"></select>
+                </div>
+            </div>
             
             <div class="layui-form-item">
                 <div class="layui-input-block">

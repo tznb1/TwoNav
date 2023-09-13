@@ -8,7 +8,7 @@ $title='系统设置';require(dirname(__DIR__).'/header.php');
     <form class="layui-form" lay-filter="form">
         <div class="layui-form layuimini-form layui-form-pane">
             <blockquote class="layui-elem-quote layui-text" style="">
-                1.此功能<a href="https://gitee.com/tznb/OneNav/wikis/%E8%AE%A2%E9%98%85%E6%9C%8D%E5%8A%A1%E6%8C%87%E5%BC%95" target="_blank">授权用户</a>专享
+                1.此功能<a href="https://gitee.com/tznb/TwoNav/wikis/pages?sort_id=7968669&doc_id=3767990" target="_blank">授权用户</a>专享
             </blockquote>
             
             <fieldset class="layui-elem-field layui-field-title" style="margin-top: 30px;"><legend>SMTP 配置</legend></fieldset>

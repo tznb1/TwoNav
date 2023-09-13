@@ -34,7 +34,7 @@ require(dirname(__DIR__).'/header.php');
         <pre class="layui-code" id="console_log" >
 1.功能都集中在上方的按钮了,需要那个就点击那个!
 2.一键诊断和phpinfo用于帮助站长和开发者快速了解服务器环境
-3.生成伪静态(伪静态无需求可不设置,安全设置最好设置下)
+3.生成伪静态(仅针对Nginx,安全配置必选,其他规则按需,Apache已内置规则无需设置,其他环境不支持)
 4.数据库升级: 手动安装更新时,若有说明需更新数据库,则需要手动点击此按钮!自动更新时无需干预,特殊情况除外!
 5.清理缓存: 用于清理特定情况下产生的临时数据 (仅清理60分钟前的数据)
         产生原因1:用户在添加链接页面上传了图标且未点击删除图标或添加链接,而是直接关闭了页面
@@ -46,10 +46,10 @@ require(dirname(__DIR__).'/header.php');
 </div>
 
 
-<script src = "<?php echo $libs;?>/jquery/jquery-3.6.0.min.js"></script>
+<script src = "<?php echo $libs;?>/jquery/jquery-3.6.0.min.js?v=<?php echo $Ver;?>"></script>
 <script src = "./templates/admin/js/public.js?v=<?php echo $Ver;?>"></script>
-<script src = "<?php echo $libs?>/Other/ClipBoard.min.js"></script>
-<script src = '<?php echo $libs?>/jquery/jquery.md5.js'></script>
+<script src = "<?php echo $libs?>/Other/ClipBoard.min.js?v=<?php echo $Ver;?>"></script>
+<script src = '<?php echo $libs?>/jquery/jquery.md5.js?v=<?php echo $Ver;?>'></script>
 <?php load_static('js');?>
 <script>
 layui.use(['layer','form','miniTab'], function () {

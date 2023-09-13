@@ -18,8 +18,8 @@
 		<header id="header">
 			<div class="content">
 				<div class="inner">
-					<h3><?php echo empty($theme_config['title'])?$site['title']:$theme_config['title'];?></h3>
-					<p><?php echo empty($theme_config['p1'])?$site['description']:$theme_config['p1']; ?></p>
+					<h3><?php echo empty($theme_config['title'])?$s_site['title']:$theme_config['title'];?></h3>
+					<p><?php echo empty($theme_config['p1'])?$s_site['description']:$theme_config['p1']; ?></p>
 				</div>
 			</div>
 			<nav>

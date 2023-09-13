@@ -3,7 +3,7 @@
 //读取全局模板配置
 $global_templates = unserialize(get_db("global_config",'v', ["k" => "s_templates"]));
 
-if(defined('UID')){
+if(defined('UID') && $c != 'guide'){
     //读取用户模板配置
     $s_templates = unserialize(get_db("user_config", "v", ["uid"=>UID,"k"=>"s_templates"]));
     //没找到用户模板配置
@@ -65,11 +65,12 @@ if($c == 'index'){
 }elseif($c == 'guide'){ //引导页,由主页修改$c
     $theme = $global_templates['guide'];
     $dir_path = DIR.'/templates/guide';
+    $s_site = unserialize( get_db("global_config", "v", ["k" => "s_site"]));//读入默认站点配置
 }
 
 //模板类型(用于读取配置)
 $templates_type = substr($dir_path, strrpos($dir_path, "/") + 1) ;
-
+$config_type = in_array($templates_type,['guide','register']) ? 'global' : 'user';
 //无权限或不存在使用默认
 if( !check_purview('theme_in',1) || !is_file("{$dir_path}/{$theme}/index.php")){
     $theme = 'default';
@@ -87,23 +88,20 @@ $theme_info = json_decode(@file_get_contents($dir_path.'/info.json'),true);
 //主题配置(默认)
 $theme_config = empty($theme_info['config']) ? []:$theme_info['config'];
 
-
-if(defined('UID')){
-    //主题配置(用户)
+//读取主题配置
+if(defined('UID') && !in_array($templates_type,['guide','register'])){
     $theme_config_db = get_db('user_config','v',['t'=>"theme_{$templates_type}",'k'=>$theme,'uid'=>UID]);
-    $theme_config_db = unserialize($theme_config_db);
 }else{
-    //主题配置(用户)
-    $theme_config_db = get_db('global_config','v',['t'=>"theme_{$templates_type}",'k'=>$theme]);
-    $theme_config_db = unserialize($theme_config_db);
+    $theme_config_db = get_db('global_config','v',['k'=>"theme_{$templates_type}_{$theme}"]);
 }
+$theme_config_db = unserialize($theme_config_db);
 
 //合并配置数据
 $theme_config = empty($theme_config_db) ? $theme_config : array_merge ($theme_config,$theme_config_db);
 //主题版本
 $theme_ver = Debug ? "{$theme_info['version']}.".time() : $theme_info['version'];
 
-if(defined('UID')){
+if($config_type == 'user'){
     //载入站点设置
     $site = unserialize(get_db('user_config','v',['uid'=>UID,'k'=>'s_site']));
     //如果没有权限则清除自定义代码
@@ -223,6 +221,11 @@ function get_article_list($category = 0,$limit = 0){
         $data['category_name'] = $categorys[$data['category']] ?? 'Null';
         $data['title'] = htmlspecialchars($data['title'],ENT_QUOTES);
         $data['summary'] = htmlspecialchars($data['summary'],ENT_QUOTES);
+        if($GLOBALS['global_config']['static_link'] == 1){
+            $data['url'] = "/{$GLOBALS['u']}/article/{$data['id']}.html";
+        }else{
+            $data['url'] = "./index.php?c=article&id={$data['id']}&u={$GLOBALS['u']}";
+        }
     }
     return ['data'=>$datas,'count'=>$count];
 }

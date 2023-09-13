@@ -16,7 +16,7 @@ $title='系统设置';require(dirname(__DIR__).'/header.php');
         </div>
     <form class="layui-form" lay-filter="form">
         <div class="layui-form layuimini-form layui-form-pane">
-            <blockquote class="layui-elem-quote layui-text" style="">1.带*号的选项属<a href="https://gitee.com/tznb/OneNav/wikis/%E8%AE%A2%E9%98%85%E6%9C%8D%E5%8A%A1%E6%8C%87%E5%BC%95" target="_blank">授权用户</a>专享<br />2.原OneNav Extend的部分配置已下放到用户组配置中<br />3.如果您不理解选项的作用请勿乱改   </blockquote>
+            <blockquote class="layui-elem-quote layui-text" style="">1.带*号的选项属<a href="https://gitee.com/tznb/TwoNav/wikis/pages?sort_id=7968669&doc_id=3767990" target="_blank">授权用户</a>专享<br />2.如果您不理解选项的作用请勿乱改   </blockquote>
             
             <div class="layui-form-item">
                 <label class="layui-form-label">默认用户</label>
@@ -144,7 +144,18 @@ $title='系统设置';require(dirname(__DIR__).'/header.php');
                 </div>
                 <div class="layui-form-mid layui-word-aux">开启时将关闭主页/登录/注册等服务,站长账号不受影响(网站升级迁移时适用)</div>
             </div>
-
+            
+            <div class="layui-form-item">
+                <label class="layui-form-label required">静态链接</label>
+                <div class="layui-input-inline">
+                    <select name="static_link">
+                        <option value="0" selected="">关闭</option>
+                        <option value="1" >开启</option>
+                    </select>
+                </div>
+                <div class="layui-form-mid layui-word-aux">开启后部分动态链接将改为静态链接 (请确保伪静态生效中)</div>
+            </div>
+            
             <div class="layui-form-item">
                 <label class="layui-form-label required">强制私有</label>
                 <div class="layui-input-inline">

@@ -37,7 +37,7 @@ function create_sitemap($sitemap_config,$sitemap_path,$u){
     $today = date("Y-m-d\TH:i:s", time());
     //域名
     $host = $_SERVER['HTTP_HOST']; // 获取主机名
-    $port = isset($_SERVER['SERVER_PORT']) ? ($_SERVER['SERVER_PORT'] == 80 ? '' : ':'.$_SERVER['SERVER_PORT']) : ''; // 获取端口号
+    $port = isset($_SERVER['SERVER_PORT']) ? ($_SERVER['SERVER_PORT'] == 80 || $_SERVER['SERVER_PORT'] == 443 ? '' : ':'.$_SERVER['SERVER_PORT']) : ''; // 获取端口号
     $scheme = isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? 'https://' : 'http://'; // 获取协议
     $host = $scheme.$host.$port;
     //用户主页 0.关闭 1.动态地址 2.静态地址 3.二级域名
@@ -104,6 +104,20 @@ function create_sitemap($sitemap_config,$sitemap_path,$u){
                 $url = createUrlElement($xml, $locurl, date("Y-m-d\TH:i:s", $link['up_time']), $sitemap_config['click_page_changefreq'], $sitemap_config['click_page_weight']);
                 $urlset->appendChild($url);
             }
+        }
+    }
+    
+    //文章页面
+    if($sitemap_config['article_page'] > 0){
+        $article_list = select_db('user_article_list',['id','up_time'],['state'=>1,'uid'=>UID]);
+        foreach ($article_list as $data) {
+            if($sitemap_config['article_page'] == '2'){
+                $locurl = "{$host}/{$u}/article/{$data['id']}.html";
+            }else{
+                $locurl = "{$host}/index.php?c=article&id={$data['id']}&u={$u}";
+            }
+            $url = createUrlElement($xml, $locurl, date("Y-m-d\TH:i:s", $data['up_time']), $sitemap_config['article_page_changefreq'], $sitemap_config['article_page_weight']);
+            $urlset->appendChild($url);
         }
     }
 

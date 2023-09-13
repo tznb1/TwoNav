@@ -174,7 +174,12 @@ function get_links($fid) {
         }
         
         if($click || $site['link_model'] != 'direct'){
-            $links[$key]['url'] = "./index.php?c=click&id={$link['id']}&u=".U;
+            if($GLOBALS['global_config']['static_link'] == 1){
+                $links[$key]['url'] = "/{$u}/click/{$link['id']}.html";
+            }else{
+                $links[$key]['url'] = "./index.php?c=click&id={$link['id']}&u=".U;
+            }
+            
             if($lock){
                 $links[$key]['real_url'] = $links[$key]['url']; //篡改真实URL,防止泄密
                 if(isset($share['sid'])){
@@ -202,7 +207,11 @@ function get_links($fid) {
     if( intval($site['article_visual'] ?? '1') > 0 && $GLOBALS['theme_info']['support']['article'] != 'notdisplay'){
         $articles = get_article_list($fid);
         foreach ($articles['data'] as $article) {
-            $url = "./index.php?c=article&id={$article['id']}&u={$u}";
+            if($GLOBALS['global_config']['static_link'] == 1){
+                $url = "/{$u}/article/{$article['id']}.html";
+            }else{
+                $url = "./index.php?c=article&id={$article['id']}&u={$u}";
+            }
             if($site['article_icon'] == '1'){ //站点图标
                 $icon = $GLOBALS['favicon'];
             }elseif($site['article_icon'] == '2' && !empty($article['cover'])){ //封面

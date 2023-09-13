@@ -1641,7 +1641,11 @@ function write_theme(){
             msg(-1,"参数错误");
         }
         //0420 END
-        write_user_config($_GET['t'],$_POST,'theme_' . $fn,'主题配置');
+        if(in_array($fn,['guide','register'])){
+            write_global_config("theme_{$fn}_{$_GET['t']}",$_POST,'主题配置');
+        }else{
+            write_user_config($_GET['t'],$_POST,'theme_' . $fn,'主题配置');
+        }
         msg(1,"保存成功！");
     }
 }

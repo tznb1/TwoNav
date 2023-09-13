@@ -4,8 +4,8 @@ if(!defined('DIR')){header('HTTP/1.1 404 Not Found');header("status: 404 Not Fou
 //初始化
 session_name('TwoNav_initial');
 session_start();
-$layui['js']  = './static/Layui/v2.8.10/layui.js';
-$layui['css'] = './static/Layui/v2.8.10/css/layui.css';
+$layui['js']  = './static/Layui/v2.8.17/layui.js';
+$layui['css'] = './static/Layui/v2.8.17/css/layui.css';
 
 //判断请求类型
 if($_SERVER['REQUEST_METHOD'] === 'POST'){

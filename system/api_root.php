@@ -520,9 +520,9 @@ function write_sys_settings(){
     if($_POST['Login'] == $_POST['Register']){
         msg(-1,'注册入口名不能和登录入口名相同');
     }elseif(!preg_match("/^[a-zA-Z0-9]+$/",$_POST['Register'])){ 
-         msg(-1,'注册入口错误,仅允许使用字母和数字');
+        msg(-1,'注册入口错误,仅允许使用字母和数字');
     }elseif(!preg_match("/^[a-zA-Z0-9]+$/",$_POST['Login'])){ 
-         msg(-1,'登陆入口错误,仅允许使用字母和数字');
+        msg(-1,'登陆入口错误,仅允许使用字母和数字');
     }elseif(empty($_POST['Default_User']) || !get_db("global_user", "User", [ "User"=>$_POST['Default_User'] ]) ){
         msg(-1,'默认账号不存在');
     }elseif(!empty($_POST['default_UserGroup']) && empty(get_db('user_group','code',['code' => $_POST['default_UserGroup']]))){
@@ -539,6 +539,14 @@ function write_sys_settings(){
         }
     }
     
+    //自定义登录入口和注册入口检测
+    $prohibits = ['admin','click','api','ico','icon','verify','apply','guestbook','article','sitemap'];
+    if(in_array($_POST['Login'],$prohibits)){
+        msg(-1,'此登录入口名已被系统使用');
+    }
+    if(in_array($_POST['Register'],$prohibits)){
+        msg(-1,'此注册入口名已被系统使用');
+    }
     //长度限制
     foreach (['c_name','c_desc','l_name','l_url','l_key','l_desc'] as $name){
         $length_limit[$name] = is_subscribe('bool') ? intval($_POST[$name]) : 0;
@@ -567,6 +575,7 @@ function write_sys_settings(){
         'global_footer'=>['empty'=>true],
         'api_extend'=>['empty'=>true],
         'c_code'=>['int'=>true,'min'=>0,'max'=>1,'msg'=>'自定义代码参数错误'],
+        'static_link'=>['int'=>true,'min'=>0,'max'=>1,'msg'=>'静态链接参数错误'],
         //更新设置
         'Update_Source'=>['empty'=>true],
         'Update_Overtime'=>['int'=>true,'min'=>3,'max'=>60,'msg'=>'资源超时参数错误'],
@@ -596,6 +605,7 @@ function write_sys_settings(){
         if($_POST['guestbook'] == 1){$o_config['guestbook'] = 0;$filter = true;}
         if($_POST['link_extend'] == 1){$o_config['link_extend'] = 0;$filter = true;}
         if($_POST['article'] == 1){$o_config['article'] = 0;$filter = true;}
+        if($_POST['static_link'] == 1){$o_config['static_link'] = 0;$filter = true;}
     }
     //检测于下载文章管理依赖资源
     clearstatcache();

@@ -15,14 +15,14 @@
     <div class="layui-form-item layui-form-text">
         <label class="layui-form-label">页内标题</label>
         <div class="layui-input-block">
-            <input type="text" name="title" placeholder="留空则使用默认用户站点配置的主标题" autocomplete="off" class="layui-input">
+            <input type="text" name="title" placeholder="留空则使用:默认设置>站点设置>主标题" autocomplete="off" class="layui-input">
         </div>
     </div>
 
     <div class="layui-form-item layui-form-text">
         <label class="layui-form-label">页内描述</label>
         <div class="layui-input-block">
-            <input type="text" name="p1" placeholder="留空则使用默认用户站点配置的描述" autocomplete="off" class="layui-input">
+            <input type="text" name="p1" placeholder="留空则使用:默认设置>站点设置>站点描述" autocomplete="off" class="layui-input">
         </div>
     </div>
 

@@ -15,9 +15,9 @@ if(!empty($Notice)){
         <h3 style = "margin-bottom:1em;">当前域名：<font color="red"><?php echo $HTTP_HOST; ?></font></h3>
         
         <div class="layui-form-item">
-            <label class="layui-form-label">订单号</label>
+            <label class="layui-form-label">授权卡密</label>
             <div class="layui-input-block">
-                <input type="text" id = "order_id" name="order_id" value="<?php echo $subscribe['order_id']; ?>" required  autocomplete="off" placeholder="请输入订单号" class="layui-input">
+                <input type="text" id = "order_id" name="order_id" value="<?php echo $subscribe['order_id']; ?>" required  autocomplete="off" placeholder="请输入授权单号/卡密" class="layui-input">
             </div>
         </div>
 

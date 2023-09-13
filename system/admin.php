@@ -68,7 +68,12 @@ if($page == 'config_home'){
     if(!in_array($_GET['fn'],['home','login','register','transit','guide','article','verify','guestbook','apply'])){
         msg(-1,"参数错误");
     }
-    $theme_config_db = get_db('user_config','v',['t'=>'theme_'.$_GET['fn'],'k'=>$theme,'uid'=>UID]);
+    if(in_array($_GET['fn'],['guide','register'])){
+        $theme_config_db = get_db('user_config','v',['k'=>'theme_'.$theme,'uid'=>UID]);
+    }else{
+        $theme_config_db = get_db('user_config','v',['t'=>'theme_'.$_GET['fn'],'k'=>$theme,'uid'=>UID]);
+    }
+    
     $theme_config_db = unserialize($theme_config_db);
     
     //如果不为空则合并数据

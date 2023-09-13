@@ -5,6 +5,23 @@
     <li class="layui-timeline-item">
         <i class="layui-icon layui-timeline-axis"></i>
         <div class="layui-timeline-content layui-text">
+            <h4 class="layui-timeline-title">v2.0.39-20230913</h4>
+            <ul>
+                <li>[升级] Layui组件由 v2.8.10 升级到 v2.8.17</li>
+                <li>[优化] 站点地图支持生成文章页面链接</li>
+                <li>[新增] 系统设新增静态链接选项,开启后部分动态链接将改为静态链接 (请确保伪静态生效中,仅针对前台内容)</li>
+                <li>[优化] 挽风导航V1:文章图片点击放大,新增两处自定义代码,添加返回顶部功能!主页增加一处自定义代码,修复全局底部代码无效,磨砂风格支持</li>
+                <li>[修复] 使用Mysql数据库在访问注册页面/引导时报错</li>
+                <li>[修复] 全局类模板配置保存位置错误</li>
+                <li>[修复] 站点地图HTTPS访问时携带443端口的问题 #I80I6K</li>
+                <li>[变更] 阻止将登录/注册入口改成系统在使用的名称,避免产生冲突</li>
+                
+            </ul>
+        </div>
+    </li>
+    <li class="layui-timeline-item">
+        <i class="layui-icon layui-timeline-axis"></i>
+        <div class="layui-timeline-content layui-text">
             <h4 class="layui-timeline-title">v2.0.38-20230906</h4>
             <ul>
                 <li>[变更] 初始化安装默认关闭防XSS和SQL(个人使用没必要开启,会导致自定义代码时被拦截)</li>

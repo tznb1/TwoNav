@@ -8,7 +8,7 @@ $title='系统设置';require(dirname(__DIR__).'/header.php');
     <form class="layui-form" lay-filter="form">
         <div class="layui-form layuimini-form layui-form-pane">
             <blockquote class="layui-elem-quote layui-text" style="">
-                1.此功能<a href="https://gitee.com/tznb/OneNav/wikis/%E8%AE%A2%E9%98%85%E6%9C%8D%E5%8A%A1%E6%8C%87%E5%BC%95" target="_blank">授权用户</a>专享,请仔细阅读本页说明<br />
+                1.此功能<a href="https://gitee.com/tznb/TwoNav/wikis/pages?sort_id=7968669&doc_id=3767990" target="_blank">授权用户</a>专享,请仔细阅读本页说明<br />
                 2.缓存时间视自身需求而定,希望及时更新则短一点(实际上站点很少会更新图标),建议值: 604800 (7天)<br />
                 3.修改缓存时间可能不会立即生效,因为浏览器已经缓存的图标会等过期后再刷新 (可以清理浏览器缓存来强制刷新)<br />
                 4.用户需在站点设置>链接图标>选择本地服务或本地服务(伪静态),后者需要从站长工具生成伪静态并正确配置<br />
