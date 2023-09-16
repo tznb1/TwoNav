@@ -112,37 +112,14 @@ layui.use(['jquery','form'], function () {
     var form = layui.form;
     var layer = layui.layer;
     var $ = layui.jquery;
-    
-    //表单赋值
-    form.val('form', <?php echo json_encode(unserialize( get_db("global_config", "v", ["k" => "mail_config"])));?>);
-
     //监听提交
     form.on('submit(save)', function (data) {
-        $.post(get_api('other_root','write_mail_config'),data.field,function(data,status){
-            if(data.code == 1) {
-                if(data.msg!="保存成功"){
-                    layer.alert(data.msg)
-                }else{
-                    layer.msg(data.msg, {icon: 1});
-                }
-            }else{
-                layer.msg(data.msg, {icon: 5});
-            }
-        });
+        Authorization_Prompt();
         return false;
     }); 
     //测试
     form.on('submit(send_test)', function (data) {
-        layer.load(1, {shade:[0.3,'#fff']});
-        layer.msg('正在发送中..', {icon: 16,time: 1000*300});
-        $.post(get_api('other_root','write_mail_test'),data.field,function(data,status){
-            layer.closeAll();
-            if(data.code == 1) {
-                layer.alert(data.msg);
-            }else{
-                layer.msg(data.msg, {icon: 5});
-            }
-        });
+        Authorization_Prompt();
         return false;
     }); 
 

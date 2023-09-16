@@ -15,17 +15,22 @@ if(!empty($Notice)){
 //是否下载数据
 if(!offline && $reload){
     $overtime = !isset($global_config['Update_Overtime']) ? 3 : ($global_config['Update_Overtime'] < 3 || $global_config['Update_Overtime'] > 60 ? 3 : $global_config['Update_Overtime']);
-    $urls = [
-        "lm21" => "https://update.lm21.top/TwoNav/Notice.json",
-        "gitee" => "https://gitee.com/tznb/twonav_updata/raw/master/Notice.json"
-    ];
+    if(!is_subscribe('bool')){
+        $urls = ["gitee" => "http://tznb.gitee.io/twonav_resource/Notice.json"];
+    }else{
+        $urls = ["twonav" => "http://service.twonav.cn/service.php"];
+    }
     $Source = $global_config['Update_Source'] ?? '';
     if (!empty($Source) && isset($urls[$Source])) {
         $urls = [$Source => $urls[$Source]];
     }
     
-    foreach($urls as $key => $url){ 
-        $Res = ccurl($url,$overtime);
+    foreach($urls as $key => $url){
+        if($key == 'gitee'){
+            $Res = ccurl($url,$overtime);
+        }else{
+            $Res = ccurl($url,30,true,data_encryption('get_new_ver',['ver'=>SysVer]));
+        }
         $new_data = json_decode($Res['content'], true);unset($Res);
         if($new_data["code"] == 200 ){ //下载成功,写入缓存
             $new_data['download_time'] = time();

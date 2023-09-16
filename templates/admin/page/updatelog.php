@@ -5,6 +5,16 @@
     <li class="layui-timeline-item">
         <i class="layui-icon layui-timeline-axis"></i>
         <div class="layui-timeline-content layui-text">
+            <h4 class="layui-timeline-title">v2.0.40-20230916</h4>
+            <ul>
+                <li>[优化] 优化资源节点,提高系统更新速度,主题下载速度,预览图加载速度! </li>
+                <li>[优化] 系统响应速度,修复已知问题</li>
+            </ul>
+        </div>
+    </li>
+    <li class="layui-timeline-item">
+        <i class="layui-icon layui-timeline-axis"></i>
+        <div class="layui-timeline-content layui-text">
             <h4 class="layui-timeline-title">v2.0.39-20230913</h4>
             <ul>
                 <li>[升级] Layui组件由 v2.8.10 升级到 v2.8.17</li>
@@ -15,7 +25,6 @@
                 <li>[修复] 全局类模板配置保存位置错误</li>
                 <li>[修复] 站点地图HTTPS访问时携带443端口的问题 #I80I6K</li>
                 <li>[变更] 阻止将登录/注册入口改成系统在使用的名称,避免产生冲突</li>
-                
             </ul>
         </div>
     </li>

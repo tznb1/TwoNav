@@ -17,9 +17,6 @@ if (URI === '/login' || URI === '/admin') {
     $_GET['u'] = $matches[1];
     $_GET['c'] = $matches[2];
     $_GET['id'] = $matches[3];
-//站点地图
-}elseif(URI === '/sitemap.xml'){
-    $_GET['c'] = 'sitemap';
 //匹配失败
 }else{
     header("HTTP/1.0 404 Not Found");

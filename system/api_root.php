@@ -33,76 +33,52 @@ function other_upsys(){
                 msg(-1,"文件夹不可写 >> $path");
             }
         }
-        
-        $_SESSION['upsys']['sysver'] = intval($matches[1]);
-        usleep(1000*300); //延迟300毫秒
-        msg(1,'success');
-    }
-    //下载更新包
-    if($_POST['i'] == 2){
+        //检查授权状态
         if(!is_subscribe('bool')){
             msg(-1,'未检测到有效授权,请
             <a href="https://gitee.com/tznb/TwoNav/wikis/pages?sort_id=7968669&doc_id=3767990" target="_blank" style="color: #01AAED;">购买授权</a>
             或
             <a href="https://gitee.com/tznb/TwoNav/wikis/pages?sort_id=8013447&doc_id=3767990" target="_blank" style="color: #01AAED;">手动更新</a>');
         }
+        $subscribe = unserialize(get_db('global_config','v',["k" => "s_subscribe"]));
+        if(!isset($subscribe['public']) || empty($subscribe['public'])){
+            msg(-1,'
+            错误原因: 未检测到授权秘钥<br />如何处理: <br /> 
+            &nbsp;&nbsp; 1. 转到<a href="./index.php?c=admin&u='.U.'#root/vip" target="_blank" style="color: #01AAED;">授权管理</a>页面点击保存设置<br />
+            &nbsp;&nbsp; 2. 提示保存成功后在尝试更新');
+        }
+        $_SESSION['upsys']['sysver'] = intval($matches[1]);
+        usleep(1000*300); //延迟300毫秒
+        msg(1,'success');
+    }
+    //下载更新包
+    if($_POST['i'] == 2){
         //设置执行最长时间，0为无限制。单位秒!
         set_time_limit(5*60);
         $overtime = !isset($GLOBALS['global_config']['Update_Overtime']) ? 3 : ($GLOBALS['global_config']['Update_Overtime'] < 3 || $GLOBALS['global_config']['Update_Overtime'] > 60 ? 3 : $GLOBALS['global_config']['Update_Overtime']);
         
-        //加载远程数据
-        $urls = [
-                "lm21" => "https://update.lm21.top/TwoNav/updata.json",
-                "gitee" => "https://gitee.com/tznb/twonav_updata/raw/master/updata.json"
-            ];
-        $Source = $GLOBALS['global_config']['Update_Source'] ?? '';
-        if (!empty($Source) && isset($urls[$Source])) {
-            $urls = [$Source => $urls[$Source]];
-        }
-            
-        foreach($urls as $key => $url){ 
-            $Res = ccurl($url,$overtime);
-            $data = json_decode($Res["content"], true);
-            if($data["code"] == 200 ){ //如果获取成功
-                break; //跳出循环.
-            } 
-        }
-    
+        //请求获取更新包
+        $Res = ccurl("http://service.twonav.cn/service.php",30,true,data_encryption('updateSystem',['sysver'=>$_SESSION['upsys']['sysver']]));
+        $data = json_decode($Res["content"], true);
+        
         if($data["code"] != '200'){
-            msg(-1,'获取更新信息失败,请稍后再试..');
+            msg(-1,$data['msg'] ?? '获取更新信息失败,请稍后再试..');
         }
         
-        foreach($data["data"] as $key){
-            if( $_SESSION['upsys']['sysver'] >= $key["low"]  && $_SESSION['upsys']['sysver'] <= $key["high"] &&  $key["update"] > $_SESSION['upsys']['sysver']){
-                $file = "System_Upgrade.tar.gz";
-                $filePath = "./data/temp/{$file}";
-                $data = $key;
-                break; //找到跳出
-            }
-        }
-        if(empty($file)){
-            msg(-1,'暂无可用更新');
-        }
+        $file = "System_Upgrade.tar.gz";
+        $filePath = "./data/temp/{$file}";
         
         //下载升级包
-        unlink($filePath);
-        foreach($data["url"] as $url){
-            if(downFile($url,$file,'./data/temp/')){
-                $file_md5 = md5_file($filePath);
-                if($file_md5 === $data['md5']){
-                    break; //下载成功,跳出循环
-                }else{
-                    unlink($filePath); //下载失败,删除文件
-                }
+        if(downFile($data['url'],$file,'./data/temp/')){
+            $file_md5 = md5_file($filePath);
+            if($file_md5 != $data['md5']){
+                unlink($filePath);
+                msg(-1,'更新包校验失败,请重试或联系客服');
             }
-        }
-        //检查下载结果
-        if(empty($file_md5) ){
+        }else{
             msg(-1,'下载更新包失败');
-        }elseif($file_md5 != $data['md5']){
-            msgA(['code'=>-1,'msg'=> '升级包效验失败','correct_md5'=> $data['md5'],'reality_md5'=>$file_md5]);
         }
-        //sleep(1);
+        
         msg(1,'success');
     }
     
@@ -199,6 +175,7 @@ function other_upsys(){
     msgA(['code'=>-1,'msg'=>'步骤错误']);
 }
 
+
 //读用户列表
 function read_user_list(){
     $query  = $_POST['query'];
@@ -261,19 +238,7 @@ function read_users_list(){
     if(!is_subscribe('bool')){
         msg(-1,'未检测到有效授权');
     }
-    $purview_list = select_db('purview_list','name','');
-    $datas = select_db('user_group',['id','name','allow','code','codes','uname'],'');
-    foreach ($datas as $key => $data){
-        $datas[$key]['codes'] = unserialize($datas[$key]['codes']);
-        if(empty($datas[$key]['codes'])){
-            $datas[$key]['disable'] = $purview_list;//为空表示全部
-        }else{
-            $datas[$key]['disable'] = array_diff($purview_list,explode(",", $data['allow']));
-        }
-        
-        $datas[$key]['disable'] = implode(',',$datas[$key]['disable']); //数组转文本
-    }
-    msgA(['code'=>1,'msg'=>'获取成功','count'=>count($datas),'data'=>$datas]);
+    msg(1,'请更新系统后再试');
 }
 
 //写用户组
@@ -289,123 +254,13 @@ function write_users(){
     if(!is_subscribe('bool')){
         msg(-1,'未检测到有效授权');
     }
-    $USER = $_POST['uname'];
-    $USER_ID = '';
-    if(!empty($USER)){
-        $USER_ID = get_db("global_user", "ID", ["User"=>$USER]);
-        if(empty($USER_ID)){msg(-1,'蓝图用户不存在');}
-    }
-    
-    if($_GET['type'] == 'add'){
-        if(!empty(get_db('user_group','code',['code' => $_POST['code']]))){
-            msg(-1,'分组代号已存在');
-        }elseif(!empty(get_db('user_group','name',['name' => $_POST['name']]))){
-            msg(-1,'分组名称已存在');
-        }
-        
-        insert_db('user_group',["uname"=>$USER,"uid"=>$USER_ID,"code"=>$_POST['code'],"name"=>$_POST['name'],"allow"=>$_POST['allow_list'],"codes"=>json_decode($_POST['allow_code_list'])],[1,'添加成功']);
-    }elseif($_GET['type'] == 'edit'){
-        if(empty(get_db('user_group','code',['code' => $_POST['code']]))){ 
-            msg(-1,'此分组代号不存在');
-        }elseif(!empty(get_db('user_group','name',['name' => $_POST['name'],'code[!]'=>$_POST['code']]))){
-            msg(-1,'分组名称已存在');
-        }
-        update_db('user_group',["uname"=>$USER,"uid"=>$USER_ID,"name"=>$_POST['name'],'allow'=>$_POST['allow_list'],'codes'=>json_decode($_POST['allow_code_list']) ],['code'=>$_POST['code']],[1,'保存成功']);
-    }elseif($_GET['type'] == 'del'){
-        global $global_config;
-        if(!empty(get_db('global_user','ID',['UserGroup' => $_POST['code']]))){
-            msg(-1,'无法删除,有用户正在使用此用户组');
-        }elseif(!empty(get_db('regcode_list','regcode',['u_group' => $_POST['code']]))){
-            msg(-1,'无法删除,存在使用此用户组的注册码');
-        }elseif($global_config['default_UserGroup'] == $_POST['code']){
-            msg(-1,'无法删除,正在被使用:系统设置>默认分组');
-        }
-        delete_db('user_group',["code" => $_POST['code'] ],[1,'删除成功']);
-    }
+    msg(1,'请更新系统后再试');
 }
 
 
 //写用户信息
 function write_user_info(){
-   switch ($_GET['type']) {
-    //删除
-    case "Del":
-        $uids = json_decode($_POST['ID']);
-        $USER_S = select_db('global_user','User',['ID'=>$uids]);
-        foreach($USER_S as $USER){
-            if(is_dir(DIR.'/data/user/'.$USER)){
-                deldir(DIR.'/data/user/'.$USER);
-                if(is_dir(DIR.'/data/user/'.$USER)){
-                    msg(1,'删除用户数据目录失败,用户名:'.$USER);
-                }
-            }
-            if(is_dir(DIR.'/data/backup/'.$USER)){
-                deldir(DIR.'/data/backup/'.$USER);
-                if(is_dir(DIR.'/data/backup/'.$USER)){
-                    msg(1,'删除用户备份目录失败,用户名:'.$USER);
-                }
-            }
-        }
-        foreach (['regcode_list','user_categorys','user_config','user_count','user_links','user_log','user_login_info'] as $table){
-            delete_db($table,[ "uid" => $uids ]);
-        }
-        delete_db('global_user',["ID" => $uids]);
-        msg(1,'删除成功');
-        break;
-    //删除OTP验证
-    case "Del_OTP":
-        $uids = json_decode($_POST['ID']);
-        $USER_S = select_db('global_user',['LoginConfig','ID','User'],['ID'=>$uids]);
-        $fail = 0;
-        foreach($USER_S as $USER){
-            $LoginConfig = unserialize($USER['LoginConfig']);
-            if(empty($LoginConfig['totp_key'])){
-                $fail ++;
-                continue;
-            }
-            $LoginConfig['totp_key'] = '';
-            update_db("global_user", ["LoginConfig" => $LoginConfig], ["ID" => $USER['ID']]);
-        }
-        if($fail > 0){
-            msg(1,'操作完毕,有'.$fail.'个账号未开启OTP双重验证');
-        }
-        msg(1,'操作成功');
-        break;
-    //设用户组
-    case "set_UserGroup":
-        if(empty($_POST['UserGroup'])){
-            msg(-1,'用户组不能为空');
-        }elseif(!in_array($_POST['UserGroup'],['default','root']) && empty(get_db('user_group','code',['code' => $_POST['UserGroup']]))){
-            msg(-1,'用户组不存在');
-        }
-        update_db('global_user',['UserGroup'=>$_POST['UserGroup']],["ID" => json_decode($_POST['ID']) ],[1,'修改成功']);
-        break;
-    //设密码
-    case "set_pwd":
-        if(!has_db('global_user',['ID'=>$_POST['ID']])){
-            msg(-1,'用户不存在!');
-        }
-        //空字符串md5 防止意外出现空密码
-        if( $_POST['new_pwd']== 'd41d8cd98f00b204e9800998ecf8427e'){
-            msg(-1,'密码不能为空');
-        }
-        $RegTime = get_db('global_user','RegTime',['ID'=>$_POST['ID']]);
-        update_db('global_user',['Password'=>Get_MD5_Password($_POST['new_pwd'],$RegTime)],["ID" => $_POST['ID'] ],[1,'修改成功']);
-        break;
-    //设邮箱
-    case "set_email":
-        if(!preg_match("/\w+([-+.]\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*/i",$_POST['new_email'])){
-            msg(-1,'邮箱错误!');
-        }
-        if(has_db('global_user',['Email'=>$_POST['new_email']])){
-            msg(-1,'邮箱已存在!');
-        }
-        update_db('global_user',['Email'=>$_POST['new_email']],["ID" => $_POST['ID'] ],[1,'修改成功']);
-        break;
-
-    default:
-        msg(-1,'操作类型错误');
-   }
+    msg(-1,'未检测到有效授权,无法使用该功能');
 }
 
 //读注册码列表
@@ -413,29 +268,7 @@ function read_regcode_list(){
     if(!is_subscribe('bool')){
         msg(-1,'未检测到有效授权');
     }
-    $page   = empty(intval($_REQUEST['page'])) ? 1 : intval($_REQUEST['page']);
-    $limit  = empty(intval($_REQUEST['limit'])) ? 50 : intval($_REQUEST['limit']);
-    $offset = ($page - 1) * $limit; //起始行号
-    $where = [];
-    
-    //统计条数
-    $count = count_db('regcode_list',$where);
-    //分页
-    $where['LIMIT'] = [$offset,$limit];
-    //排序
-    $where['ORDER']['id'] = 'DESC';
-    //查询
-    $datas = select_db('regcode_list','*',$where);
-    //用户组处理
-    if(!empty($datas)){
-       $user_group = select_db('user_group',['name','code'],'');//读用户组
-       $user_group = array_column($user_group, 'name', 'code');//以代号为键
-       $user_group['root'] = '站长';
-       $user_group['default'] = '默认';
-       foreach ($datas as $key => $data){
-           $datas[$key]['UserGroupName'] = $user_group[$data['u_group']]??'Null';
-       }
-    }
+    msg(1,'请更新系统后再试');
     msgA(['code'=>1,'msg'=>'获取成功','count'=>$count,'data'=>$datas]);
 }
 
@@ -445,43 +278,14 @@ function write_regcode(){
     if(!is_subscribe('bool')){
         msg(-1,'未检测到有效授权');
     }
-    if($_GET['type'] == 'generate'){
-        if(!in_array($_POST['group'] ,['default']) && empty(get_db('user_group','code',['code' => $_POST['group'] ]))){
-            msg(-1,'用户组不存在');
-        }
-        
-        $t = time();
-        for ($i=1; $i<=$_POST['number']??1; $i++){
-            if($_POST['regcode_length'] == 8){
-                $regcode = hash("crc32b",uniqid());
-            }elseif($_POST['regcode_length'] == 36){
-                $regcode = $db::raw("UUID()");
-            }else{
-                $regcode = md5(uniqid());
-            }
-            insert_db('regcode_list',["uid"=>UID,"regcode"=>$regcode,"u_group"=>$_POST['group'],"use_state"=>'未使用',"add_time"=>$t,"use_time"=>0]);
-        }
-        
-        msg(1,'注册码已生成');
-    }elseif($_GET['type'] == 'set'){
-        write_global_config('reg_tips',$_POST['content'],'注册提示');
-        msg(1,'保存成功');
-    }elseif($_GET['type'] == 'del'){
-        delete_db("regcode_list",[ "id" => json_decode($_POST['id'])]);
-        msg(1,'删除成功');
-    }
-    
-    msg(-1,'无效的请求类型');
+    msg(1,'请更新系统后再试');
 }
 
 
 //写订阅信息
 function write_subscribe(){
     global $USER_DB;
-    $data['order_id'] = htmlspecialchars( trim($_REQUEST['order_id']) ); //获取订单ID
-    $data['email'] = htmlspecialchars( trim($_REQUEST['email']) ); //获取邮箱
-    $data['end_time'] = htmlspecialchars( trim($_REQUEST['end_time']) );//到期时间
-    $data['domain'] = htmlspecialchars( trim($_REQUEST['domain']) );//支持域名
+    $data = $_POST;
     $data['host'] = $_SERVER['HTTP_HOST']; //当前域名
     if(empty($data['order_id']) && empty($data['email']) && empty($data['end_time'])){
         write_global_config('s_subscribe','','订阅信息');
@@ -504,8 +308,9 @@ function write_subscribe(){
             }
         }
     }
-
+    
     if(stristr($data['domain'],$data['host'])){
+        //unset($data['public']); // 记得删除
         write_global_config('s_subscribe',$data,'订阅信息');
         msg(1,'保存成功');
     }else{
@@ -527,16 +332,6 @@ function write_sys_settings(){
         msg(-1,'默认账号不存在');
     }elseif(!empty($_POST['default_UserGroup']) && empty(get_db('user_group','code',['code' => $_POST['default_UserGroup']]))){
         msg(-1,'默认分组代号不存在');
-    }elseif($_POST['Sub_domain'] == 1){
-        if(preg_match('/\.(com|net|org|gov|edu)\.cn$/', $_SERVER["HTTP_HOST"])){
-            msg(-1,'不支持此类域名');
-        }
-        if(filter_var($_SERVER["HTTP_HOST"], FILTER_VALIDATE_IP) != false){
-            msg(-1,'不支持IP访问开启二级域名');
-        }
-        if(preg_match('/\.(\d+|:\d+)$/', preg_replace('/:\d+$/','',$_SERVER['HTTP_HOST'])) || substr_count($_SERVER["HTTP_HOST"],':') > 2){
-            msg(-1,'不支持IP访问开启二级域名,如有误判请联系技术支持!');
-        }
     }
     
     //自定义登录入口和注册入口检测
@@ -547,12 +342,7 @@ function write_sys_settings(){
     if(in_array($_POST['Register'],$prohibits)){
         msg(-1,'此注册入口名已被系统使用');
     }
-    //长度限制
-    foreach (['c_name','c_desc','l_name','l_url','l_key','l_desc'] as $name){
-        $length_limit[$name] = is_subscribe('bool') ? intval($_POST[$name]) : 0;
-    }
-    write_global_config("length_limit",$length_limit,'长度限制');
-    
+
     //全局配置
     $datas = [
         'Login'=>['empty'=>false,'msg'=>'登录入口不能为空'],
@@ -567,23 +357,14 @@ function write_sys_settings(){
         'offline'=>['int'=>true,'min'=>0,'max'=>1,'msg'=>'离线模式参数错误'],
         'Debug'=>['int'=>true,'min'=>0,'max'=>1,'msg'=>'调试模式参数错误'],
         'Maintenance'=>['int'=>true,'min'=>0,'max'=>1,'msg'=>'维护模式参数错误'],
-        'Sub_domain'=>['int'=>true,'min'=>0,'max'=>1,'msg'=>'二级域名参数错误'],
-        'Privacy'=>['int'=>true,'min'=>0,'max'=>1,'msg'=>'强制私有参数错误'],
         'default_page'=>['int'=>true,'min'=>0,'max'=>2,'msg'=>'默认页面参数错误'],
-        'copyright'=>['empty'=>true],
-        'global_header'=>['empty'=>true],
-        'global_footer'=>['empty'=>true],
+
         'api_extend'=>['empty'=>true],
         'c_code'=>['int'=>true,'min'=>0,'max'=>1,'msg'=>'自定义代码参数错误'],
-        'static_link'=>['int'=>true,'min'=>0,'max'=>1,'msg'=>'静态链接参数错误'],
         //更新设置
         'Update_Source'=>['empty'=>true],
         'Update_Overtime'=>['int'=>true,'min'=>3,'max'=>60,'msg'=>'资源超时参数错误'],
-        //扩展功能-(全局开关)
-        'apply'=>['int'=>true,'min'=>0,'max'=>1,'msg'=>'收录管理参数错误'],
-        'guestbook'=>['int'=>true,'min'=>0,'max'=>1,'msg'=>'留言管理参数错误'],
-        'link_extend'=>['int'=>true,'min'=>0,'max'=>1,'msg'=>'链接扩展参数错误'],
-        'article'=>['int'=>true,'min'=>0,'max'=>2,'msg'=>'文章管理参数错误']
+
         ];
     $o_config = [];
     foreach ($datas as $key => $data){
@@ -595,42 +376,9 @@ function write_sys_settings(){
             $o_config[$key] = $data['empty']?$_POST[$key]:(!empty($_POST[$key])?$_POST[$key]:msg(-1,$data['msg']));
         }
     }
-    if(!is_subscribe('bool')){
-        if($_POST['Sub_domain'] == 1){$o_config['Sub_domain'] = 0;$filter = true;}
-        if($_POST['Privacy'] == 1){$o_config['Privacy'] = 0;$filter = true;}
-        if(!empty($_POST['copyright'])){$o_config['copyright'] = "";$filter = true;}
-        if(!empty($_POST['global_header'])){$o_config['global_header'] = "";$filter = true;}
-        if(!empty($_POST['global_footer'])){$o_config['global_footer'] = "";$filter = true;}
-        if($_POST['apply'] == 1){$o_config['apply'] = 0;$filter = true;}
-        if($_POST['guestbook'] == 1){$o_config['guestbook'] = 0;$filter = true;}
-        if($_POST['link_extend'] == 1){$o_config['link_extend'] = 0;$filter = true;}
-        if($_POST['article'] == 1){$o_config['article'] = 0;$filter = true;}
-        if($_POST['static_link'] == 1){$o_config['static_link'] = 0;$filter = true;}
-    }
-    //检测于下载文章管理依赖资源
-    clearstatcache();
-    if($o_config['article'] == 1 && ( !is_file('./static/wangEditor/wangEditor.js') || !is_file('./static/wangEditor/wangEditor.css'))){
-        $filePath = "./data/temp/wangEdito.tar.gz";
-        if(downFile('https://update.lm21.top/TwoNav/updata/wangEdito.tar.gz','wangEdito.tar.gz','./data/temp/')){
-            $file_md5 = md5_file($filePath);
-            if($file_md5 != "95f830656ba8972cca39a1ddd6ebaeda"){
-                unlink($filePath); 
-                msg(-1,'效验wangEdito失败<br/>!');
-            }
-        }else{
-            msg(-1,'下载wangEdito失败,请重试!<br/>如需手动安装可联系技术支持!');
-        }
-        try {
-            $phar = new PharData($filePath);
-            $phar->extractTo('./static/', null, true);
-            unlink($filePath);
-            clearstatcache();
-        } catch (Exception $e) {
-            msg(-1,'安装wangEdito失败');
-        }
-    }
 
-    update_db("global_config", ["v" => $o_config], ["k" => "o_config"],[1,($filter ?"保存成功,未检测到有效授权,带*号的配置无法为你保存":"保存成功")]);
+
+    update_db("global_config", ["v" => $o_config], ["k" => "o_config"],[1,"免费版可用功能配置已保存!"]);
 }
 
 //写默认设置
@@ -639,54 +387,7 @@ function write_default_settings(){
     if(!is_subscribe('bool')){
         msg(-1,'未检测到有效授权');
     }
-    if(intval($_POST['Session']) > 0 && intval($_POST['KeyClear']) > intval($_POST['Session'])){
-        msg(-1,'Key清理时间不能大于登录保持时间');
-    }
-    // 安全配置(登录配置)
-    $datas = [
-        'Session'=>['int'=>true,'min'=>0,'max'=>360,'msg'=>'登录保持参数错误'],
-        'HttpOnly'=>['int'=>true,'min'=>0,'max'=>1,'msg'=>'HttpOnly参数错误'],
-        'KeySecurity'=>['int'=>true,'min'=>0,'max'=>2,'msg'=>'Key安全参数错误'],
-        'KeyClear'=>['int'=>true,'min'=>1,'max'=>60,'msg'=>'Key清理参数错误'],
-        'api_model'=>['v'=>['security','compatible','compatible+open'],'msg'=>'API模式参数错误'],
-        'login_page'=>['v'=>['admin','index','auto'],'msg'=>'登录成功参数错误']
-        ];
-    foreach ($datas as $key => $data){
-        if($data['int']){
-            $LoginConfig[$key] = ($_POST[$key] >= $data['min'] && $_POST[$key] <= $data['max'])?intval($_POST[$key]):msg(-1,$data['msg']);
-        }elseif(isset($data['v'])){
-            $LoginConfig[$key] = in_array($_POST[$key],$data['v']) ? $_POST[$key]:msg(-1,$data['msg']);
-        }else{
-            $LoginConfig[$key] = $data['empty']?$_POST[$key]:(!empty($_POST[$key])?$_POST[$key]:msg(-1,$data['msg']));
-        }
-    }
-    $LoginConfig['Login'] = '0';
-    $LoginConfig['Password2'] = '';
-    update_db("global_config",["v"=>$LoginConfig],["k"=>'LoginConfig']);
-    
-    //站点配置
-    $datas = [
-        'title'=>['empty'=>false,'msg'=>'主标题不能为空'],
-        'subtitle'=>['empty'=>true],
-        'logo'=>['empty'=>true],
-        'keywords'=>['empty'=>true],
-        'description'=>['empty'=>true],
-        'link_model'=>['v'=>['direct','Privacy','302','Transition'],'msg'=>'链接模式参数错误'],
-        'link_icon'=>['int'=>true,'min'=>0,'max'=>6,'msg'=>'链接图标参数错误'],
-        'custom_header'=>['empty'=>true],
-        'custom_footer'=>['empty'=>true]
-        ];
-    $s_site = [];
-    foreach ($datas as $key => $data){
-        if($data['int']){
-            $s_site[$key] = ($_POST[$key] >= $data['min'] && $_POST[$key] <= $data['max'])?intval($_POST[$key]):msg(-1,$data['msg']);
-        }elseif(isset($data['v'])){
-            $s_site[$key] = in_array($_POST[$key],$data['v']) ? $_POST[$key]:msg(-1,$data['msg']);
-        }else{
-            $s_site[$key] = $data['empty']?$_POST[$key]:(!empty($_POST[$key])?$_POST[$key]:msg(-1,$data['msg']));
-        }
-    }
-    update_db("global_config",["v"=>$s_site],["k"=>'s_site'],[1,'保存成功']);
+    msg(1,'请更新系统后再试');
 }
 //读日志
 function read_log(){
@@ -741,45 +442,14 @@ function other_root(){
         $data = get_db("global_config", "v", ["k" => "username_retain"]);
         msgA(['code'=>1,'msg'=>'获取成功','data'=>$data]);
     }elseif($_GET['type'] == 'write_username_retain'){
-        //遍历检测语法
-        $patterns = explode("\n",$_POST['username_retain']);
-        foreach($patterns as $pattern){
-            if (@preg_match($pattern, '') === false) {
-                msg(-1,'正则表达式语法错误,请检查');
-            }
-        }
         if(!is_subscribe('bool')){
             msg(-1,'未检测到有效授权');
         }
-        write_global_config('username_retain',$_POST['username_retain'],'账号保留');
-        msg(1,'保存成功');
+        msg(1,'请更新系统后再试');
     }elseif($_GET['type'] == 'write_mail_config'){
         if($GLOBALS['global_config']['offline'] == '1'){msg(-1,"离线模式无法使用此功能");}
         if(!is_subscribe('bool')){msg(-1,"未检测到有效授权,无法使用该功能!");}
-        //检测PHPMailer是否存在
-        clearstatcache();
-        if(!is_file(DIR.'/system/PHPMailer/PHPMailer.php')){
-            $filePath = "./data/temp/PHPMailer_6.8.0.tar.gz";
-            if(downFile('https://update.lm21.top/TwoNav/updata/PHPMailer_6.8.0.tar.gz','PHPMailer_6.8.0.tar.gz','./data/temp/')){
-                $file_md5 = md5_file($filePath);
-                if($file_md5 != "07251997fb7ebf3bf2d296d4214ccf0a"){
-                    unlink($filePath); 
-                    msg(-1,'效验PHPMailer失败<br/>!');
-                }
-            }else{
-                msg(-1,'下载PHPMailer失败,请重试!<br/>如需手动安装可联系技术支持!');
-            }
-            try {
-                $phar = new PharData($filePath);
-                $phar->extractTo('./system/', null, true);
-                unlink($filePath);
-                clearstatcache();
-            } catch (Exception $e) {
-                msg(-1,'安装PHPMailer失败');
-            }
-        }
-        write_global_config('mail_config',$_POST,'账号保留');
-        msg(1,'保存成功');
+        msg(1,'请更新系统后再试');
     }elseif($_GET['type'] == 'write_mail_test'){
         $_POST['Subject'] = 'TwoNav 测试邮件' . time();
         $_POST['Body'] = '<h1>TwoNav 测试邮件</h1>' . date('Y-m-d H:i:s');
@@ -787,8 +457,7 @@ function other_root(){
     }elseif($_GET['type'] == 'write_icon_config'){
         if($GLOBALS['global_config']['offline'] == '1'){msg(-1,"离线模式无法使用此功能");}
         if(!is_subscribe('bool')){msg(-1,"未检测到有效授权,无法使用该功能!");}
-        write_global_config('icon_config',$_POST,'图标配置');
-        msg(1,'保存成功');
+        msg(1,'请更新系统后再试');
     }elseif($_GET['type'] == 'write_icon_del_cache'){
         //删除数据库缓存信息
         if(empty(count_db('global_icon','*'))){
@@ -808,12 +477,6 @@ function other_root(){
         }
         
         msg(1,'操作成功');
-    }elseif($_GET['type'] == 'write_sitemap_config'){
-        if(!is_subscribe('bool')){
-            msg(-1,'未检测到有效授权');
-        }
-        write_global_config('sitemap_config',$_POST,'站点地图配置');
-        msg(1,'保存成功');
     }
 }
 

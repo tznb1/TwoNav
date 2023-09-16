@@ -1,8 +1,8 @@
 <?php 
-if($global_config['apply'] != 1 || !check_purview('apply',1)){
-    require(DIR.'/templates/admin/page/404.php');
-    exit;
-}
+// if($global_config['apply'] != 1 || !check_purview('apply',1)){
+//     require(DIR.'/templates/admin/page/404.php');
+//     exit;
+// }
 $data = unserialize( get_db("user_config", "v", ["k" => "apply","uid"=>UID]) );
 $title='收录管理';$awesome=true; require dirname(__DIR__).'/header.php'; 
 ?>

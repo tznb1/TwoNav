@@ -20,7 +20,7 @@ require(dirname(__DIR__).'/header.php');
         <div class="layui-btn-container">
             <button type="button" class="layui-btn copy_log">复制内容</button>
             <button type="button" class="layui-btn diagnose">一键诊断</button>
-            <button type="button" class="layui-btn connectivity_test">连通测试</button>
+            <button type="button" class="layui-btn connectivity_test">网络检测</button>
             <button type="button" class="layui-btn phpinfo">phpinfo</button>
 <?php if(preg_match('/nginx/i',$_SERVER['SERVER_SOFTWARE']) ){ ?>
             <button type="button" class="layui-btn rewrite">生成伪静态</button>
@@ -84,8 +84,7 @@ layui.use(['layer','form','miniTab'], function () {
         $("#console_log").append("客户端时间：" +  timestampToTime(Math.round(new Date() / 1000) ) +"\n");
         
         var urls = [
-          ['主线路', 'https://update.lm21.top/connectivity_test.txt'],
-          ['备用线路(Gitee)', 'https://gitee.com/tznb/twonav_updata/raw/master/connectivity_test.txt']
+          ['资源节点-码云', 'http://tznb.gitee.io/twonav_resource/connectivity_test.json']
         ];
         urls.forEach(function(route) {
           var routeName = route[0];

@@ -1,10 +1,6 @@
 <?php 
-if($global_config['article'] < 1 || !check_purview('article',1)){
-    require(DIR.'/templates/admin/page/404.php');
-    exit;
-}
+
 //读取设置
-$s_site = unserialize(get_db('user_config','v',['uid'=>UID,'k'=>'s_site']));
 $set['visual'] = $s_site['article_visual'] ?? '1';
 $set['icon'] = $s_site['article_icon'] ?? '1';
 $title='文章列表';
@@ -244,57 +240,13 @@ layui.use(['form','table','dropdown','miniTab'], function () {
               id: 'push'
             }],
             click: function(obj){
-                let checkStatus = table.checkStatus('table').data;
-                if( checkStatus.length == 0 ) {
-                    layer.msg('未选中任何数据！');
-                    return;
-                }
-                //获取被选ID并格式化
-                tableIds = checkStatus.map(function (value) {return value.id;});
-                tableIds = JSON.stringify(tableIds);
-                //删除文章
-                if(obj.id == 'del_article'){
-                    layer.confirm('确认删除?',{icon: 3, title:'温馨提示'}, function(index){
-                        $.post(get_api('write_article','del_article'),{id:tableIds},function(data,status){
-                            if(data.code == 1) {
-                                search();
-                                layer.msg(data.msg, {icon: 1});
-                            }else{
-                                layer.msg(data.msg, {icon: 5});
-                            }
-                        });
-                    });
-                }else if(obj.id == 'up_category'){
-                    index = layer.open({type: 1,scrollbar: false,shadeClose: true,title: false ,area : ['100%', '100%'],closeBtn:0,content: $('.batch_category')});
-                }else if(obj.id == 'up_state'){
-                    $.post(get_api('write_article','up_state'),{'id':tableIds,'state_id':obj.value},function(data,status){
-                        if(data.code == 1) {
-                            search();
-                            layer.msg('操作成功', {icon: 1});
-                        }else{
-                            layer.msg(data.msg || '未知错误',{icon: 5});
-                        }
-                    });
-                }else if(obj.id == 'push'){
-                    index = layer.open({type: 1,scrollbar: false,shadeClose: true,title: '推送工具',area : ['100%', '100%'],content: $('.push')});
-                }
+                Authorization_Prompt();
             }
         });
     }
     //开始推送
     $('#start_push').click(function () {
-        let checkStatus = table.checkStatus('table');
-        tableIds = checkStatus.data.map(function (value) {return value.id;});
-        tableIds = JSON.stringify(tableIds);
-        $.post(get_api('other_baidu_push'),{'type':'article','push_api':$('#push_api').val(),'id':tableIds},function(data,status){
-            if(data.code == -1){
-                layer.msg(data.msg,{icon: 5});
-            }else if(data.code == 200){
-                layer.alert('成功推送的条数: ' + data.data.success + '<br />当天剩余的可推送条数: ' + data.data.remain + (data.data.not_same_site && data.data.not_same_site.length > 0 ? "<br />未处理的条数(非本站URL): " + data.data.not_same_site.length:'') + (data.data.not_valid && data.data.not_valid.length  > 0 ? "<br />不合法的URL条数: " + data.data.not_valid.length:''));
-            }else{
-                layer.alert('错误代码: ' + data.data.error + '<br />错误描述: ' + data.data.message);
-            }
-        });
+        Authorization_Prompt();
         return false;
     });
     //关闭按钮
@@ -320,94 +272,23 @@ layui.use(['form','table','dropdown','miniTab'], function () {
     }
     //监听工具栏
     table.on('toolbar(table)', function (obj) {
-        var btn = obj.event;
-        if (btn == 'add_article') { //添加文章
-            layer.open({
-                title: false,
-                type: 2,
-                scrollbar: false,
-                shade: 0.2,
-                maxmin:false,
-                shadeClose: true,
-                closeBtn:0,
-                area: ['100%', '100%'],
-                content: './?c=admin&page=expand/article-edit&u=' + u,
-                end: function(){
-                    search();
-                }
-            });
-        }else if(btn == 'set'){ //设置
+        if(obj.event == 'set'){ //设置
             index = layer.open({type: 1,scrollbar: false,shadeClose: true,title: false ,area : ['100%', '100%'],closeBtn:0,content: $('.set')});
-        }else{ //综合批量操作
-            //取选中数据
-            var checkStatus = table.checkStatus(obj.config.id);
-            if( checkStatus.data.length == 0 && ['LAYTABLE_COLS','LAYTABLE_EXPORT','LAYTABLE_PRINT'].indexOf(btn) == -1 ) {
-                layer.msg('未选中任何数据！');
-                return;
-            }
-            //批量删除
-            if(btn == 'batch_del'){
-                tableIds = checkStatus.data.map(function (value) {return value.id;});
-                tableIds = JSON.stringify(tableIds);
-                layer.confirm('确认删除?',{icon: 3, title:'温馨提示'}, function(index){
-                    $.post(get_api('write_article','del_article'),{id:tableIds},function(data,status){
-                        if(data.code == 1) {
-                            search();
-                            layer.msg(data.msg, {icon: 1});
-                        }else{
-                            layer.msg(data.msg, {icon: 5});
-                        }
-                    });
-                });
-            }
+            return false;
         }
+        Authorization_Prompt();
     });
 
     
     
     //监听行工具
     table.on('tool(table)', function (obj) {
-        let btn = obj.event;
-        let data = obj.data;
-        if (btn === 'del') {
-            layer.confirm('确认删除?',{icon: 3, title:'温馨提示'}, function(index){
-                $.post(get_api('write_article','del_article'),{id:'['+data.id+']'},function(data,status){
-                    if(data.code == 1) {
-                        obj.del();
-                        layer.msg(data.msg, {icon: 1});
-                    }else{
-                        layer.msg(data.msg, {icon: 5});
-                    }
-                });
-            });
-        }else if(btn === 'edit'){
-            layer.open({
-                title: false,
-                type: 2,
-                scrollbar: false,
-                shade: 0.2,
-                maxmin:false,
-                shadeClose: true,
-                closeBtn:0,
-                area: ['100%', '100%'],
-                content: './?c=admin&page=expand/article-edit&id='+data.id+'&u=' + u,
-                end: function(){
-                    search();
-                }
-            });
-        }
+        Authorization_Prompt();
     });
     //设置相关
     form.val('set_form', <?php echo json_encode($set);?>);
     $('#save_set').on('click', function(){
-        $.post(get_api('write_article','save_article_set'),form.val('set_form'),function(data,status){
-            if(data.code == 1) {
-                layer.close(index);
-                layer.msg('操作成功', {icon: 1});
-            }else{
-                layer.msg(data.msg || '未知错误',{icon: 5});
-            }
-        });
+        Authorization_Prompt();
         return false;
     });
     //取消按钮
@@ -418,16 +299,7 @@ layui.use(['form','table','dropdown','miniTab'], function () {
     
     //批量修改分类
     $('#batch_category').click(function () {
-        fid = $('#batch_category_fid').val();
-        $.post(get_api('write_article','up_category'),{'id':tableIds,'category_id':fid},function(data,status){
-            if(data.code == 1) {
-                search();
-                layer.close(index);
-                layer.msg('操作成功', {icon: 1});
-            }else{
-                layer.msg(data.msg || '未知错误',{icon: 5});
-            }
-        });
+        Authorization_Prompt();
         return false;
     });
     

@@ -73,6 +73,10 @@ function Get_baseUrl() {
     return baseUrl;
 }
 
+function Authorization_Prompt() {
+    layer.alert("您正在使用的是免费版,此功能需购买授权才可使用<br />如果您已购买授权,请在授权管理页面输入并保存<br />然后在更新系统即可解锁全部功能!")
+}
+
 //帮助
 if (typeof jQuery != 'undefined') { 
     $("#help").click(function(){

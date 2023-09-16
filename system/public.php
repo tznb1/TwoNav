@@ -530,7 +530,7 @@ function get_http_code($url,$TIMEOUT = 10 ,$NOBODY = true) {
     return $return;
 }
 
-function ccurl($url,$overtime = 3,$Referer = false){
+function ccurl($url,$overtime = 3,$Referer = false,$post_data = false){
     try {
         $curl  =  curl_init ( $url ) ; //初始化
         curl_setopt($curl, CURLOPT_TIMEOUT, $overtime ); //超时
@@ -539,6 +539,11 @@ function ccurl($url,$overtime = 3,$Referer = false){
         curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
         curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, false);
+        if(!empty($post_data)){
+            curl_setopt($curl, CURLOPT_POST, true);
+            curl_setopt($curl, CURLOPT_POSTFIELDS, $post_data);
+        }
+        
         if($Referer === true){
             curl_setopt($curl, CURLOPT_REFERER, $_SERVER['HTTP_REFERER']);
         }elseif(!empty($Referer)){
@@ -665,6 +670,25 @@ function check_purview($name,$return_type){
         return false;
     }
     
+}
+//数据加密函
+function data_encryption($method,$extend = []){
+    $subscribe = unserialize(get_db('global_config','v',["k" => "s_subscribe"]));
+    if(!isset($subscribe['public']) || empty($subscribe['public'])){
+            msg(-1,'未检测到授权秘钥,如果已经获取授权,请在授权管理页面点击保存设置后在重试!');
+    }
+    $data['key'] = $subscribe['order_id'];
+    $data['host'] = $_SERVER['HTTP_HOST'];
+    $data['time'] = time();
+    $data['ip'] = Get_IP();
+    $data['method'] = $method;
+    $publicKey = openssl_pkey_get_public($subscribe['public']);
+    openssl_public_encrypt(json_encode($data), $encryptedData, $publicKey, OPENSSL_PKCS1_PADDING);
+    $data = $extend;
+    $data['data'] = base64_encode($encryptedData);
+    $data['md5'] = md5($subscribe['order_id']);
+    $data['email'] = md5($subscribe['email']);
+    return json_encode($data);
 }
 //字节格式化
 function byteFormat($bytes) {

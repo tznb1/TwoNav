@@ -12,12 +12,20 @@ if(!empty($Notice)){
 <div class="layuimini-container">
   <div class="layuimini-main">
     <div class="layui-form layuimini-form layui-form-pane">
+        <blockquote class="layui-elem-quote layui-text">
+            <li>1. 购买授权后请按购买处提示使用授权</li>
+            <li>2. 成功保存设置后返回概要页面并刷新</li>
+            <li>3. 提示可以更新时请更新系统,更新后才可以使用全部功能</li>
+            <li>4. 如果没有提示更新或无法更新,请等待1分钟后在重试</li>
+            <li>5. 长时间未提示更新则检查服务器网络</li>
+            <li>6. 其他疑问请联系客服QQ 271152681</li>
+        </blockquote>
         <h3 style = "margin-bottom:1em;">当前域名：<font color="red"><?php echo $HTTP_HOST; ?></font></h3>
         
         <div class="layui-form-item">
             <label class="layui-form-label">授权卡密</label>
             <div class="layui-input-block">
-                <input type="text" id = "order_id" name="order_id" value="<?php echo $subscribe['order_id']; ?>" required  autocomplete="off" placeholder="请输入授权单号/卡密" class="layui-input">
+                <input type="text" id = "order_id" name="order_id" value="<?php echo $subscribe['order_id']; ?>" required  autocomplete="off" placeholder="请输入授权单号或卡密" class="layui-input">
             </div>
         </div>
 
@@ -89,7 +97,7 @@ layui.use(['jquery','form'], function () {
     //查询订阅
     form.on('submit(get_subscribe)', function(data){
         layer.load(2, {shade: [0.1,'#fff']});
-        $.get('https://api.lm21.top/api.php?fn=get_subscribe',data.field,function(data,status){
+        $.get('http://service.twonav.cn/api.php?fn=get_subscribe',data.field,function(data,status){
             layer.closeAll('loading');
             if(data.code == 200) {
                 $("#order_id").val(data.data.order_id);
@@ -114,11 +122,11 @@ layui.use(['jquery','form'], function () {
             return false;
         }
         layer.load(2, {shade: [0.1,'#fff']});
-        $.get('https://api.lm21.top/api.php?fn=check_subscribe',data.field,function(data,status){
+        $.get('http://service.twonav.cn/api.php?fn=check_subscribe',data.field,function(data,status){
             layer.closeAll('loading');
             if(data.code == 200) {
                 $("#end_time").val(timestampToTime(data.data.end_time));
-                set_subscribe(order_id,data.data.email,data.data.end_time,data.data.domain);
+                set_subscribe(data.data);
             }else{
                 layer.msg(data.msg, {icon: 5});
             }
@@ -141,14 +149,14 @@ layui.use(['jquery','form'], function () {
         $("#order_id").val('');
         $("#email").val('');
         $("#end_time").val('1970-01-01 08:00:00');
-        set_subscribe('','','0','');
+        set_subscribe('');
         layer.closeAll('loading');
         return false;
     });
   
     //存储到数据库中
-    function set_subscribe(order_id,email,end_time,domain) {
-        $.post(get_api('write_subscribe'),{order_id:order_id,email:email,end_time:end_time,domain:domain},function(data,status){
+    function set_subscribe(data) {
+        $.post(get_api('write_subscribe'),data,function(data,status){
             if(data.code == 1) {
                 layer.msg(data.msg, {icon: 1});
             }else{
