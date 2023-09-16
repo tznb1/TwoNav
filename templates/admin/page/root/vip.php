@@ -97,7 +97,7 @@ layui.use(['jquery','form'], function () {
     //查询订阅
     form.on('submit(get_subscribe)', function(data){
         layer.load(2, {shade: [0.1,'#fff']});
-        $.get('http://service.twonav.cn/api.php?fn=get_subscribe',data.field,function(data,status){
+        $.get('//service.twonav.cn/api.php?fn=get_subscribe',data.field,function(data,status){
             layer.closeAll('loading');
             if(data.code == 200) {
                 $("#order_id").val(data.data.order_id);
@@ -122,7 +122,7 @@ layui.use(['jquery','form'], function () {
             return false;
         }
         layer.load(2, {shade: [0.1,'#fff']});
-        $.get('http://service.twonav.cn/api.php?fn=check_subscribe',data.field,function(data,status){
+        $.get('//service.twonav.cn/api.php?fn=check_subscribe',data.field,function(data,status){
             layer.closeAll('loading');
             if(data.code == 200) {
                 $("#end_time").val(timestampToTime(data.data.end_time));

@@ -5,7 +5,7 @@
     <li class="layui-timeline-item">
         <i class="layui-icon layui-timeline-axis"></i>
         <div class="layui-timeline-content layui-text">
-            <h4 class="layui-timeline-title">v2.0.40-20230916</h4>
+            <h4 class="layui-timeline-title">v2.0.40-20230917</h4>
             <ul>
                 <li>[优化] 优化资源节点,提高系统更新速度,主题下载速度,预览图加载速度! </li>
                 <li>[优化] 系统响应速度,修复已知问题</li>
