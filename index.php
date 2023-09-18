@@ -42,15 +42,6 @@ define('Debug',$global_config['Debug'] == 1);
 
 if(!in_array($c,[$global_config["Register"],'ico','icon'])){
     $u = Get('u');
-    if(empty($u) && $global_config['Sub_domain'] == 1 && is_subscribe('bool')){
-        $cut = explode('.',$_SERVER["HTTP_HOST"]);
-        if(count($cut) == 3){
-            $USER_DB = get_db("global_user", "*", ["User"=>reset($cut)]);
-            if(!empty($USER_DB) && check_purview('Sub_domain',1)){
-                $_COOKIE['Default_User'] = $USER_DB['User'];unset($cut);
-            }
-        }
-    }
     $u = !empty($u)?$u:(!empty($_COOKIE['Default_User'])?$_COOKIE['Default_User']:(!empty($global_config['Default_User'])?$global_config['Default_User']:'admin'));//优先级:Get>Host>Cookie>默认用户>admin
     $USER_DB = get_db("global_user", "*", ["User"=>$u]);
     //没找到账号显示404

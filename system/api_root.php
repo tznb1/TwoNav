@@ -98,6 +98,7 @@ function other_upsys(){
         } catch (Exception $e) {
             msg(-1,'释放更新包,请检查写入权限');//解压出问题了
         }
+        clean_cache();
         usleep(1000*300);
         msg(1,'success');
     }
@@ -310,8 +311,8 @@ function write_subscribe(){
     }
     
     if(stristr($data['domain'],$data['host'])){
-        //unset($data['public']); // 记得删除
         write_global_config('s_subscribe',$data,'订阅信息');
+        clean_cache();
         msg(1,'保存成功');
     }else{
         msg(-1,"您的订阅不支持当前域名 >> ".$_SERVER['HTTP_HOST']);

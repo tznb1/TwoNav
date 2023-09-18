@@ -750,7 +750,7 @@ function write_link(){
         if(!is_subscribe('bool')){
             msg(-1,"未检测到有效授权,无法使用该功能!");
         }
-        msg(1,'请更新系统后再试');
+        msg(-1,'请更新系统后再试');
     }elseif($_GET['type'] === 'msg_pull'){
         session_start();
         $key = $_POST['key'];
@@ -844,7 +844,7 @@ function write_link(){
         if(!is_subscribe('bool')){
             msg(-1,"未检测到有效授权,无法使用该功能!");
         }
-        msg(1,'请更新系统后再试');
+       msg(-1,'请更新系统后再试');
 
     }elseif($_GET['type'] == 'extend_list'){
         if($GLOBALS['global_config']['link_extend'] != 1 ||!check_purview('link_extend',1)){
@@ -1351,7 +1351,7 @@ function write_theme(){
         is_root();
         if($global_config['offline']){msg(-1,"离线模式禁止下载主题!");} //离线模式
         if(!is_subscribe('bool')){msg(-1,"未检测到有效授权,无法使用该功能!");}
-        msg(1,'请更新系统后再试');
+        msg(-1,'请更新系统后再试');
         
     //删除主题
     }elseif($_GET['type'] == 'del'){

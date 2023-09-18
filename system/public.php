@@ -782,3 +782,11 @@ function count_ip(){
         write_user_count($k,'ip_count');//访问ip数+1
     }
 }
+
+//清理缓存
+function clean_cache(){
+    write_global_config('notice','','官方公告(缓存)');
+    foreach(['home','login','transit','register','guide','article','apply','verify','guestbook'] as $v){
+        write_global_config($v.'_cache','',$v.'_模板缓存');
+    }
+}
