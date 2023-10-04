@@ -21,7 +21,6 @@ if ($DescrRowNumber <= 0 ){
 }else{
     $DescrRowNumber = 2; $DescrHeight= 48; $Card = 120; // 超出范围则设为2行
 }
-
 ?>
 <!DOCTYPE html>
 <html lang="zh-ch">
@@ -141,20 +140,22 @@ body{
 		<?php } ?>
 	    <div class="mdui-divider"></div>
 <?php if(is_guestbook()){ ?>
-    	<a href="./index.php?c=guestbook&u=<?php echo $u?>" target="_blank">
+    	<a href="<?php echo $urls['guestbook']?>" target="_blank">
 			<li class="mdui-list-item mdui-ripple">
 				<div class="mdui-list-item-content category-name"><i class="fa fa-commenting-o"></i> 在线留言</div>
 			</li>
 		</a>
 <?php } ?>
 <?php if (is_apply()) { ?>
-    	<a href="./index.php?c=apply&u=<?php echo $u?>" target="_blank">
+    	<a href="<?php echo $urls['apply']?>" target="_blank">
 			<li class="mdui-list-item mdui-ripple">
 				<div class="mdui-list-item-content category-name"><i class="fa fa-pencil"></i> 申请收录</div>
 			</li>
 		</a>
 <?php } ?>
-        <a href="./index.php?c=admin&u=<?php echo $u?>"><li class="mdui-list-item mdui-ripple"><div class="mdui-list-item-content category-name CFC"><i class="fa fa-user-circle"></i>系统管理</div></li></a>
+<?php if (admin_inlet()) { ?>
+        <a href="<?php echo $urls['admin']?>"><li class="mdui-list-item mdui-ripple"><div class="mdui-list-item-content category-name CFC"><i class="fa fa-user-circle"></i>系统管理</div></li></a>
+<?php } ?>
 	</ul>
 
 	</div>
@@ -228,8 +229,7 @@ body{
 	 
 	<!-- footerend -->
 <script>
-var u = '<?php echo $u?>';
-var t = '<?php echo str_replace("./templates/", "", $theme);?>';
+var u = '<?php echo is_login ? $u : ''?>';
 var is_login = <?php echo is_login?'true':'false'; ?>;
 </script>
 <script src = "<?php echo $libs?>/jquery/jquery-3.6.0.min.js"></script>

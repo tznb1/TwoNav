@@ -55,40 +55,6 @@ if(!$is_login){
     if($category_ancestor['property'] == 1 && !$pv){
         exit('很抱歉,页面所属的祖分类是私有的!您无权限查看,如果您是管理员,请先登录!');
     }
-    
-    //判断链接是否加密
-    if(!empty($link['pid'])){
-        $verify_type = 'link_pwd';
-        $password = get_db('user_pwd_group','password',['uid'=>UID,'pid'=>$link['pid']]);
-        if($_SESSION['verify']['link'][$link['lid']] != $password){
-            $c = 'verify';
-            require DIR."/system/templates.php";
-            require $index_path;
-            exit();
-        }
-    }
-    //判断父分类是否加密
-    if(empty($link['pid']) && !empty($category_parent['pid'])){
-        $verify_type = 'category_pwd';
-        $password = get_db('user_pwd_group','password',['uid'=>UID,'pid'=>$category_parent['pid']]);
-        if($_SESSION['verify']['category'][$category_parent['cid']] != $password){
-            $c = 'verify';
-            require DIR."/system/templates.php";
-            require $index_path;
-            exit();
-        }
-    }
-    //判断祖分类是否加密
-    if(empty($link['pid']) && empty($category_parent['pid']) && !empty($category_ancestor['pid'])){
-        $verify_type = 'category_pwd';
-        $password = get_db('user_pwd_group','password',['uid'=>UID,'pid'=>$category_ancestor['pid']]);
-        if($_SESSION['verify']['category'][$category_ancestor['cid']] != $password){
-            $c = 'verify';
-            require DIR."/system/templates.php";
-            require $index_path;
-            exit();
-        }
-    }
 }
 
 
@@ -99,11 +65,6 @@ update_db("user_links", ["click[+]"=>1],['uid'=>UID,'lid'=>$id]);
 
 //通用数据初始化
 require DIR."/system/templates.php";
-
-//如果主题信息声明支持扩展字段
-if($global_config['link_extend'] == 1 && check_purview('link_extend',1) && in_array($theme_info['support']['link_extend'],["true","1"])){
-    $extend = empty($link['extend']) ? [] : unserialize($link['extend']);
-}
 
 //载入过渡页设置
 $transition_page = unserialize(get_db("user_config", "v", ["uid"=>UID,"k"=>"s_transition_page"]));

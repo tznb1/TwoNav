@@ -1,5 +1,6 @@
 <?php 
 
+
 $s = unserialize( get_db("user_config", "v", ["k" => "guestbook","uid"=>UID]) );
 if(empty($s)){
     $s = [];
@@ -10,27 +11,9 @@ if(!Check_Path("data/user/{$u}/MessageBoard")){
 $dir = DIR."/data/user/{$u}/MessageBoard/";
 
 if($_POST['type'] == 'set'){
-    $s['allow'] = $_POST['set'];
-    write_user_config('guestbook',$s,'config','留言板配置');
-    msg(1,'操作成功');
+    msg(-1,'免费不支持此功能');
 }elseif($_POST['type'] == 'del'){
-    if($_POST['name'] == 'help'){
-        $s['help'] = 'del';
-        write_user_config('guestbook',$s,'config','留言板配置');
-        msg(1,'删除成功');
-    }
-    //文件名检测
-    if( !preg_match_all('/^\d+_\d+\.json$/',$_POST['name']) ) {
-        msg(-1,'数据库名称不合法！');
-    }
-    $path = DIR."/data/user/{$u}/MessageBoard/".$_POST['name'];
-    if(!file_exists($path)){
-        msg(-1,'文件不存在');
-    }else if(unlink($path)){
-        msg(1,'删除成功');
-    }else{
-        msg(-1,'删除失败');
-    }
+    msg(-1,'免费不支持此功能');
 }
 
 
@@ -100,7 +83,7 @@ $title='留言管理';require dirname(__DIR__).'/header.php';
 <body>
 <div class="layuimini-container">
     <div class="layuimini-main">
-        <fieldset class="layui-elem-field layui-field-title" style="margin-top: 30px;"><legend><a style="cursor:pointer;" title="点击打开客户留言页面" rel = "nofollow" href="./?c=guestbook&u=<?php echo U;?>" target="_blank">TowNav 极简留言板</a></legend></fieldset>
+        <fieldset class="layui-elem-field layui-field-title" style="margin-top: 30px;"><legend><a style="cursor:pointer;" title="点击打开客户留言页面" rel = "nofollow" href="<?php echo (static_link ? get_surl("guestbook-{UUID}.html"):"./?c=guestbook&u={$u}") ;?>" target="_blank">TowNav 极简留言板</a></legend></fieldset>
         <fieldset class="layui-elem-field layui-field-title" style="margin-top: 30px;">
             <legend>当前设置:<a style="cursor:pointer;" title="点击切换" rel = "nofollow" onclick = "set('<?php echo $s['allow']== '1'?'0':'1';?>')"><?php echo $s['allow']== '1'?'允许留言':'禁止留言';?></a>
           </legend>
@@ -136,11 +119,24 @@ $('.click').click(function (event) {
 });
 
 function del(name) {
-    Authorization_Prompt();
+    $.post('',{'type':'del','name':name},function(data,status){
+        if(data.code == 1) {
+            layer.msg("删除成功", {icon: 1});
+            setTimeout(() => {location.reload();}, 500);
+        }else{
+            layer.msg(data.msg, {icon: 5});
+        }
+    });
 }
    
 function set(key){
-    Authorization_Prompt();
+    $.post('',{'type':'set','set':key},function(data,status){
+        if(data.code == 1) {
+            location.reload();
+        }else{
+            layer.msg(data.msg, {icon: 5});
+        }
+    });
 }
 
 </script>

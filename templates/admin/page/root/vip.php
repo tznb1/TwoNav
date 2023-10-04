@@ -12,20 +12,12 @@ if(!empty($Notice)){
 <div class="layuimini-container">
   <div class="layuimini-main">
     <div class="layui-form layuimini-form layui-form-pane">
-        <blockquote class="layui-elem-quote layui-text">
-            <li>1. 购买授权后请按购买处提示使用授权</li>
-            <li>2. 成功保存设置后返回概要页面并刷新</li>
-            <li>3. 提示可以更新时请更新系统,更新后才可以使用全部功能</li>
-            <li>4. 如果没有提示更新或无法更新,请等待1分钟后在重试</li>
-            <li>5. 长时间未提示更新则检查服务器网络</li>
-            <li>6. 其他疑问请联系客服QQ 271152681</li>
-        </blockquote>
         <h3 style = "margin-bottom:1em;">当前域名：<font color="red"><?php echo $HTTP_HOST; ?></font></h3>
         
         <div class="layui-form-item">
             <label class="layui-form-label">授权卡密</label>
             <div class="layui-input-block">
-                <input type="text" id = "order_id" name="order_id" value="<?php echo $subscribe['order_id']; ?>" required  autocomplete="off" placeholder="请输入授权单号或卡密" class="layui-input">
+                <input type="text" id = "order_id" name="order_id" value="<?php echo $subscribe['order_id']; ?>" required  autocomplete="off" placeholder="请输入授权单号/卡密" class="layui-input">
             </div>
         </div>
 
@@ -49,18 +41,26 @@ if(!empty($Notice)){
             <input type="text" name="end_time" id = "end_time" readonly="readonly" value = "<?php echo date("Y-m-d H:i:s",$subscribe['end_time']); ?>" autocomplete="off" placeholder="订阅到期时间" class="layui-input">
             </div>
         </div>
+        
+        <div class="layui-form-item" style = "">
+            <label class="layui-form-label">授权类型</label>
+            <div class="layui-input-block">
+                <input type="text" name="type_name" id ="type_name" value="<?php echo $subscribe['type_name'] ?? ''; ?>" autocomplete="off" placeholder="若未正确显示请点击保存设置" class="layui-input">
+            </div>
+        </div>
 
         <div class="layui-btn-group">
-            <button class="layui-btn layui-btn-normal" lay-submit lay-filter="set_subscribe">保存设置</button>
-            <button class="layui-btn layui-btn-warm" lay-submit lay-filter="reset_subscribe">删除</button>
+            <button class="layui-btn layui-btn-normal" lay-submit lay-filter="save_key">保存设置</button>
+            <button class="layui-btn layui-btn-warm" lay-submit lay-filter="del_key">删除</button>
             <button class="layui-btn layui-btn-danger" lay-submit lay-filter="buy_vip" data-url="<?php echo empty($data['pay_rul']) ?'':$data['pay_rul']?>" >购买授权</button>
-            <button class="layui-btn" lay-submit lay-filter="get_subscribe">查询授权</button>
+            <button class="layui-btn" lay-submit lay-filter="query_key">查询授权</button>
+            <button class="layui-btn layui-bg-purple" type="button" id="validate" style="<?php echo empty($subscribe['order_id']) ? 'display:none;':''; ?>">正版验证</button>
         </div>
 
         <fieldset class="layui-elem-field layui-field-title" style="margin-top:30px;"><legend>授权用户专享</legend></fieldset>
         <blockquote class="layui-elem-quote layui-text">
             <ul>
-                <li>在线更新系统 ( 免费只能手动更新 )</li>
+                <li>在线更新系统 ( 免费版只能手动更新 )</li>
                 <li>在线下载和更新主题模板</li>
                 <li>批量更新链接标题/关键字/描述/图标</li>
                 <li>批量识别链接是否可以访问</li>
@@ -93,25 +93,45 @@ layui.use(['jquery','form'], function () {
     var form = layui.form;
     var layer = layui.layer;
     var $ = layui.jquery;
-
+    var vcode;
     //查询订阅
-    form.on('submit(get_subscribe)', function(data){
+    form.on('submit(query_key)', function(data){
+        vcode = randomnum(6);
+        index = layer.prompt({formType: 0,value: '',title: '请输入验证码: ' + vcode,shadeClose: false,"success":function(){
+            $("input.layui-layer-input").on('keydown',function(e){
+                if(e.which == 13) {
+                    query_key(data);
+                }
+            });
+        }},function(){
+            query_key(data)
+        }); 
+    });
+    
+    function query_key(data) {
+        layer.close(index);
+        if($("input.layui-layer-input").val() != vcode){
+            layer.msg('验证码错误', {icon: 5});
+            return false; 
+        }
         layer.load(2, {shade: [0.1,'#fff']});
-        $.get('//service.twonav.cn/api.php?fn=get_subscribe',data.field,function(data,status){
+        $.post(get_api('other_services','query_key'),{'order_id':data.field.order_id,'email':data.field.email},function(data,status){
             layer.closeAll('loading');
             if(data.code == 200) {
                 $("#order_id").val(data.data.order_id);
                 $("#end_time").val(timestampToTime(data.data.end_time));
+                $("#type_name").val(data.data.type_name);
                 layer.msg(data.msg, {icon: 1,time: 10000});
             }else{
-                layer.msg(data.msg, {icon: 5,time: 10000});
+                layer.alert(data.msg,{icon:5,title:'查询结果',anim: 2,closeBtn: 0,btn: ['我知道了']});
             }
+        }).fail(function () {
+            layer.msg('请求失败', {icon: 5});
         });
-        return false; 
-    });
+    }
     
     //保存订阅
-    form.on('submit(set_subscribe)', function(data){
+    form.on('submit(save_key)', function(data){
         var order_id = data.field.order_id;
         if(order_id.length < 20){
             layer.msg('订单号错误,请核对', {icon: 5});
@@ -122,18 +142,21 @@ layui.use(['jquery','form'], function () {
             return false;
         }
         layer.load(2, {shade: [0.1,'#fff']});
-        $.get('//service.twonav.cn/api.php?fn=check_subscribe',data.field,function(data,status){
+        $.post(get_api('other_services','save_key'),{'order_id':data.field.order_id,'email':data.field.email},function(data,status){
             layer.closeAll('loading');
             if(data.code == 200) {
+                $("#order_id").val(data.data.order_id);
                 $("#end_time").val(timestampToTime(data.data.end_time));
-                set_subscribe(data.data);
+                $("#type_name").val(data.data.type_name);
+                layer.msg(data.msg, {icon: 1,time: 10000});
             }else{
-                layer.msg(data.msg, {icon: 5});
+                layer.alert(data.msg,{icon:5,title:'保存结果',anim: 2,closeBtn: 0,btn: ['我知道了']});
             }
+        }).fail(function () {
+            layer.msg('请求失败', {icon: 5});
         });
-        console.log(data.field) 
-        return false;
     });
+    
     //购买授权
     form.on('submit(buy_vip)', function(data){
         let url = $(this).attr('data-url');
@@ -143,28 +166,79 @@ layui.use(['jquery','form'], function () {
     });
     
     //清空订阅信息
-    form.on('submit(reset_subscribe)', function(data){
-        var order_id = data.field.order_id;
-        layer.load(2, {shade: [0.1,'#fff']});
-        $("#order_id").val('');
-        $("#email").val('');
-        $("#end_time").val('1970-01-01 08:00:00');
-        set_subscribe('');
-        layer.closeAll('loading');
+    form.on('submit(del_key)', function(data){
+        vcode = randomnum(6);
+        index = layer.prompt({formType: 0,value: '',title: '请输入验证码: ' + vcode,shadeClose: false,"success":function(){
+            $("input.layui-layer-input").on('keydown',function(e){
+                if(e.which == 13) {
+                    del_key(data);
+                }
+            });
+        }},function(){
+            del_key(data)
+        }); 
         return false;
     });
-  
-    //存储到数据库中
-    function set_subscribe(data) {
-        $.post(get_api('write_subscribe'),data,function(data,status){
-            if(data.code == 1) {
-                layer.msg(data.msg, {icon: 1});
+    
+    function del_key(data){
+        layer.close(index);
+        if($("input.layui-layer-input").val() != vcode){
+            layer.msg('验证码错误', {icon: 5});
+            return false; 
+        }
+        var order_id = data.field.order_id;
+        if(order_id.length < 20){
+            layer.msg('订单号错误,请核对', {icon: 5});
+            return false;
+        }
+        if(data.field.email.length == 0){
+            layer.msg('邮箱不能为空,请核对', {icon: 5});
+            return false;
+        }
+        layer.load(2, {shade: [0.1,'#fff']});
+        $.post(get_api('other_services','del_key'),{'order_id':data.field.order_id,'email':data.field.email},function(data,status){
+            layer.closeAll('loading');
+            if(data.code == 200) {
+                $("#order_id").val('');
+                $("#email").val('');
+                $("#end_time").val('1970-01-01 08:00:00');
+                $("#type_name").val('');
+                layer.msg(data.msg, {icon: 1,time: 10000});
             }else{
-                layer.msg(data.msg, {icon: 5});
+                layer.alert(data.msg,{icon:5,title:'保存结果',anim: 2,closeBtn: 0,btn: ['我知道了']});
             }
+        }).fail(function () {
+            layer.msg('请求失败', {icon: 5});
         });
     }
     
+    // 正版验证
+    $('#validate').on('click', function(){
+        vcode = randomnum(6);
+        index = layer.prompt({formType: 0,value: '',title: '请输入验证码: ' + vcode,shadeClose: false,"success":function(){
+            $("input.layui-layer-input").on('keydown',function(e){
+                if(e.which == 13) {
+                    validate();
+                }
+            });
+        }},function(){
+            validate()
+        });
+    });
+    
+    function validate() {
+        layer.close(index);
+        if($("input.layui-layer-input").val() != vcode){
+            layer.msg('验证码错误', {icon: 5});
+            return false; 
+        }
+        $.post(get_api('other_services','validate'),function(data,status){
+            layer.closeAll('loading');
+            layer.alert(data.msg,{icon:(data.code == 200 ? 1 : 5),title:'验证结果',anim: 2,closeBtn: 0,btn: ['我知道了']});
+        }).fail(function () {
+            layer.msg('请求失败', {icon: 5});
+        });
+    }
 });
 </script>
 </body>

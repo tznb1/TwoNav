@@ -20,7 +20,7 @@ require(dirname(__DIR__).'/header.php');
         <div class="layui-btn-container">
             <button type="button" class="layui-btn copy_log">复制内容</button>
             <button type="button" class="layui-btn diagnose">一键诊断</button>
-            <button type="button" class="layui-btn connectivity_test">网络检测</button>
+            <button type="button" class="layui-btn connectivity_test">连通测试</button>
             <button type="button" class="layui-btn phpinfo">phpinfo</button>
 <?php if(preg_match('/nginx/i',$_SERVER['SERVER_SOFTWARE']) ){ ?>
             <button type="button" class="layui-btn rewrite">生成伪静态</button>
@@ -84,7 +84,7 @@ layui.use(['layer','form','miniTab'], function () {
         $("#console_log").append("客户端时间：" +  timestampToTime(Math.round(new Date() / 1000) ) +"\n");
         
         var urls = [
-          ['资源节点-码云', 'http://tznb.gitee.io/twonav_resource/connectivity_test.json']
+          ['资源节点-码云', 'https://gitee.com/tznb/TwoNav_Resource/raw/master/connectivity_test.txt']
         ];
         urls.forEach(function(route) {
           var routeName = route[0];
@@ -132,23 +132,6 @@ layui.use(['layer','form','miniTab'], function () {
     $('.rewrite').on('click', function(){
         let pathname = window.location.pathname;
         $("#console_log").text("");
-        //$("#console_log").append(`#更新时间: 2023.09.05\n`);
-        //$("#console_log").append(`#安全规则(必选)\n`);
-        //$("#console_log").append(`location ^~ ${pathname}data/ {location ~* \\.(db|db3|php|sql|tar|gz|zip|info|log|json)$ {return 403;}}\n`);
-        //$("#console_log").append(`location ^~ ${pathname}templates/ {location ~* \\.(php|tar|gz|zip|info|log|json)$ {return 403;}}\n`);
-        //$("#console_log").append(`#重写规则(可选)\n`);
-        //$("#console_log").append(`rewrite ^${pathname}login$ ${pathname}index.php?c=login break;\n`);
-        //$("#console_log").append(`rewrite ^${pathname}admin$ ${pathname}index.php?c=admin break;\n`);
-        //$("#console_log").append(`rewrite ^${pathname}ico/(.+) ${pathname}index.php?c=icon&url=$1 break;\n`);
-        //$("#console_log").append(`rewrite ^${pathname}([A-Za-z0-9]+)$ ${pathname}index.php?u=$1 break;\n`);
-        //$("#console_log").append(`rewrite ^${pathname}([A-Za-z0-9]+)\\.html$ ${pathname}index.php?u=$1 break;\n`);
-        //$("#console_log").append(`rewrite ^${pathname}(.+)/(click|article)/([A-Za-z0-9]+)$ ${pathname}index.php?c=$2&id=$3&u=$1 break;\n`);
-        //$("#console_log").append(`rewrite ^${pathname}(.+)/(click|article)/([A-Za-z0-9]+)\\.html$ ${pathname}index.php?c=$2&id=$3&u=$1 break;\n`);
-        ////路径修正(解决使用伪静态链接访问时路径错误的问题)
-        //$("#console_log").append(`rewrite ^${pathname}(.+)/(click|article)/(templates|static|data|system)/(.+) ${pathname}$3/$4 break;\n`);
-        //$("#console_log").append(`rewrite ^${pathname}(.+)/(click|article)/favicon\\.ico ${pathname}favicon.ico break;\n`);
-        //$("#console_log").append(`#站点地图(可选)\n`);
-        //$("#console_log").append(`rewrite ^${pathname}sitemap.xml$ ${pathname}index.php?c=sitemap break;\n`);
         
         $("#console_log").append(`#安全规则(必选)\n`);
         $("#console_log").append(`location ^~ ${pathname}data/ {location ~* \\.(db|db3|php|sql|tar|gz|zip|info|log|json)$ {return 403;}}\n`);
@@ -156,8 +139,6 @@ layui.use(['layer','form','miniTab'], function () {
         if(pathname == '/'){
             $("#console_log").append(`#重写规则(可选)\n`);
             $("#console_log").append(`location / {\n    if ($uri ~* ^/index\.php$) { break; }\n    if ($uri ~* ^/(templates|static|data|system)/) { break; }\n    try_files $uri $uri/ /rewrite.php?$query_string;\n}\n`);
-            $("#console_log").append(`rewrite ^/[a-zA-Z0-9]+/[a-zA-Z]+/(templates|static|data|system)/(.+) /$1/$2 break;\n`);
-            $("#console_log").append(`rewrite ^/[a-zA-Z0-9]+/[a-zA-Z]+/favicon\\.ico /favicon.ico break;\n`);
         }else{
             $("#console_log").append(`#检测到程序运行在非根目录,此环境仅提供安全规则!部分与伪静态相关的功能将不可用!\n`);
         }

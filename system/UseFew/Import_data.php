@@ -18,7 +18,7 @@ if($_GET['type'] == 'upload'){
 
     //取后缀并判断是否支持
     $suffix = strtolower(end(explode('.',$_FILES["file"]["name"])));
-    if(!preg_match('/^(db3|html)$/i',$suffix)){
+    if(!preg_match('/^(db3|html|itabdata)$/i',$suffix)){
         @unlink($_FILES["file"]["tmp_name"]);
         msg(-1,'文件格式不被支持!');
     }
@@ -384,6 +384,87 @@ if($_GET['type'] == 'upload'){
         }
     }
     msg(-1,'导入失败.');
+
+}elseif($_GET['type'] == 'itabdata'){
+    $temp_path = $_SESSION['upload_bookmark'][UID][$sid];
+    $content = file_get_contents($temp_path);
+    $data = json_decode($content, true);
+    if(!isset($data['navConfig']) || empty($data['navConfig'])){
+        msg(-1,'数据解析失败,请确认导入的是iTab备份的数据,且导出内容包含图标');
+    }
+    $time = time();
+    $success = 0; $fail = 0; $total = 0;$res = '';
+    $res='<table class="layui-table" lay-even><colgroup><col width="200"><col width="250"><col></colgroup><thead><tr><th>标题</th><th>URL</th><th>失败原因</th></tr></thead><tbody>';
+    foreach($data['navConfig'] as $key => $category){
+        if(!isset($category['children']) || empty($category['children'])){
+            continue; //分类下没数据则跳过
+        }
+        //分类名称不错在时创建
+        if(!has_db('user_categorys',['name'=>$category['name']]) ){
+            insert_db('user_categorys',[
+                'uid'=>UID,
+                'cid'=>get_maxid('category_id'),
+                'fid'=>0,
+                'pid'=>0,
+                'status'=>1,
+                'property'=>1,
+                'name'=>$category['name'],
+                'add_time'=>$time,
+                'up_time'=>$time,
+                'weight'=>0,
+                'description'=>'',
+                'font_icon'=>'fa fa-user',
+                'icon'=>''
+                ]
+            );
+        }
+        
+        // 读取分类ID
+        $category_id = get_db('user_categorys','cid',['uid'=>UID,'name'=>$category['name']]); 
+        if(empty($category_id)){
+            msg(-1,'意外结束:创建或读取分类信息失败!');
+        }
+        $total += count($category['children']);
+        //遍历链接
+        foreach($category['children'] as $link){
+            $id = get_db('user_links','id',['uid'=>UID,'url'=>$link['url'] ]);
+            if(!empty($id)){
+                $res=$res.'<tr><td>'.mb_substr($link['name'], 0, 30).'</td><td>'.mb_substr($link['url'], 0, 40).'</td><td>URL重复'.'</td></tr>';
+                $fail++;
+                continue;
+            }
+            if(empty($id) && strpos($link['url'], "http") === 0 ){
+                insert_db('user_links',[
+                    'uid'       =>  UID,
+                    'lid'       =>  get_maxid('link_id'),
+                    'fid'       =>  $category_id,
+                    'add_time'  =>  $time,
+                    'up_time'   =>  $time,
+                    'weight'    =>  0,
+                    'title'     =>  $link['name'] ,
+                    'url'       =>  $link['url'],
+                    'property'  =>  0,
+                    'icon'      =>  '', // "{$link['src']}",
+                    'status'    =>  1
+                ]);
+                $success++;
+            }else{
+                $res=$res.'<tr><td>'.mb_substr($link['name'], 0, 30).'</td><td>'.mb_substr($link['url'], 0, 40).'</td><td>'.$link['name'].' >> 不是链接'.'</td></tr>';
+                $fail++;
+            }
+        }
+    }
+    
+    $data = [
+        'code'      =>  1,
+        'msg'       =>  '总数：'.$total.' 成功：'.$success.' 失败：'.$fail,
+        'res'       =>  $res.'</tbody></table>',
+        'fail'      =>  $fail
+        ];
+    //删除文件和变量
+    unlink($temp_path);
+    unset($_SESSION['upload_bookmark'][UID][$sid]);
+    msgA($data);
 }elseif($_GET['type'] == 'data_empty'){
     //验证密码
     global $USER_DB;

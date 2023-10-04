@@ -37,7 +37,7 @@ class PHPGangsta_GoogleAuthenticator
         }
 
         $secretkey = $this->_base32Decode($secret);
-        $time = chr(0).chr(0).chr(0).chr(0).pack('N*', $timeSlice);
+        $time = chr(0). chr(0) .chr(0). chr(0) .pack('N*', $timeSlice);
         $hm = hash_hmac('SHA1', $time, $secretkey, true);
         $offset = ord(substr($hm, -1)) & 0x0F;
         $hashpart = substr($hm, $offset, 4);

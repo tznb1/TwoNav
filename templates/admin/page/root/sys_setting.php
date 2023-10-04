@@ -124,6 +124,27 @@ $title='系统设置';require(dirname(__DIR__).'/header.php');
             </div>
             
             <div class="layui-form-item">
+                <label class="layui-form-label">资源节点</label>
+                <div class="layui-input-inline">
+                    <select name="Update_Source">
+                        <option value="0" selected="">自动</option>
+                        <option value="1">国内-1</option>
+                        <option value="2">国内-2</option>
+                        <option value="3">海外-3</option>
+                    </select>
+                </div>
+                <div class="layui-form-mid layui-word-aux">默认为自动 (非必要请勿修改)</div>
+            </div>
+            
+            <div class="layui-form-item">
+                <label class="layui-form-label">请求超时</label>
+                <div class="layui-input-inline">
+                    <input type="number" name="Update_Overtime" autocomplete="off" value="3" class="layui-input">
+                </div>
+                <div class="layui-form-mid layui-word-aux">默认3秒,范围3-60 (非必要请勿修改)</div>
+            </div>
+            
+            <div class="layui-form-item">
                 <label class="layui-form-label">调试模式</label>
                 <div class="layui-input-inline">
                     <select name="Debug">
@@ -150,10 +171,11 @@ $title='系统设置';require(dirname(__DIR__).'/header.php');
                 <div class="layui-input-inline">
                     <select name="static_link">
                         <option value="0" selected="">关闭</option>
-                        <option value="1" >开启</option>
+                        <option value="1" >开启-UN</option>
+                        <option value="2" >开启-UID</option>
                     </select>
                 </div>
-                <div class="layui-form-mid layui-word-aux">开启后部分动态链接将改为静态链接 (请确保伪静态生效中)</div>
+                <div class="layui-form-mid layui-word-aux">开启后部分动态链接将改为静态链接 (请确保伪静态生效中,选定后不建议更改)</div>
             </div>
             
             <div class="layui-form-item">
@@ -209,26 +231,6 @@ $title='系统设置';require(dirname(__DIR__).'/header.php');
                     </select>
                 </div>
                 <div class="layui-form-mid layui-word-aux">请勿开启!请勿开启!请勿开启!</div>
-            </div>
-
-            <div class="layui-form-item layui-hide">
-                <label class="layui-form-label">资源接口</label>
-                <div class="layui-input-inline">
-                    <select name="Update_Source">
-                        <option value="0" selected="">自动</option>
-                        <option value="lm21">主线路</option>
-                        <option value="gitee">备用线路(gitee)</option>
-                    </select>
-                </div>
-                <div class="layui-form-mid layui-word-aux">备用资源不定期更新,非必要请勿使用!</div>
-            </div>
-            
-            <div class="layui-form-item layui-hide">
-                <label class="layui-form-label">资源超时</label>
-                <div class="layui-input-inline">
-                    <input type="number" name="Update_Overtime" autocomplete="off" value="3" class="layui-input">
-                </div>
-                <div class="layui-form-mid layui-word-aux">默认3秒,范围3-60</div>
             </div>
             
             <fieldset class="layui-elem-field layui-field-title" style="margin-top: 30px;"><legend>扩展功能</legend></fieldset>

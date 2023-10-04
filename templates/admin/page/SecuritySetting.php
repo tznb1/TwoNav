@@ -25,7 +25,17 @@ $LoginConfig['totp_key'] = empty($LoginConfig['totp_key']) ? '0':'1';?>
                 </div>
                 <div class="layui-form-mid layui-word-aux">接口泄漏时可以选择重设登陆入口,更换后请及时保存!</div>
             </div>
-            
+            <div class="layui-form-item">
+                <label class="layui-form-label">管理入口</label>
+                <div class="layui-input-inline" >
+                    <select name="admin_inlet" >
+                        <option value="display" selected>显示</option>
+                        <option value="hide">隐藏</option>
+                        <option value="condition1">登录时显示</option>
+                    </select>
+                </div>
+                <div class="layui-form-mid layui-word-aux">是否在主页显示管理入口</div>
+            </div>
             <div class="layui-form-item">
                 <label class="layui-form-label">登录保持</label>
                 <div class="layui-input-inline" >
@@ -89,7 +99,6 @@ $LoginConfig['totp_key'] = empty($LoginConfig['totp_key']) ? '0':'1';?>
                 </div>
                 <div class="layui-form-mid layui-word-aux">部分主题和插件需设为兼容 <a href="javascript:;" layuimini-content-href="Token" data-title="Token"><font color="red"> 获取API ( Token )</font></a></div>
             </div>
-            
             <div class="layui-form-item">
                 <label class="layui-form-label">登录后</label>
                 <div class="layui-input-inline" >

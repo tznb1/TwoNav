@@ -141,11 +141,10 @@ $LoginConfig = unserialize( get_db("global_config", "v", ["k" => "LoginConfig"])
                 <label class="layui-form-label">链接图标</label>
                 <div class="layui-input-inline" >
                     <select name="link_icon">
-                        <option value="0" selected>离线图标</option>
-                        <!--<option value="1" >本地服务(支持缓存)</option>-->
-                        <option value="2" >favicon.rss.ink (小图标)</option>
-                        <option value="4" >api.15777.cn</option>
-                        <option value="5" >favicon.cccyun.cc</option>
+                        <option value="0" selected>离线图标(首字图标)</option>
+                        <option value="20" >本地服务</option>
+                        <option value="21" >本地服务(伪静态)</option>
+                        <option value="2" >favicon.png.pub (小图标)</option>
                         <option value="6" >api.iowen.cn</option>
                     </select>
                 </div>

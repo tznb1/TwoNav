@@ -5,10 +5,44 @@
     <li class="layui-timeline-item">
         <i class="layui-icon layui-timeline-axis"></i>
         <div class="layui-timeline-content layui-text">
-            <h4 class="layui-timeline-title">v2.0.40-20230917</h4>
+            <h4 class="layui-timeline-title">v2.1.01-20231002</h4>
             <ul>
-                <li>[优化] 优化资源节点,提高系统更新速度,主题下载速度,预览图加载速度! </li>
-                <li>[优化] 系统响应速度,修复已知问题</li>
+                <li>[优化] 已部署国内服务器并接入了CDN加速和3个资源节点</li>
+                <li>[新增] 系统设置>资源节点,可选自动/国内1/国内2/海外1</li>
+                <li>[新增] 系统设置>请求超时,默认为3秒,范围3-60</li>
+                <li>[新增] 后台>安全设置(右上角账号下拉)>新增管理入口选项,可选隐藏/显示/登录时显示</li>
+                <li>[优化] 静态链接(伪静态)处理方案,支持选择UN(用户名)或UID(用户ID)作为用户标识</li>
+                <li>[优化] 百度推送/站点地图静态链接格式调整</li>
+                <li>[优化] 后台的部分前台链接支持伪静态链接</li>
+                <li>[修复] 注册模板无法切换、其他已知的bug</li>
+                <li>[模板] 所有模板更新至2.1.0</li>
+                <li>[模板] 下载/更新多合一模板时自动释放到对应模板目录,无需重复下载!</li>
+            </ul>
+        </div>
+    </li>
+    <li class="layui-timeline-item">
+        <i class="layui-icon layui-timeline-axis"></i>
+        <div class="layui-timeline-content layui-text">
+            <h4 class="layui-timeline-title">v2.0.41-20230921</h4>
+            <ul>
+                <li>[优化] 后台>概要页面改为异步加载,避免因网络不好时出现页面打开慢的问题</li>
+                <li>[新增] 后台>授权管理页面新增正版验证按钮/显示授权类型/相关验证逻辑调整</li>
+                <li>[修复] 文章功能全局开关为关闭时前台依然输出文章链接的bug</li>
+                <li>[修复] 从免费版升级到授权版时未自动清理缓存造成不好的体验</li>
+            </ul>
+        </div>
+    </li>
+    <li class="layui-timeline-item">
+        <i class="layui-icon layui-timeline-axis"></i>
+        <div class="layui-timeline-content layui-text">
+            <h4 class="layui-timeline-title">v2.0.40-20230919</h4>
+            <ul>
+                <li>[变更] 优化资源节点,提高系统更新速度,主题下载速度,预览图加载速度! </li>
+                <li>[变更] 为保障授权用户的权益,本版开始请求下载主题/更新系统时服务器将验证授权</li>
+                <li>[变更] 开源版(免费版)与授权版(标准版/高级版)将分开维护,以避免某些人非法获取权限,这对付费用户是极不公平的</li>
+                <li>[新增] 特定操作时清理缓存,避免因版本不一致造成的问题</li>
+                <li>[新增] 请求服务器时携带本地系统版本号以便于服务器返回相匹配的资源</li>
+                <li>[新增] 导出导入页面的导入功能支持iTab的数据( 扩展名为: itabdata )</li>
             </ul>
         </div>
     </li>

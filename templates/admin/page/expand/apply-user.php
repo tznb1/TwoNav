@@ -95,7 +95,18 @@ layui.use(['form'], function(){
             }
         });
     return false; 
-    });
+    });<?php if( is_login() ) { echo '
+    //生成测试数据
+    form.on("submit(test)", function(data){
+        form.val("apply", {
+                "title": "百度一下"
+                ,"url": "https://"+ Math.round(new Date()) +".baidu.com"
+                ,"iconurl": "https://www.baidu.com/favicon.ico"
+                ,"description": "搜索引擎"
+                ,"email": "admin@qq.com"
+            });
+    return false; 
+    });' ;} ?> 
 });
 </script>
 </body>

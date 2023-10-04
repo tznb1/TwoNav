@@ -9,7 +9,7 @@ if(!empty($mail_config)){
 <html>
 <head>
     <meta charset="UTF-8">
-    <title>TwoNav - 注册</title>
+    <title><?php echo $OEM['program_name'];?> - 注册</title>
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
     <meta http-equiv="Access-Control-Allow-Origin" content="*">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
@@ -28,7 +28,7 @@ if(!empty($mail_config)){
 <div class="main-body">
     <div class="login-main">
         <div class="login-top">
-            <span>TwoNav 注册账号</span>
+            <span><?php echo $OEM['program_name'];?> 注册账号</span>
             <span class="bg1"></span>
             <span class="bg2"></span>
         </div>
@@ -72,7 +72,7 @@ if(!empty($mail_config)){
         if($global_config['RegOption'] == 2 && !empty($reg_tips)){ 
             echo '                <a href="javascript:;" onclick = "Get_Invitation(\''.base64_encode($reg_tips).'\')">获取注册码</a>'."\n";
         }
-        echo '                <a href="./?c=login" class="forget">已有账号？立即登录</a>'."\n";
+        echo '                <a href="'.$urls['login'].'" class="forget">已有账号？立即登录</a>'."\n";
     } 
 ?>
             </div>

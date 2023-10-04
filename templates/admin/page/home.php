@@ -4,70 +4,26 @@ $awesome=true;
 
 //读取缓存数据
 $Notice = get_db('global_config','v',['k'=>'notice']);
-//如果不为空,则解析数据
-if(!empty($Notice)){
-    $data = json_decode($Notice, true);
-    $cache_time = 60; //缓存时间(秒);
-    $reload = time() > $data["download_time"] + $cache_time; //是否更新公告
-}else{
-    $reload = true; //需要刷新
-}
-//是否下载数据
-if(!offline && $reload){
-    $overtime = !isset($global_config['Update_Overtime']) ? 3 : ($global_config['Update_Overtime'] < 3 || $global_config['Update_Overtime'] > 60 ? 3 : $global_config['Update_Overtime']);
-    if(!is_subscribe('bool')){
-        $urls = ["gitee" => "http://tznb.gitee.io/twonav_resource/Notice.json"];
-    }else{
-        $urls = ["twonav" => "http://service.twonav.cn/service.php"];
-    }
-    $Source = $global_config['Update_Source'] ?? '';
-    if (!empty($Source) && isset($urls[$Source])) {
-        $urls = [$Source => $urls[$Source]];
-    }
-    
-    foreach($urls as $key => $url){
-        if($key == 'gitee'){
-            $Res = ccurl($url,$overtime);
-        }else{
-            $Res = ccurl($url,30,true,data_encryption('get_new_ver',['ver'=>SysVer]));
-        }
-        $new_data = json_decode($Res['content'], true);unset($Res);
-        if($new_data["code"] == 200 ){ //下载成功,写入缓存
-            $new_data['download_time'] = time();
-            write_global_config('notice',json_encode($new_data),'官方公告(缓存)');
-            $data = $new_data;
-            unset($new_data);
-            break;
-        }
-    }
-}
-//判断是否为空
-if(empty($data['version'])){
-    $data['version'] = SysVer; //获取失败时=当前版本
-}else{
-    //比较远程版本
-    if(version_compare($data['version'],SysVer,'<')){
-        $data['version'] = SysVer; //远程版本比当前旧是最新版本显示当前版本
-    }
-}
+$data = empty($Notice)?[]:json_decode($Notice, true);
 
-//输出公告
-function echo_notice($data){
+//输出最新动态
+function echo_notice_link($data){
     if(empty($data["notice"])){
         return;
     }
-    echo '<div class="layui-card"><div class="layui-card-header"><i class="fa fa-bullhorn icon"></i>最新动态</div><div class="layui-card-body layui-text">';
+    echo '<div class="layui-card"><div class="layui-card-header"><i class="fa fa-bullhorn icon"></i>最新动态</div><div class="layui-card-body layui-text" id="notice_link">';
     foreach($data["notice"] as $value){
         echo "<div class=\"layuimini-notice\"><div class=\"layuimini-notice-title\"><a href=\"{$value['url']}\" target=\"_blank\">{$value['title']}</a></div></div>";
     }
     echo '</div></div>';
 }
-//输出作者心语
-function echo_message($data){
+
+//输出官方公告
+function echo_notice_text($data){
     if(empty($data["message"])){
         return;
     }
-    echo '<div class="layui-card"><div class="layui-card-header"><i class="fa fa-paper-plane-o icon"></i>作者心语</div><div class="layui-card-body layui-text layadmin-text">';
+    echo '<div class="layui-card"><div class="layui-card-header"><i class="fa fa-bell-o icon"></i>官方公告</div><div class="layui-card-body layui-text layadmin-text" id="notice_text">';
     echo $data['message'];
     echo '</div></div>';
 }
@@ -82,12 +38,9 @@ if( $global_config['Sub_domain'] == 1 && check_purview('Sub_domain',1)){
     }
 }
 if(!isset($_h)){
-    $_h = './?u='.U;
-    $_l = './?c='.$USER_DB['Login'].'&u='.U;
+    $_h = static_link ? get_surl('{UUID}.html'):"./?u={$u}";
+    $_l = static_link ? get_surl("login-{UUID}-{$USER_DB['Login']}.html"):"./c={$USER_DB['Login']}&u={$u}" ;
 }
-
-
-
 require 'header.php'; 
 ?>
 <style>
@@ -232,9 +185,9 @@ require 'header.php';
                                             </a>
                                         </div>
                                         <div class="layui-col-xs3 layuimini-qiuck-module">
-                                            <a href="javascript:;" layuimini-content-href="UserPassword" data-title="修改密码" data-icon="fa fa-key">
-                                                <i class="fa fa-key"></i>
-                                                <cite>修改密码</cite>
+                                            <a href="https://gitee.com/tznb/TwoNav/wikis/pages?sort_id=7968669&doc_id=3767990" target="_blank">
+                                                <i class="fa fa-diamond"></i>
+                                                <cite>购买授权</cite>
                                             </a>
                                         </div>
                                     </div>
@@ -314,8 +267,8 @@ require 'header.php';
                         </table>
                     </div>
                 </div>
-                <?php echo_notice($data); //官方公告?>
-                <?php echo_message($data); //作者心语?>
+                <?php echo_notice_link($data); //最新动态 ?>
+                <?php echo_notice_text($data); //官方公告 ?>
             </div>
         </div>
     </div>

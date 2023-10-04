@@ -100,6 +100,7 @@ $title='站点地图';require(dirname(__DIR__).'/header.php');
                         <option value="0" >不生成</option>
                         <option value="1" >动态地址 | http://example.com/index.php?c=click&id=1&u=user</option>
                         <option value="2" selected="">静态地址 | http://example.com/user/click/1.html</option>
+                        <option value="2" selected="">静态地址 | http://example.com/click-user-1.html</option>
                     </select>
                 </div>
             </div>
@@ -125,7 +126,7 @@ $title='站点地图';require(dirname(__DIR__).'/header.php');
                     <select name="article_page">
                         <option value="0" >不生成</option>
                         <option value="1" >动态地址 | http://example.com/index.php?c=article&id=1&u=user</option>
-                        <option value="2" selected="">静态地址 | http://example.com/user/article/1.html</option>
+                        <option value="2" selected="">静态地址 | http://example.com/article-user-1.html</option>
                     </select>
                 </div>
             </div>
@@ -179,7 +180,17 @@ layui.use(['jquery','form'], function () {
 
     //监听提交
     form.on('submit(save)', function (data) {
-        Authorization_Prompt();
+        $.post(get_api('other_root','write_sitemap_config'),data.field,function(data,status){
+            if(data.code == 1) {
+                if(data.msg!="保存成功"){
+                    layer.alert(data.msg)
+                }else{
+                    layer.msg(data.msg, {icon: 1});
+                }
+            }else{
+                layer.msg(data.msg, {icon: 5});
+            }
+        });
         return false;
     }); 
     //测试

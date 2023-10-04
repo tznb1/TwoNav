@@ -267,7 +267,7 @@ layui.use(['layer','element','upload','form','table'], function(){
     var up_bookmark = upload.render({
         elem: '#up_html'
         ,url: get_api('write_data_control','upload')
-        ,exts: 'html|db3'
+        ,exts: 'html|db3|itabdata'
         ,accept: 'file'
         ,size: 1024 * 10
         ,data: {"page_sid":page_sid}
@@ -290,6 +290,12 @@ layui.use(['layer','element','upload','form','table'], function(){
                     $("#property").hide();
                     $("#attr").show();
                     $("#source").show();
+                }else if(suffix == 'itabdata'){
+                    $("#fid").hide();
+                    $("#AutoClass").hide();
+                    $("#property").hide();
+                    $("#attr").hide();
+                    $("#source").hide();
                 }else{
                     $("#fid").show();
                     $("#AutoClass").show();

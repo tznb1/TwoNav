@@ -2,8 +2,8 @@
     "name":"默认模板",
     "description":"OneNav旧版过渡页",
     "homepage":"https://www.xiaoz.me",
-    "version":"2.0.2",
-    "update":"2023/07/16",
+    "version":"2.1.0",
+    "update":"2023/09/28",
     "author":"xiaoz",
     "screenshot":"https://s3.bmp.ovh/imgs/2022/04/17/8cac968a8cc8135c.png",
     "config": {

@@ -4,7 +4,7 @@ $LoginConfig = unserialize($USER_DB['LoginConfig']);?>
 <html>
 <head>
     <meta charset="UTF-8">
-    <title>TwoNav - 登录</title>
+    <title><?php echo $OEM['program_name'];?> - 登录</title>
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
     <meta http-equiv="Access-Control-Allow-Origin" content="*">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
@@ -12,7 +12,7 @@ $LoginConfig = unserialize($USER_DB['LoginConfig']);?>
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="format-detection" content="telephone=no">
     <link rel="stylesheet" href="<?php echo $layui['css']; ?>">
-    <link rel="stylesheet" href="<?php echo $libs?>/Other/login.css">
+    <link rel="stylesheet" href="<?php echo $libs?>/Other/login.css?v=<?php echo SysVer; ?>">
     <link rel="shortcut icon" href="./favicon.ico" type="image/x-icon">
     <!--[if lt IE 9]>
     <script src="<?php echo $libs?>/Other/html5.min.js"></script>
@@ -23,7 +23,7 @@ $LoginConfig = unserialize($USER_DB['LoginConfig']);?>
 <div class="main-body">
     <div class="login-main">
         <div class="login-top">
-            <span>TwoNav 系统管理</span>
+            <span><?php echo $OEM['program_name'];?> 系统管理</span>
             <span class="bg1"></span>
             <span class="bg2"></span>
         </div>
@@ -50,7 +50,7 @@ $LoginConfig = unserialize($USER_DB['LoginConfig']);?>
 <?php
     //若为默认值则显示注册入口
     if($global_config['Register'] == 'register' && $global_config['RegOption'] > 0){
-        echo '<a href="./?c=register" class="forget">没有账号？立即注册</a>';
+        echo '<a href="'.$urls['register'].'" class="forget">没有账号？立即注册</a>';
     } 
 ?>
             </div>

@@ -39,9 +39,22 @@ $layui['css'] = $libs.'/Layui/v2.8.17/css/layui.css';
 define('libs',$global_config['Libs']);
 define('SysVer',Get_Version());
 define('Debug',$global_config['Debug'] == 1);
+define('static_link',$global_config['static_link'] > 0);
 
 if(!in_array($c,[$global_config["Register"],'ico','icon'])){
+    if($global_config['static_link'] > 0 && !empty($UUID)){
+        $_GET['u'] = $global_config['static_link'] == 2 ? get_db("global_user", "User", ["ID"=>$UUID]) : $UUID;
+    }
     $u = Get('u');
+    if(empty($u) && $global_config['Sub_domain'] == 1 && is_subscribe('bool')){
+        $cut = explode('.',$_SERVER["HTTP_HOST"]);
+        if(count($cut) == 3){
+            $USER_DB = get_db("global_user", "*", ["User"=>reset($cut)]);
+            if(!empty($USER_DB) && check_purview('Sub_domain',1)){
+                $_COOKIE['Default_User'] = $USER_DB['User'];unset($cut);
+            }
+        }
+    }
     $u = !empty($u)?$u:(!empty($_COOKIE['Default_User'])?$_COOKIE['Default_User']:(!empty($global_config['Default_User'])?$global_config['Default_User']:'admin'));//优先级:Get>Host>Cookie>默认用户>admin
     $USER_DB = get_db("global_user", "*", ["User"=>$u]);
     //没找到账号显示404

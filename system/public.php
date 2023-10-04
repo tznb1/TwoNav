@@ -560,7 +560,7 @@ function ccurl($url,$overtime = 3,$Referer = false,$post_data = false){
     return $Res;
 }
 
-function downFile($url, $file = '', $savePath = './data/temp/',$referer = '',$TIMEOUT = 60){
+function downFile($url, $file = '', $savePath = './data/temp/',$referer = '',$TIMEOUT = 60,$post_data = false){
     $ch = curl_init();
     curl_setopt($ch, CURLOPT_URL, $url);
     curl_setopt($ch, CURLOPT_TIMEOUT, $TIMEOUT); //超时/秒
@@ -570,6 +570,10 @@ function downFile($url, $file = '', $savePath = './data/temp/',$referer = '',$TI
     curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
     curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
     curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 1); //允许重定向(适应网盘下载)
+    if(!empty($post_data)){
+        curl_setopt($ch, CURLOPT_POST, true);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, $post_data);
+    }
     if(!empty($referer)){
         curl_setopt($ch, CURLOPT_REFERER, $referer);
     }
@@ -579,14 +583,14 @@ function downFile($url, $file = '', $savePath = './data/temp/',$referer = '',$TI
         $code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
         curl_close($ch);
     }
-    
     if ($code == '200') { //状态码正常
-        
         if(empty($file)){ //如果文件名为空
             $file = date('Ymd_His').'.tmp';
         }
         $fullName = rtrim($savePath, '/') . '/' . $file;
-        return file_put_contents($fullName, $res);
+        return file_put_contents($fullName, $res) > 0;
+    }elseif($code == '202'){
+        return $res;
     }else{
         return false;
     }
@@ -652,6 +656,9 @@ function is_Duplicated($array, $field){
 //检查权限(有权限返回true 没有权限时根传递参数1是返回false 2是直接返回错误信息)
 function check_purview($name,$return_type){
     global $USER_DB;
+    if($USER_DB == null){
+        return true;
+    }
     //230705新增,禁止判断默认用户是否可以使用自定义代码
     if($USER_DB['UserGroup'] == 'default' && $GLOBALS['global_config']['c_code'] != '1' && ( $name == 'header' || $name == 'footer' )){
         return false;
@@ -675,10 +682,11 @@ function check_purview($name,$return_type){
 function data_encryption($method,$extend = []){
     $subscribe = unserialize(get_db('global_config','v',["k" => "s_subscribe"]));
     if(!isset($subscribe['public']) || empty($subscribe['public'])){
-            msg(-1,'未检测到授权秘钥,如果已经获取授权,请在授权管理页面点击保存设置后在重试!');
+        msg(-1,'未检测到授权秘钥,如果已经获取授权,请在授权管理页面点击保存设置后在重试!');
     }
     $data['key'] = $subscribe['order_id'];
     $data['host'] = $_SERVER['HTTP_HOST'];
+    $data['sysver'] = SysVer;
     $data['time'] = time();
     $data['ip'] = Get_IP();
     $data['method'] = $method;
@@ -789,4 +797,31 @@ function clean_cache(){
     foreach(['home','login','transit','register','guide','article','apply','verify','guestbook'] as $v){
         write_global_config($v.'_cache','',$v.'_模板缓存');
     }
+}
+
+//取系统版本(日期)
+function get_SysVer(){
+    if(preg_match('/^v.+-(\d{8})$/i',SysVer,$matches)){
+        return $matches[1];
+    }else{
+        return 19990101;
+    }
+}
+
+function get_HOST(){
+    return (((isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == 'on') || (isset($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO'] == 'https')) ? 'https://' :'http://').$_SERVER['HTTP_HOST'];
+}
+function get_UUID(){
+    return ($GLOBALS['global_config']['static_link'] == 2 ? UID : U);
+}
+function get_surl($input,$id=''){
+    return get_HOST().'/'.strtr($input, ['{UUID}'=>get_UUID(),'{id}'=>$id]);
+}
+function get_OEM(){
+    $OEM['program_name'] = "TwoNav";
+    return $OEM;
+}
+//返回404
+function Not_Found() {
+    header('HTTP/1.1 404 Not Found');header("status: 404 Not Found");exit;
 }

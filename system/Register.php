@@ -57,49 +57,6 @@ if(!preg_match('/^[A-Za-z0-9]{4,13}$/', $user)){
     msg(-1,'该账号已被站长保留!');
 }
 
-//读取邮件配置
-$mail_config = get_db("global_config","v",["k"=>"mail_config"]);
-if(!empty($mail_config)){
-    $mail_config = unserialize($mail_config);
-    if($mail_config['verify_email'] == 1 && $_GET['type'] == 'getcode'){
-        //判断是否频繁发送
-        $send_interval = intval($mail_config['send_interval']);
-        if($send_interval > 0 && has_db('user_log',['type'=>'send_email','ip'=>$IP,'time[>]'=>time() - $send_interval])){
-            msg(-1,'请勿频繁获取验证码');
-        }
-        $mail_config['addressee'] = $_POST['Email'];
-        $mail_config['Subject'] = '验证码';
-        $code = mt_rand(100000,999999);
-
-        if(!strstr($mail_config['verify_template'],'$code')){
-            $mail_config['verify_template'] = '您的验证:$code';
-        }
-        $mail_config['Body'] = empty($mail_config['verify_template']) ? '您的验证:'.$code:str_replace('$code', $code, $mail_config['verify_template']);
-        $mail_config['return']='bool';
-        if(send_email($mail_config)){
-            session_start();
-            $_SESSION["{$_POST['Email']}"]['code'] = "$code";
-            $_SESSION["{$_POST['Email']}"]['time'] = time();
-            insert_db("user_log", ["uid" => 0,"user"=>$user,"ip"=>$IP,"time"=>time(),"type" => 'send_email',"content"=>Get_Request_Content(),"description"=>"发送注册验证码:".$code.', 接收邮箱: '.$_POST['Email']]);
-            msg(1,'发送成功');
-        }else{
-            msg(-1,'发送失败');
-        }
-        exit;
-    }
-}
-//验证码效验
-if(!empty($mail_config['verify_email']) && $mail_config['verify_email'] == 1){
-    session_start();
-    if(empty($_POST['code'])){
-        msg(-1,'请输入验证码');
-    }elseif ($_POST['code'] != $_SESSION["{$_POST['Email']}"]['code']) {
-        msg(-1,'验证码错误'.$_SESSION["{$_POST['Email']}"]['code']);
-    }elseif($_SESSION["{$_POST['Email']}"]['time'] + 300  < time()){
-        msg(-1,'验证码已过期');
-    }
-    unset($_SESSION["{$_POST['Email']}"]);
-}
 //插入用户表和创建初始数据库
 $RegTime = time();
 $PassMD5 = Get_MD5_Password($pass,$RegTime);

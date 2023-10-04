@@ -154,7 +154,8 @@ function get_links($fid) {
         $max_link = true;
     }
     $links = select_db('user_links',['lid(id)','fid','property','title','url(real_url)','url_standby','description','icon','click','pid','extend'],$where);
-    foreach ($links as $key => $link) {
+    $UUID = ($GLOBALS['global_config']['static_link'] == 2 ? UID : U);
+    foreach ($links as &$link) {
         $click = false; $lock = false;
         
         //直连模式,但存在备用链接
@@ -174,25 +175,20 @@ function get_links($fid) {
         }
         
         if($click || $site['link_model'] != 'direct'){
-            if($GLOBALS['global_config']['static_link'] == 1){
-                $links[$key]['url'] = "/{$u}/click/{$link['id']}.html";
-            }else{
-                $links[$key]['url'] = "./index.php?c=click&id={$link['id']}&u=".U;
-            }
-            
+            $link['url'] = static_link ? "{$GLOBALS['HOST']}/click-{$UUID}-{$link['id']}.html" : "./index.php?c=click&id={$link['id']}&u={$u}";
             if($lock){
-                $links[$key]['real_url'] = $links[$key]['url']; //篡改真实URL,防止泄密
+                $link['real_url'] = $link['url']; //篡改真实URL,防止泄密
                 if(isset($share['sid'])){
-                    $links[$key]['url'] .='&share='.$share['sid'];
+                    $link['url'] .='&share='.$share['sid'];
                 }
             }
         }else{
-            $links[$key]['url'] = $link['real_url'];
+            $link['url'] = $link['real_url'];
         }
 
         //获取图标链接
-        $links[$key]['ico'] = $lock ? $GLOBALS['libs'].'/Other/lock.svg' : geticourl($site['link_icon'],$link);
-        $links[$key]['type'] = 'link';
+        $link['ico'] = $lock ? $GLOBALS['libs'].'/Other/lock.svg' : geticourl($site['link_icon'],$link);
+        $link['type'] = 'link';
     }
     //处理扩展信息
     if($GLOBALS['global_config']['link_extend'] == 1 && check_purview('link_extend',1) && in_array($GLOBALS['theme_info']['support']['link_extend'],["true","1"])){
@@ -203,36 +199,9 @@ function get_links($fid) {
         }
 
     }
-    //生成文章链接, 条件:非隐藏,且主题未声明不显示文章
-    if( intval($site['article_visual'] ?? '1') > 0 && $GLOBALS['theme_info']['support']['article'] != 'notdisplay'){
-        $articles = get_article_list($fid);
-        foreach ($articles['data'] as $article) {
-            if($GLOBALS['global_config']['static_link'] == 1){
-                $url = "/{$u}/article/{$article['id']}.html";
-            }else{
-                $url = "./index.php?c=article&id={$article['id']}&u={$u}";
-            }
-            if($site['article_icon'] == '1'){ //站点图标
-                $icon = $GLOBALS['favicon'];
-            }elseif($site['article_icon'] == '2' && !empty($article['cover'])){ //封面
-                $icon = $article['cover'];
-            }else{ //首字
-                $icon = './system/ico.php?text='.mb_strtoupper(mb_substr($article['title'], 0, 1));
-            }
-            $article_link = ['type'=>'article','id'=>0,'title'=>htmlspecialchars($article['title'],ENT_QUOTES),'url'=>$url,'real_url'=>$url,'description'=> htmlspecialchars($article['summary'],ENT_QUOTES),'ico'=>$icon,'icon'=>$icon];
-            //判断靠前还是靠后
-            if($site['article_visual'] == '1'){
-                array_unshift($links,$article_link);
-            }else{
-                array_push($links,$article_link);
-            }
-            
-        }
-    }
-    
-    
+
     if($max_link && $count > $site['max_link']){
-        $oc_url = "./index.php?u={$u}&oc={$fid}" . (empty($_GET['theme']) ? '':"&theme={$_GET['theme']}");
+        $oc_url = static_link ? "{$GLOBALS['HOST']}/category-{$UUID}-{$fid}.html" : "./index.php?u={$u}&oc={$fid}";
         array_push($links,['id'=>0,'title'=>'查看全部','url'=>$oc_url,'real_url'=>$oc_url,'description'=>'该分类共有'.$count.'条数据','ico'=>'./favicon.ico']);
     }
    
@@ -284,5 +253,6 @@ if(empty($_GET['share']) && !$site['ex_theme']){
 write_user_count(date('Ym'),'index_Ym');
 write_user_count(date('Ymd'),'index_Ymd');
 count_ip();
+
 //载入模板
 require($index_path);

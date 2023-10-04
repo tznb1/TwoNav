@@ -58,7 +58,8 @@ function other_upsys(){
         $overtime = !isset($GLOBALS['global_config']['Update_Overtime']) ? 3 : ($GLOBALS['global_config']['Update_Overtime'] < 3 || $GLOBALS['global_config']['Update_Overtime'] > 60 ? 3 : $GLOBALS['global_config']['Update_Overtime']);
         
         //请求获取更新包
-        $Res = ccurl("http://service.twonav.cn/service.php",30,true,data_encryption('updateSystem',['sysver'=>$_SESSION['upsys']['sysver']]));
+        $node = intval($GLOBALS['global_config']['Update_Source']);
+        $Res = ccurl("http://service.twonav.cn/service.php",30,true,data_encryption('updateSystem',['node'=>$node]));
         $data = json_decode($Res["content"], true);
         
         if($data["code"] != '200'){
@@ -78,7 +79,6 @@ function other_upsys(){
         }else{
             msg(-1,'下载更新包失败');
         }
-        
         msg(1,'success');
     }
     
@@ -98,13 +98,13 @@ function other_upsys(){
         } catch (Exception $e) {
             msg(-1,'释放更新包,请检查写入权限');//解压出问题了
         }
-        clean_cache();
         usleep(1000*300);
         msg(1,'success');
     }
     
     //检测是否需要更新数据库
     if($_POST['i'] == 4){
+        clean_cache();
         set_time_limit(5*60);
         try {
             //根据数据库类型扫描不同目录,并声明执行SQL语句的函数
@@ -236,89 +236,30 @@ function read_purview_list(){
 
 //读用户组列表
 function read_users_list(){
-    if(!is_subscribe('bool')){
-        msg(-1,'未检测到有效授权');
-    }
-    msg(1,'请更新系统后再试');
+    msg_tip();
 }
 
 //写用户组
 function write_users(){
     //验证代号是否合规
-    if(!preg_match('/^[A-Za-z0-9]+$/',$_POST['code'])){
-        msg(-1,'分组代号只能是字母和数字');
-    }elseif($_POST['code'] == 'root' || $_POST['code'] == 'default'){
-        msg(-1,'不能使用系统预设的代号');
-    }elseif(htmlspecialchars(trim($_POST['name'])) != $_POST['name']){
-        msg(-1,'分组名称不能含有特殊字符');
-    }
-    if(!is_subscribe('bool')){
-        msg(-1,'未检测到有效授权');
-    }
-    msg(1,'请更新系统后再试');
+    msg_tip();
 }
 
 
 //写用户信息
 function write_user_info(){
-    msg(-1,'未检测到有效授权,无法使用该功能');
+   msg_tip();
 }
 
 //读注册码列表
 function read_regcode_list(){
-    if(!is_subscribe('bool')){
-        msg(-1,'未检测到有效授权');
-    }
-    msg(1,'请更新系统后再试');
-    msgA(['code'=>1,'msg'=>'获取成功','count'=>$count,'data'=>$datas]);
+    msg_tip();
 }
 
 //写注册码
 function write_regcode(){
-    global $db;
-    if(!is_subscribe('bool')){
-        msg(-1,'未检测到有效授权');
-    }
-    msg(1,'请更新系统后再试');
+    msg_tip();
 }
-
-
-//写订阅信息
-function write_subscribe(){
-    global $USER_DB;
-    $data = $_POST;
-    $data['host'] = $_SERVER['HTTP_HOST']; //当前域名
-    if(empty($data['order_id']) && empty($data['email']) && empty($data['end_time'])){
-        write_global_config('s_subscribe','','订阅信息');
-        msg(1,'清除成功');
-    }
-    if($data['end_time'] < time()){
-        msg(-1,"您的订阅已过期!");
-    }
-    //判断是否为IP
-    if(preg_match("/^(\d+\.\d+\.\d+\.\d+):*\d*$/",$data['host'],$host)) {
-        $data['host'] = $host[1]; //取出IP(不含端口)
-    }else{
-        $host = explode(".", $data['host']);
-        $count = count($host);
-        if($count != 2){
-            $data['host'] = $host[$count-2].'.'.$host[$count-1];
-            //如果存在端口则去除
-            if(preg_match("/(.+):\d+/",$data['host'],$host)) {
-                $data['host'] = $host[1];
-            }
-        }
-    }
-    
-    if(stristr($data['domain'],$data['host'])){
-        write_global_config('s_subscribe',$data,'订阅信息');
-        clean_cache();
-        msg(1,'保存成功');
-    }else{
-        msg(-1,"您的订阅不支持当前域名 >> ".$_SERVER['HTTP_HOST']);
-    }
-}
-
 
 // 写系统设置
 function write_sys_settings(){
@@ -333,6 +274,16 @@ function write_sys_settings(){
         msg(-1,'默认账号不存在');
     }elseif(!empty($_POST['default_UserGroup']) && empty(get_db('user_group','code',['code' => $_POST['default_UserGroup']]))){
         msg(-1,'默认分组代号不存在');
+    }elseif($_POST['Sub_domain'] == 1){
+        if(preg_match('/\.(com|net|org|gov|edu)\.cn$/', $_SERVER["HTTP_HOST"])){
+            msg(-1,'不支持此类域名');
+        }
+        if(filter_var($_SERVER["HTTP_HOST"], FILTER_VALIDATE_IP) != false){
+            msg(-1,'不支持IP访问开启二级域名');
+        }
+        if(preg_match('/\.(\d+|:\d+)$/', preg_replace('/:\d+$/','',$_SERVER['HTTP_HOST'])) || substr_count($_SERVER["HTTP_HOST"],':') > 2){
+            msg(-1,'不支持IP访问开启二级域名,如有误判请联系技术支持!');
+        }
     }
     
     //自定义登录入口和注册入口检测
@@ -343,7 +294,12 @@ function write_sys_settings(){
     if(in_array($_POST['Register'],$prohibits)){
         msg(-1,'此注册入口名已被系统使用');
     }
-
+    //长度限制
+    foreach (['c_name','c_desc','l_name','l_url','l_key','l_desc'] as $name){
+        $length_limit[$name] = is_subscribe('bool') ? intval($_POST[$name]) : 0;
+    }
+    write_global_config("length_limit",$length_limit,'长度限制');
+    
     //全局配置
     $datas = [
         'Login'=>['empty'=>false,'msg'=>'登录入口不能为空'],
@@ -358,14 +314,22 @@ function write_sys_settings(){
         'offline'=>['int'=>true,'min'=>0,'max'=>1,'msg'=>'离线模式参数错误'],
         'Debug'=>['int'=>true,'min'=>0,'max'=>1,'msg'=>'调试模式参数错误'],
         'Maintenance'=>['int'=>true,'min'=>0,'max'=>1,'msg'=>'维护模式参数错误'],
+        'Sub_domain'=>['int'=>true,'min'=>0,'max'=>1,'msg'=>'二级域名参数错误'],
+        'Privacy'=>['int'=>true,'min'=>0,'max'=>1,'msg'=>'强制私有参数错误'],
         'default_page'=>['int'=>true,'min'=>0,'max'=>2,'msg'=>'默认页面参数错误'],
-
+        'global_header'=>['empty'=>true],
+        'global_footer'=>['empty'=>true],
         'api_extend'=>['empty'=>true],
         'c_code'=>['int'=>true,'min'=>0,'max'=>1,'msg'=>'自定义代码参数错误'],
+        'static_link'=>['int'=>true,'min'=>0,'max'=>2,'msg'=>'静态链接参数错误'],
         //更新设置
         'Update_Source'=>['empty'=>true],
         'Update_Overtime'=>['int'=>true,'min'=>3,'max'=>60,'msg'=>'资源超时参数错误'],
-
+        //扩展功能-(全局开关)
+        'apply'=>['int'=>true,'min'=>0,'max'=>1,'msg'=>'收录管理参数错误'],
+        'guestbook'=>['int'=>true,'min'=>0,'max'=>1,'msg'=>'留言管理参数错误'],
+        'link_extend'=>['int'=>true,'min'=>0,'max'=>1,'msg'=>'链接扩展参数错误'],
+        'article'=>['int'=>true,'min'=>0,'max'=>2,'msg'=>'文章管理参数错误']
         ];
     $o_config = [];
     foreach ($datas as $key => $data){
@@ -377,18 +341,24 @@ function write_sys_settings(){
             $o_config[$key] = $data['empty']?$_POST[$key]:(!empty($_POST[$key])?$_POST[$key]:msg(-1,$data['msg']));
         }
     }
-
-
-    update_db("global_config", ["v" => $o_config], ["k" => "o_config"],[1,"免费版可用功能配置已保存!"]);
+    if(!is_subscribe('bool')){
+        if($_POST['Sub_domain'] == 1){$o_config['Sub_domain'] = 0;$filter = true;}
+        if($_POST['Privacy'] == 1){$o_config['Privacy'] = 0;$filter = true;}
+        if(!empty($_POST['copyright'])){$o_config['copyright'] = "";$filter = true;}
+        if(!empty($_POST['global_header'])){$o_config['global_header'] = "";$filter = true;}
+        if(!empty($_POST['global_footer'])){$o_config['global_footer'] = "";$filter = true;}
+        if($_POST['apply'] == 1){$o_config['apply'] = 0;$filter = true;}
+        if($_POST['guestbook'] == 1){$o_config['guestbook'] = 0;$filter = true;}
+        if($_POST['link_extend'] == 1){$o_config['link_extend'] = 0;$filter = true;}
+        if($_POST['article'] == 1){$o_config['article'] = 0;$filter = true;}
+        if($_POST['static_link'] == 1){$o_config['static_link'] = 0;$filter = true;}
+    }
+    update_db("global_config", ["v" => $o_config], ["k" => "o_config"],[1,($filter ?"保存成功,未检测到有效授权,带*号的配置无法为你保存":"保存成功")]);
 }
 
 //写默认设置
 function write_default_settings(){ 
-    global $USER_DB;
-    if(!is_subscribe('bool')){
-        msg(-1,'未检测到有效授权');
-    }
-    msg(1,'请更新系统后再试');
+    msg_tip();
 }
 //读日志
 function read_log(){
@@ -443,22 +413,13 @@ function other_root(){
         $data = get_db("global_config", "v", ["k" => "username_retain"]);
         msgA(['code'=>1,'msg'=>'获取成功','data'=>$data]);
     }elseif($_GET['type'] == 'write_username_retain'){
-        if(!is_subscribe('bool')){
-            msg(-1,'未检测到有效授权');
-        }
-        msg(1,'请更新系统后再试');
+        msg_tip();
     }elseif($_GET['type'] == 'write_mail_config'){
-        if($GLOBALS['global_config']['offline'] == '1'){msg(-1,"离线模式无法使用此功能");}
-        if(!is_subscribe('bool')){msg(-1,"未检测到有效授权,无法使用该功能!");}
-        msg(1,'请更新系统后再试');
+        msg_tip();
     }elseif($_GET['type'] == 'write_mail_test'){
-        $_POST['Subject'] = 'TwoNav 测试邮件' . time();
-        $_POST['Body'] = '<h1>TwoNav 测试邮件</h1>' . date('Y-m-d H:i:s');
-        send_email($_POST);
+        msg_tip();
     }elseif($_GET['type'] == 'write_icon_config'){
-        if($GLOBALS['global_config']['offline'] == '1'){msg(-1,"离线模式无法使用此功能");}
-        if(!is_subscribe('bool')){msg(-1,"未检测到有效授权,无法使用该功能!");}
-        msg(1,'请更新系统后再试');
+        msg_tip();
     }elseif($_GET['type'] == 'write_icon_del_cache'){
         //删除数据库缓存信息
         if(empty(count_db('global_icon','*'))){
@@ -478,7 +439,100 @@ function other_root(){
         }
         
         msg(1,'操作成功');
+    }elseif($_GET['type'] == 'write_sitemap_config'){
+        msg_tip();
     }
 }
 
+// 通用类请求官方服务器
+function other_services(){
+    // 生成请求数据
+    $domain = preg_replace('/:\d+$/','',$_SERVER['HTTP_HOST']);
+    $post = [
+        'domain'   => $domain,
+        'referer'  => isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : "",
+        'email'    => isset($_POST['email']) ? $_POST['email'] : "",
+        'order_id' => isset($_POST['order_id']) ? $_POST['order_id'] : "",
+        'sysver'   => SysVer,
+        'ip'       => Get_IP(),
+        'method'   => $_GET['type']
+    ];
+    $overtime = !isset($global_config['Update_Overtime']) ? 3 : ($global_config['Update_Overtime'] < 3 || $global_config['Update_Overtime'] > 60 ? 3 : $global_config['Update_Overtime']);
+    // 判断操作类型
+    if($_GET['type'] == 'query_key' || $_GET['type'] == 'save_key'){
+        $Res = ccurl("http://service.twonav.cn/service.php",$overtime,true,$post);
+        if($Res['code'] != 200){
+            msg(-1,'请求官方服务器失败,请稍后再试');
+        }
+        $data = json_decode($Res["content"], true);
+        // 如果是保存设置
+        if($_GET['type'] == 'save_key'){
+            $data = $data['data'];
+            if(!isset($data['order_id']) || empty($data['order_id'])){
+                msg(-1,'保存失败,请核对信息是否有误');
+            }
+            //判断是否为IP
+            if(preg_match("/^(\d+\.\d+\.\d+\.\d+):*\d*$/",$domain,$host)) {
+                $data['host'] = $host[1]; //取出IP(不含端口)
+            }else{
+                $host = explode(".", $domain);
+                $count = count($host);
+                if($count != 2){
+                    $data['host'] = $host[$count-2].'.'.$host[$count-1];
+                    //如果存在端口则去除
+                    if(preg_match("/(.+):\d+/",$data['host'],$host)) {
+                        $data['host'] = $host[1];
+                    }
+                }
+            }
+            write_global_config('s_subscribe',$data,'订阅信息');
+            clean_cache();
+            msgA(['code'=>200,'msg'=>'保存成功','data'=>['order_id'=>$data['order_id'],'end_time'=>$data['end_time'],'type_name'=>$data['type_name']]]);
+        }
+        msgA($data);
+    }elseif($_GET['type'] == 'del_key'){
+        $subscribe = unserialize(get_db('global_config','v',["k" => "s_subscribe"])); 
+        if(!isset($subscribe['order_id']) || empty($subscribe['order_id'])){
+            msg(200,'清除成功');
+        }
+        ccurl("http://service.twonav.cn/service.php",$overtime,true,$post);
+        write_global_config('s_subscribe','','订阅信息');
+        clean_cache();
+        msg(200,'删除成功');
+    }elseif($_GET['type'] == 'validate'){
+        $Res = ccurl("http://service.twonav.cn/service.php",$overtime,true,data_encryption('validate'));
+        $data = json_decode($Res["content"], true);
+        if($data["code"] != '200'){
+            msg(-1,$data['msg'] ?? '验证失败');
+        }
+        msgA($data);
+    }elseif($_GET['type'] == 'get_notice'){
+        //读取缓存数据
+        $Notice = get_db('global_config','v',['k'=>'notice']);$data=[];
+        //如果不为空,则解析数据
+        if(!empty($Notice)){
+            $data = json_decode($Notice, true);
+            $cache_time = 60; //缓存时间(秒);
+            $reload = time() > $data["download_time"] + $cache_time; //是否更新
+        }else{
+            $reload = true; //需要刷新
+        }
+        // 判断是否刷新数据
+        if(!$global_config['offline'] && $reload){
+            if(is_subscribe('bool')){
+                $Res = ccurl('http://service.twonav.cn/service.php',$overtime,true,data_encryption('get_new_ver',['ver'=>SysVer]));
+            }else{
+                $Res = ccurl('http://tznb.gitee.io/twonav_resource/Notice.json',$overtime);
+            }
+            $new_data = json_decode($Res['content'], true);
+            if($new_data["code"] == 200 ){
+                $new_data['download_time'] = time();
+                $new_data['version'] = version_compare($new_data['version'],SysVer,'<') ? SysVer : $new_data['version'];
+                write_global_config('notice',json_encode($new_data),'官方公告(缓存)');
+                $data = $new_data;
+            }
+        }
+        msgA($data);
+    }
+}
 

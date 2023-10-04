@@ -109,7 +109,7 @@ $("#config").click(function(){
         area : ['550px' , '99%'],
         anim: 5,
         offset: 'rt',
-        content: './index.php?c=admin&page=config_home&u='+u+'&theme='+t+'&fn=home'
+        content: './index.php?c=admin&page=config_home&u='+u+'&theme=default&fn=home'
     });
 });
 

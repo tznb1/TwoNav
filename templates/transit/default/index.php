@@ -3,7 +3,7 @@
 <head>
 	<meta charset="utf-8">
 	<title><?php echo $link['title']; ?> - <?php echo $site['title']; ?></title>
-	<meta name="keywords" content="<?php echo $link['keywords']; ?>">
+	<meta name="keywords" content="<?php echo $link['keywords'] ?? $link['title']; ?>">
 	<meta name="description" content="<?php echo $link['description']; ?>">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<meta http-equiv = "X-UA-Compatible" content = "IE=edge" >
@@ -55,7 +55,7 @@ if( empty($link['url_standby']) ) {
 		<div class = "row">
 			<div class="col-sm-8 offset-sm-2">
 				<nav class="navbar navbar-expand-md bg-dark navbar-dark">
-				<a class="navbar-brand" href="./?u=<?php echo U; ?>"><?php echo $site['title']; ?></a>
+				<a class="navbar-brand" href="<?php echo $urls['home']; ?>"><?php echo $site['title']; ?></a>
 				<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#collapsibleNavbar">
 					<span class="navbar-toggler-icon"></span>
 				</button>

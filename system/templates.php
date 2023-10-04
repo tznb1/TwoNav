@@ -101,6 +101,19 @@ $theme_config = empty($theme_config_db) ? $theme_config : array_merge ($theme_co
 //主题版本
 $theme_ver = Debug ? "{$theme_info['version']}.".time() : $theme_info['version'];
 
+//版权信息
+$copyright = empty($global_config['copyright'])?'<a target="_blank" href="https://gitee.com/tznb/TwoNav">Copyright © TwoNav</a>':$global_config['copyright'];
+
+//备案信息
+$ICP = empty($global_config['ICP'])?'':'<a target="_blank" href="https://beian.miit.gov.cn">'.$global_config['ICP'].'</a>';
+//访问域名(伪静态用)
+$HOST = get_HOST();
+$OEM = get_OEM();
+//静态链接
+define('static_link',$global_config['static_link'] > 0);
+
+$urls['login'] = static_link ? "$HOST/login":"./?c=login";
+$urls['register'] = static_link ? "$HOST/register":"./?c=register";
 if($config_type == 'user'){
     //载入站点设置
     $site = unserialize(get_db('user_config','v',['uid'=>UID,'k'=>'s_site']));
@@ -113,16 +126,16 @@ if($config_type == 'user'){
     
     //站点图标
     $favicon = ( !empty($site['site_icon_file'])) ? $site['site_icon'] : './favicon.ico';
+    //相关入口
+    $UUID = get_UUID();
+    $urls['home'] = static_link ? "$HOST/{$UUID}.html":"./?u={$u}";
+    $urls['admin'] = static_link ? "$HOST/admin-{$UUID}.html":"./?c=admin&u={$u}";
+    $urls['apply'] = static_link ? "$HOST/apply-{$UUID}.html":"./?c=apply&u={$u}";
+    $urls['guestbook'] = static_link ? "$HOST/guestbook-{$UUID}.html":"./?c=guestbook&u={$u}";
 }else{
     //站点图标
     $favicon = './favicon.ico';
 }
-
-//版权信息
-$copyright = empty($global_config['copyright'])?'<a target="_blank" href="https://gitee.com/tznb/TwoNav">Copyright © TwoNav</a>':$global_config['copyright'];
-
-//备案信息
-$ICP = empty($global_config['ICP'])?'':'<a target="_blank" href="https://beian.miit.gov.cn">'.$global_config['ICP'].'</a>';
 
 //是否启用收录
 function is_apply(){
@@ -194,6 +207,9 @@ function get_open_category(){
 
 //获取文章列表
 function get_article_list($category = 0,$limit = 0){
+    if($GLOBALS['global_config']['article'] < 1){
+        return ['data'=>[],'count'=>0];
+    }
     $where['uid'] = UID; 
     if(!is_login()){
         $where['AND']['state'] = 1; //状态筛选
@@ -212,7 +228,8 @@ function get_article_list($category = 0,$limit = 0){
     }
     //获取文章列表
     $datas = select_db('user_article_list','*',$where);
-    
+    $host = get_HOST();
+    $uuid = get_UUID();
     //查询分类
     $categorys = select_db('user_categorys',['cid(id)','name'],['uid'=>UID]);
     $categorys = array_column($categorys,'name','id');
@@ -221,10 +238,10 @@ function get_article_list($category = 0,$limit = 0){
         $data['category_name'] = $categorys[$data['category']] ?? 'Null';
         $data['title'] = htmlspecialchars($data['title'],ENT_QUOTES);
         $data['summary'] = htmlspecialchars($data['summary'],ENT_QUOTES);
-        if($GLOBALS['global_config']['static_link'] == 1){
-            $data['url'] = "/{$GLOBALS['u']}/article/{$data['id']}.html";
+        if(static_link){
+            $data['url'] = "{$host}/article-{$uuid}-{$data['id']}.html";
         }else{
-            $data['url'] = "./index.php?c=article&id={$data['id']}&u={$GLOBALS['u']}";
+            $data['url'] = "./index.php?c=article&id={$data['id']}&u={$u}";
         }
     }
     return ['data'=>$datas,'count'=>$count];
@@ -232,6 +249,9 @@ function get_article_list($category = 0,$limit = 0){
 
 //根据文章id获取内容
 function get_article_content($id){
+    if($GLOBALS['global_config']['article'] < 1){
+        return ['data'=>[],'count'=>0];
+    }
     $where['uid'] = UID;
     if(!is_login()){
         $where['state'] = 1; //状态筛选
@@ -280,7 +300,68 @@ function get_category_list($layer = false){
     return $categorys;
 }
 
-//返回404
-function Not_Found() {
-    header('HTTP/1.1 404 Not Found');header("status: 404 Not Found");exit;
+function get_links2($fid,$limit = 0) {
+    global $site,$u;
+    $fid_s = select_db('user_categorys',['cid','fid','pid'],['uid'=>UID,'status'=>1]);
+    $fid_s = array_column($fid_s,null,'cid');
+    $where['uid'] = UID;
+    $where['fid'] = intval($fid);
+    $where['status'] = 1;
+    $where['ORDER']['weight'] = 'ASC';
+    $where['ORDER']['lid'] = 'ASC';
+    if($limit > 0){
+        $where['LIMIT'] = [0,$limit];
+    }
+    if(!is_login){
+        $where['property'] = 0;
+    }
+    
+    $links = select_db('user_links',['lid(id)','fid','property','title','url(real_url)','url_standby','description','icon','click','pid','extend'],$where);
+    $UUID = ($GLOBALS['global_config']['static_link'] == 2 ? UID : U);
+    foreach ($links as &$link) {
+        $click = false; $lock = false;
+        
+        //直连模式,但存在备用链接
+        if ($site['link_model'] == 'direct' && $site['main_link_priority'] != '3' && !empty($link['url_standby'])){
+            $click = true;
+        }
+        
+        //未登录,判断是否加密
+        if(!is_login){
+            //链接加密了
+            if(!empty($link['pid'])){
+                $click = true; $lock = true;
+            //父分类加密了 或 祖分类加密了
+            }elseif(!empty($fid_s[$link['fid']]['pid']) || (!empty($fid_s[$link['fid']]['fid']) && !empty($fid_s[$fid_s[$link['fid']]['fid']]['pid'])) ){
+                $click = true; $lock = true;
+            }
+        }
+        
+        if($click || $site['link_model'] != 'direct'){
+            $link['url'] = static_link ? "{$GLOBALS['HOST']}/click-{$UUID}-{$link['id']}.html" : "./index.php?c=click&id={$link['id']}&u={$u}";
+            if($lock){
+                $link['real_url'] = $link['url'];
+            }
+        }else{
+            $link['url'] = $link['real_url'];
+        }
+
+        //获取图标链接
+        $link['ico'] = $lock ? $GLOBALS['libs'].'/Other/lock.svg' : geticourl($site['link_icon'],$link);
+    }
+    return $links;
+}
+
+function admin_inlet() {
+    global $USER_DB;
+    $v = unserialize($USER_DB['LoginConfig'])['admin_inlet'];
+    if($v == 'display'){
+        return true;
+    }elseif($v == 'hide'){
+        return false;
+    }elseif($v == 'condition1'){
+        return is_login();
+    }else{
+        return true;
+    }
 }

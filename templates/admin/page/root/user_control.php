@@ -58,13 +58,22 @@ layui.use(['table','layer','form'], function () {
     var limit = localStorage.getItem(u + "_limit") || 50;
     var api = get_api('read_user_list','list');
     var IDs = [];
+    var static_link = 0;
+    
     
     var cols = [[
       {type:'checkbox'} //开启复选框
       ,{field:'ID',title:'ID',width:60,sort:true,event:'login_entry',style:'cursor: pointer;color: #3c78d8;'}
       ,{title:'操作',toolbar:'#line_tool',width:70}
       ,{field:'User',title:'账号',minWidth:120,sort:true,templet:function(d){
-          return '<a style="color:#3c78d8" title="打开用户主页" target="_blank" href="./?u='+d.User+'">'+d.User+'</a>'
+        if(static_link == 1){
+            url = `./${d.User}.html`;
+        }else if(static_link == 2){
+            url = `./${d.ID}.html`;
+        }else{
+            url = `./index.php?&u=${d.User}`;
+        }
+          return '<a style="color:#3c78d8" title="打开用户主页" target="_blank" href="'+url+'">'+d.User+'</a>'
       }}
       ,{field:'UserGroupName',title:'用户组',minWidth:90,sort:true}
       ,{field:'Email',title:'Email',minWidth:170,sort:true,event:'set_email',style:'cursor: pointer;color: #3c78d8;'}
@@ -203,9 +212,13 @@ layui.use(['table','layer','form'], function () {
                 });
             });
         }else if(obj.event == 'login_entry'){
-            window.open('./index.php?c=' + data.Login + '&u=' + data.User);
-        }else if(obj.event == 'homepage'){
-            window.open('./index.php?&u=' + data.User);
+            if(static_link == 1){
+                window.open(`./login-${data.User}-${data.Login}.html`);
+            }else if(static_link == 2){
+                window.open(`./login-${data.ID}-${data.Login}.html`);
+            }else{
+                window.open('./index.php?c=' + data.Login + '&u=' + data.User);
+            }
         }else if(obj.event == 'ip'){
             query_ip(data.RegIP);
         }

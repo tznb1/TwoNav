@@ -19,7 +19,7 @@
     <span class="mdui-btn mdui-btn-icon mdui-ripple mdui-ripple-white" mdui-drawer="{target: '#main-drawer', swipe: true}">
       <i class="mdui-icon material-icons">menu</i>
     </span>
-    <a href="" class="mdui-typo-headline mdui-hidden-xs"><?php echo $site['logo'];?></a>
+    <a href="<?php echo $urls['home'];?>" class="mdui-typo-headline mdui-hidden-xs"><?php echo $site['logo'];?></a>
     <a href="" class="mdui-typo-title"><?php echo $data['title'];?></a>
     <div class="mdui-toolbar-spacer"></div>
   </div>

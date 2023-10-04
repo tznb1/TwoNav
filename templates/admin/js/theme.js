@@ -107,10 +107,10 @@ layui.use(function(){
                 datas = r.data;
                 render_data(r);
             } else {
-                layer.alert("获取数据失败,请重试!",{icon:5,title:'错误',anim: 2,closeBtn: 0,btn: ['刷新页面']},function () {location.reload();});
+                layer.alert("获取数据失败,请重试!",{icon:5,title:'错误',anim: 2,closeBtn: 1,btn: ['刷新页面']},function () {location.reload();});
             }
         }).fail(function () {
-            layer.alert("获取数据异常,请重试!",{icon:5,title:'错误',anim: 2,closeBtn: 0,btn: ['刷新页面']},function () {location.reload();});
+            layer.alert("获取数据异常,请重试!",{icon:5,title:'错误',anim: 2,closeBtn: 1,btn: ['刷新页面']},function () {location.reload();});
         });
     }
     

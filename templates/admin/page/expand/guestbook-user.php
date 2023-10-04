@@ -54,7 +54,7 @@
   </div>
   <div class="layui-form-item" style="padding-top: 10px;">
     <div class="layui-input-block">
-      <?php if($s['allow'] == '1'){ echo '<button class="layui-btn" lay-submit lay-filter="Submit">提交</button>';} ?>
+      <button class="layui-btn" lay-submit lay-filter="Submit">提交</button>
     </div>
   </div>
 </form>

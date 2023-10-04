@@ -1,9 +1,5 @@
 <?php 
 
-$content = '免费版不支持此功能,请购买授权';
-require DIR.'/templates/admin/page/404.php';
-exit;
-
 
 $article_id = Get('id');
 $mode = empty($article_id) ? 'add' : 'edit' ;
@@ -15,6 +11,7 @@ if($mode == 'edit'){
     }else{
         $mode = 'add';
     }
+    
 }
 
 $title = $mode == 'add' ? '添加文章' : '编辑文章';

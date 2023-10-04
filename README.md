@@ -7,6 +7,19 @@ TwoNav 是一款开源的书签（导航）管理程序，界面简洁，安装�
 * [安装教程](https://gitee.com/tznb/TwoNav/wikis/pages?sort_id=7968668&doc_id=3767990) | [使用说明](https://gitee.com/tznb/TwoNav/wikis) | [下载TwoNav](https://gitee.com/tznb/TwoNav/releases)
 * [OneNav Extend 升级到 TwoNav](https://gitee.com/tznb/OneNav/wikis/pages?sort_id=7955135&doc_id=2439895)
 
+### 作者声明
+* 本程序没有二开版、除了下面的项目地址均为盗版。
+* 使用盗版软件存在法律风险且没有任何保障。
+* 未经许可禁止用于商业用途、转载请保留作品出处。
+
+### 项目由来
+```
+起初只是搭建一个自己的书签站、网上找了一圈看中了小z的OneNav。
+因功能无法满足我,开始基于ONeNav各种魔改、然后就有了OneNav Extend、这个名字还是小z给取的。
+后来和小z都开始收费后、由于用户容易搞混等各种原因、于是我重写代码并改名为TwoNav。
+其中一些OneNav的特色依旧是保留下来、并兼容OneNav的一些插件。
+```
+
 ### 项目地址
 - [https://gitee.com/tznb/TwoNav](https://gitee.com/tznb/TwoNav)
 - [https://github.com/tznb1/TwoNav](https://github.com/tznb1/TwoNav)

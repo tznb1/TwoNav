@@ -1,6 +1,11 @@
 <?php 
+
+//get请求载入页面
 if($_SERVER['REQUEST_METHOD'] === 'GET'){
-    exit('当前为免费版,不支持此功能');
+    require DIR."/system/templates.php";
+    require($index_path);
+    exit;
 }
-msg(-1,'当前为免费版,不支持此功能');
+
+msg(-1,'免费版不支持此功能');
 ?>

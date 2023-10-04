@@ -4,8 +4,5 @@ if(!defined('DIR')){
     header("status: 404 Not Found");
     exit;
 }else{
-    if(!is_subscribe('bool')){
-        msg(-1,"未检测到有效授权,无法使用该功能!");
-    }
-    msg(1,'请更新系统后再试');
+    msg_tip();
 }

@@ -47,7 +47,7 @@ if(in_array($api_model,['compatible','compatible+open']) && in_array($method,$co
 }
 
 //站长相关方法名
-$root = ['write_subscribe','write_sys_settings','write_default_settings','read_user_list','write_user_info','read_purview_list','read_users_list','write_users','read_regcode_list','write_regcode','other_upsys','read_log','other_root'];
+$root = ['write_subscribe','write_sys_settings','write_default_settings','read_user_list','write_user_info','read_purview_list','read_users_list','write_users','read_regcode_list','write_regcode','other_upsys','read_log','other_root','other_services'];
 if(in_array($method,$root)){
     require('api_root.php');
 //非站长接口则判断是否加载防火墙
@@ -526,36 +526,7 @@ function write_link(){
         }
     //扩展上传图片
     }elseif($_GET['type'] == 'extend_up_img'){
-        //权限检测
-        if(!check_purview('Upload_icon',1)){
-            msg(-1,'您的用户组无权限上传图片');
-        }elseif(empty($_FILES["file"]) || $_FILES["file"]["error"] > 0){
-            msg(-1,'文件上传失败');
-        }
-        
-        //取后缀并判断是否支持
-        $suffix = strtolower(end(explode('.',$_FILES["file"]["name"])));
-        if(!preg_match('/^(jpg|jpeg|png|ico|bmp|svg)$/',$suffix)){
-            @unlink($_FILES["file"]["tmp_name"]);
-            msg(-1,'文件格式不被支持!');
-        }
-        //限制文件大小
-        if(filesize($_FILES["file"]["tmp_name"]) > 1 * 1024 * 1024){
-            msg(-1,'文件大小超限');
-        }
-        //文件临时路径
-        $path = DIR . "/data/user/{$u}/upload";
-        //检测目录,不存在则创建!
-        if(!Check_Path($path)){
-            msg(-1,'创建upload目录失败,请检查权限');
-        }
-        $tmp_name = 'LE_'.uniqid().'.'.$suffix;
-        //移动文件
-        if(!move_uploaded_file($_FILES["file"]["tmp_name"],"{$path}/{$tmp_name}")) {
-            msg(-1,'上传失败,请检查目录权限');
-        }else{
-            msgA(['code'=>1,'msg'=>'上传成功','url'=>"./data/user/".U.'/upload/'.$tmp_name]);
-        }
+        msg_tip();
             
     //删除图标
     }elseif($_GET['type'] === 'del_images'){
@@ -744,147 +715,15 @@ function write_link(){
         update_db('user_links',['fid'=>$fid],['uid'=>UID ,"lid" => json_decode($_POST['lid']) ],[1,'设置成功']);
     //检测是否满足要求
     }elseif($_GET['type'] === 'msg_pull_check'){
-        if($global_config['offline']){
-            msg(-1,"离线模式不可用");
-        } 
-        if(!is_subscribe('bool')){
-            msg(-1,"未检测到有效授权,无法使用该功能!");
-        }
-        msg(-1,'请更新系统后再试');
+        msg_tip();
     }elseif($_GET['type'] === 'msg_pull'){
-        session_start();
-        $key = $_POST['key'];
-        if(empty($key) || !$_SESSION['msg_pull']["$key"]){
-            msg(-1,'key验证失败,请重试!');
-        }elseif(empty($_POST['link_id'])){
-            msg(-1,'链接ID不能为空');
-        }
-        //读取信息
-        $link = get_db('user_links','*',['uid'=>UID ,'lid'=>$_POST['link_id'] ]);
-        //检查链接
-        if(empty($link)){
-            msg(-1,'链接ID不存在');
-        }elseif(!preg_match("/^(http:\/\/|https:\/\/).*/",$link['url'])){
-            msg(-1,'只支持识别http/https协议的链接!');
-        }elseif( !filter_var($link['url'], FILTER_VALIDATE_URL) ) {
-             msg(-1,'URL无效!');
-        }
-        
-        //是否获取站点信息
-        if( ( intval($_POST['title']) + intval($_POST['keywords']) + intval($_POST['description']) ) > 0 ){
-            //读取长度限制配置
-            $length_limit = unserialize(get_db("global_config","v",["k"=>"length_limit"]));
-            //获取网站标题
-            $c = curl_init(); 
-            curl_setopt($c, CURLOPT_URL, $link['url']); 
-            curl_setopt($c, CURLOPT_RETURNTRANSFER, 1); 
-            curl_setopt($c, CURLOPT_SSL_VERIFYPEER, false);
-            curl_setopt($c, CURLOPT_SSL_VERIFYHOST, false);
-            curl_setopt($c, CURLOPT_USERAGENT, 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/95.0.4638.69 Safari/537.36');
-            curl_setopt($c, CURLOPT_FOLLOWLOCATION, 1);
-            curl_setopt($c , CURLOPT_TIMEOUT, 10);
-            $data = curl_exec($c); 
-            curl_close($c); 
-            require (DIR .'/system/get_page_info.php');
-            $info = get_page_info($data);
-            $new = [];
-            if(intval($_POST['title']) > 0 && !empty($info['site_title'])){
-                $new['title'] = $info['site_title'];
-                if($length_limit['l_name'] > 0 && strlen($new['title']) > $length_limit['l_name'] ){
-                    $new['title'] = mb_substr($new['title'], 0, $length_limit['l_name'], 'utf-8');
-                }
-            }
-            if(intval($_POST['keywords']) > 0 && !empty($info['site_keywords'])){
-                $new['keywords'] = (empty($link['keywords']) || $_POST['keywords'] == '2') ? $info['site_keywords'] : $link['keywords'];
-                if($length_limit['l_key'] > 0 && strlen($new['keywords']) > $length_limit['l_key'] ){
-                    $new['keywords'] = mb_substr($new['keywords'], 0, $length_limit['l_key'], 'utf-8');
-                }
-            }
-            if(intval($_POST['description']) > 0 && !empty($info['site_description'])){
-                $new['description'] = (empty($link['description']) || $_POST['description'] == '2') ? $info['site_description'] : $link['description'];
-                if($length_limit['l_desc'] > 0 && strlen($new['description']) > $length_limit['l_desc'] ){
-                    $new['description'] = mb_substr($new['description'], 0, $length_limit['l_desc'], 'utf-8');
-                }
-            }
-            if(empty($new)){
-                $r['info'] = 'fail';
-            }else{
-                update_db('user_links',$new,['uid'=>UID ,"lid" => $link['lid'] ]);
-                $r['info'] = 'success';
-            }
-        }
-        
-        //是否获取图标
-        if(intval($_POST['icon']) > 0){
-            //检查跳过已存在图标的链接
-            if($_POST['icon'] == '1' && !empty($link['icon'])){
-                $r['icon'] = 'skip';
-            }
-            $api = Get_Index_URL().'?c=icon&url='.base64_encode($link['url']);
-            $res = ccurl($api,30,true);
-            $data = get_db('global_icon','*',['url_md5'=>md5($link['url'])]);
-            if(empty($data)){
-                $r['icon'] = 'fail';
-            }
-            $new_path = "./data/user/".U.'/favicon/'.$data['file_name'];
-            if(copy("./data/icon/{$data['file_name']}",$new_path)){
-                update_db('user_links',['icon'=>$new_path],['uid'=>UID ,"lid" => $link['lid'] ]);
-                $r['icon'] = 'success';
-            }else{
-                $r['icon'] = 'fail';
-            }
-        }
-        
-        msg(1,$r);
+        msg_tip();
     //图标拉取
     }elseif($_GET['type'] === 'icon_pull'){
-        if($global_config['offline']){
-            msg(-1,"离线模式不可用");
-        } 
-        if(!is_subscribe('bool')){
-            msg(-1,"未检测到有效授权,无法使用该功能!");
-        }
-       msg(-1,'请更新系统后再试');
+        msg_tip();
 
     }elseif($_GET['type'] == 'extend_list'){
-        if($GLOBALS['global_config']['link_extend'] != 1 ||!check_purview('link_extend',1)){
-            msg(-1,'无权限');
-        }
-        $lists = json_decode($_POST['list'],true);
-        
-        $weight = [];
-        foreach ($lists as  $data ){
-            if(empty($data['weight']) || !preg_match('/^\d$/', $data['weight'])){
-                msgA( ['code' => -1,'msg' => '序号错误,请输入正整数'] );
-            }
-            if(empty($data['title']) || check_xss($data['title'])){
-                msgA( ['code' => -1,'msg' => '标题不能为空'] );
-            }
-            if(empty($data['name']) || check_xss($data['name']) || !preg_match('/^[A-Za-z0-9]{3,18}$/',$data['name'])){
-                msgA( ['code' => -1,'msg' => '字段名错误,请输入长度3-18的字母/数字'] );
-            }
-            if(!in_array($data['type'],['text','textarea','up_img'])){
-                msgA( ['code' => -1,'msg' => '类型错误'] );
-            }
-        }
-        if(is_Duplicated($lists,'weight')){
-            msg(-1,'序号不能重复');
-        }elseif(is_Duplicated($lists,'title')){
-            msg(-1,'标题不能重复');
-        }elseif(is_Duplicated($lists,'name')){
-            msg(-1,'字段名不能重复');
-        }
-        
-        $datas = [];
-        foreach ($lists as $key => $data ){
-            array_push($datas,['title'=>$data['title'],'name'=>$data['name'],'weight'=>$data['weight'],'type'=>$data['type'],'default'=> "{$data['default']}",'tip'=>$data['tip']]);
-        }
-        //根据序号排序
-        usort($datas, function($a, $b) {
-            return $a['weight'] - $b['weight'];
-        });
-        write_user_config('s_extend_list',$datas,'config','链接扩展字段');
-        msgA( ['code' => 1,'msg' => '保存成功','datas'=>$datas] );
+        msg_tip();
     }
 
     msg(-1,'操作类型错误');
@@ -901,6 +740,7 @@ function write_security_setting(){
     }
     
     $datas = [
+        'admin_inlet'=>['v'=>['display','hide','condition1'],'msg'=>'管理入口参数错误'],
         'Session'=>['int'=>true,'min'=>0,'max'=>360,'msg'=>'登录保持参数错误'],
         'HttpOnly'=>['int'=>true,'min'=>0,'max'=>1,'msg'=>'HttpOnly参数错误'],
         'KeySecurity'=>['int'=>true,'min'=>0,'max'=>2,'msg'=>'Key安全参数错误'],
@@ -943,47 +783,18 @@ function write_security_setting(){
 
 //写收录配置
 function write_apply(){ 
-    msg(-1,'免费版不支持此功能,请购买授权版');
+    msg_tip();
 }
 //读收录列表
 function read_apply_list(){
-    msgA(['code'=>-1,'msg'=>'免费版不支持此功能,请购买授权版','count'=>0,'data'=>[]]);
+    msg_tip();
 }
 
 //写站点设置
 function write_site_setting(){ 
     //图标上传
     if(!empty($_FILES["file"])){
-        check_purview('Upload_icon',2);
-        if ($_FILES["file"]["error"] > 0){
-            msg(-1,'文件上传失败,error:'.$_FILES["file"]["error"]);
-        }
-        //获取文件名后缀
-        $suffix = strtolower(end(explode('.',$_FILES["file"]["name"])));
-        if(!preg_match('/^(jpg|jpeg|png|bmp|gif|ico|svg)$/',$suffix)){
-            @unlink($_FILES["file"]["tmp_name"]);
-            msg(-1,'文件上传失败,文件格式不被支持!');
-        }
-        //文件路径
-        $path = 'data/user/'.U.'/favicon/favicon.'.$suffix;
-        //检查并创建目录
-        if(!Check_Path(dirname($path))){
-            msg(-1,'创建目录失败,请检查权限');
-        }
-        $site = unserialize(get_db('user_config','v',['uid'=>UID,'k'=>'s_site']));
-        //存在旧图标则先删除
-        if(!empty($site['site_icon_file']) && is_file($site['site_icon_file'])){
-            @unlink($site['site_icon_file']);
-        }
-        //转移临时文件
-        if(move_uploaded_file($_FILES["file"]["tmp_name"],$path)) {
-            
-            $site['site_icon_file'] = 'data/user/'.U.'/favicon/favicon.'.$suffix; //储存路径
-            $site['site_icon'] = './'.$site['site_icon_file']; //前端请求路径
-            update_db("user_config", ["v" =>$site], ['uid'=>UID,'k'=>'s_site'],[1,'上传成功']); 
-        }else{
-            msg(-1,'上传失败,请检查目录权限');
-        }
+        msg_tip();
     }
     check_purview('site_info',2);
     if(!empty($_POST['custom_header']) && !check_purview('header',1)){
@@ -1187,36 +998,13 @@ function read_pwd_group_list(){
 }
 //写加密分组 考虑要不要限制特殊字符
 function write_pwd_group(){
-    check_purview('link_pwd',2);
-    if($_GET['type'] === 'del'){
-        //判断有没有被使用
-        if(!empty(get_db('user_links','id',['uid'=>UID,'pid'=>intval($_POST['pid'])]))){
-            msg(-1,'正在被链接使用,无法删除!');
-        }else if(!empty(get_db('user_categorys','id',['uid'=>UID,'pid'=>intval($_POST['pid'])]))){
-            msg(-1,'正在被分类使用,无法删除!');
-        }
-        
-        delete_db('user_pwd_group',['uid'=>UID,'pid'=>intval($_POST['pid'])],[1,'删除成功']);
-    }elseif($_GET['type'] == 'add'){
-        //$pid = intval(max_db('user_pwd_group','pid',['uid'=>UID])) +1; 
-        $pid = get_maxid('pwd_group_id');
-        insert_db('user_pwd_group',['name' => $_POST['name'],'password' =>$_POST['password'],'description'=>$_POST['description'],'uid'=>UID,'pid'=>$pid],[1,'操作成功']);
-    }elseif($_GET['type'] === 'edit'){
-        update_db('user_pwd_group',['name' => $_POST['name'],'password' =>$_POST['password'],'description'=>$_POST['description']],['uid'=>UID,'pid'=>intval($_POST['pid'])],[1,'操作成功']);
-    }
-    msgA(['code' => 1 ,'msg'=> '1111']);
+    msg_tip();
 }
 
 
 //检测链接是否有效
 function other_testing_link(){
-    global $global_config;
-    if ( $global_config['offline'] == '1'){ msg(-1,"离线模式无法使用此功能"); }
-    $code = get_http_code($_POST['url']);
-    if($code != 200 && $code != 302 && $code != 301){
-        $code = ccurl($_POST['url'],30)['code'];
-    }
-    msgA(['code' => 0 ,'StatusCode'=> $code]);
+    msg_tip();
 }
 
 //读主题信息
@@ -1274,13 +1062,7 @@ function read_theme(){
 
     //在线主题处理
     if ( !$global_config['offline'] && $USER_DB['UserGroup'] === 'root'){ 
-        
-        if(preg_match('/^v.+-(\d{8})$/i',SysVer,$matches)){
-            $sysver = intval( $matches[1] );//取版本中的日期
-        }else{
-            msg(-1,'获取程序版本异常');
-        }
-        
+        $sysver = get_SysVer();
         //读取缓存
         $page = 'theme_'.$request_dir;
         $template = get_db('global_config','v',['k'=>$page.'_cache']);
@@ -1332,27 +1114,33 @@ function read_theme(){
     }
     
     //取正在使用的模板
-    $s_templates = unserialize(get_db("user_config", "v", ["uid"=>UID,"k"=>"s_templates"]));
-    if($request_dir == 'home'){
-        $current['home_pad'] = $s_templates['home_pad'] ?? 'default';
-        $current['home_pc'] = $s_templates['home_pc'] ?? 'default';
+    if(in_array($request_dir,['register','guide'])){
+        $global_templates = unserialize(get_db("global_config",'v', ["k" => "s_templates"]));
+        $current[$request_dir] = $global_templates[$request_dir] ?? 'default';
     }else{
-        $current[$request_dir] = $s_templates[$request_dir] ?? 'default';
+        $s_templates = unserialize(get_db("user_config", "v", ["uid"=>UID,"k"=>"s_templates"]));
+        if($request_dir == 'home'){
+            $current['home_pad'] = $s_templates['home_pad'] ?? 'default';
+            $current['home_pc'] = $s_templates['home_pc'] ?? 'default';
+        }else{
+            $current[$request_dir] = $s_templates[$request_dir] ?? 'default';
+        }
     }
+
     
     $themes = filter($themes);
     msgA(['code'=>1,'data'=>$themes,'current'=>$current,'referrer'=>($data['referrer'] ?? '')]);
 }
+function msg_tip(){
+    msg(-1,'免费版不支持此功能,购买授权版<br /> <a href="https://gitee.com/tznb/TwoNav/wikis/pages?sort_id=7968669&doc_id=3767990" target="_blank" style="color: #1e9fff;">点击此处前往购买页面</a>');
+}
+
 //主题下载/更新/删除
 function write_theme(){
     global $global_config;
     $fn = $_POST['fn'];if($_GET['type'] != 'config' && !in_array($fn,['home','login','transit','register','guide','article','verify','guestbook','apply'])){msg(-1,'fn参数错误');}
     if($_GET['type'] == 'download'){
-        is_root();
-        if($global_config['offline']){msg(-1,"离线模式禁止下载主题!");} //离线模式
-        if(!is_subscribe('bool')){msg(-1,"未检测到有效授权,无法使用该功能!");}
-        msg(-1,'请更新系统后再试');
-        
+        msg_tip();
     //删除主题
     }elseif($_GET['type'] == 'del'){
         is_root();
@@ -1782,11 +1570,19 @@ function read_data(){
         
         //扩展功能
         $extend = [];
-        array_push($extend,['title'=>'收录管理','href'=>'expand/apply-admin','icon'=>'fa fa-pencil']);
-        array_push($extend,['title'=>'留言管理','href'=>'expand/guestbook-admin','icon'=>'fa fa-commenting-o']);
-        array_push($extend,['title'=>'文章管理','href'=>'expand/article-list','icon'=>'fa fa-file-text-o']);
-        $extend = ['title'=>'扩展功能','icon'=>'fa fa-folder-open-o','href'=>'','child'=> $extend];
-        array_push($menu,$extend);
+        //if($global_config['apply'] == 1 && check_purview('apply',1)){
+            array_push($extend,['title'=>'收录管理','href'=>'expand/apply-admin','icon'=>'fa fa-pencil']);
+        //}
+        //if($global_config['guestbook'] == 1 && check_purview('guestbook',1)){ 
+            array_push($extend,['title'=>'留言管理','href'=>'expand/guestbook-admin','icon'=>'fa fa-commenting-o']);
+        //}
+        //if($global_config['article'] > 0 && check_purview('article',1)){ 
+            array_push($extend,['title'=>'文章管理','href'=>'expand/article-list','icon'=>'fa fa-file-text-o']);
+        //}
+        if(!empty($extend)){
+            $extend = ['title'=>'扩展功能','icon'=>'fa fa-folder-open-o','href'=>'','child'=> $extend];
+            array_push($menu,$extend);
+        }
         
         //如果是管理员则追加菜单
         if($USER_DB['UserGroup'] == 'root'){
@@ -1802,7 +1598,8 @@ function read_data(){
               ]
             ]);
         }
-        $init = array( 'homeInfo'=>['title'=>'概要','href'=>'home'],'logoInfo'=>['title'=>'TwoNav','image'=>'./templates/admin/img/logo.png','href'=>'./?u='.U],'menuInfo'=>$menu);
+        $logo_url = static_link ? get_surl('{UUID}.html'):"./?u={$USER_DB['User']}";
+        $init = array( 'homeInfo'=>['title'=>'概要','href'=>'home'],'logoInfo'=>['title'=>'TwoNav','image'=>'./templates/admin/img/logo.png','href'=>$logo_url],'menuInfo'=>$menu);
         msgA($init);
     }
 }
