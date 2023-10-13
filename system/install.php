@@ -148,7 +148,7 @@ $db_config = array(
     }
     
     // mysql
-    if($_POST['db_type'] === 'mysql'){
+    if($_POST['db_type'] === 'mysql' || $_POST['db_type'] === 'mariadb'){
         if( !isset($_POST['db_host']) || !isset($_POST['db_port']) || !isset($_POST['db_name']) || !isset($_POST['db_user']) || !isset($_POST['db_password']) ){
             msg(-1,'MySQL配置错误,请检查..');
         }
@@ -156,7 +156,7 @@ $db_config = array(
         require (DIR.'/system/Medoo.php'); //载入框架
         try {
             $db = new Medoo\Medoo([
-                'type' => 'mysql',
+                'type' => $_POST['db_type'],
                 'host' => $_POST['db_host'],
                 'port' => $_POST['db_port'],
                 'database' => $_POST['db_name'],
@@ -164,10 +164,15 @@ $db_config = array(
                 'password' => $_POST['db_password'],
                 'charset' => 'utf8mb4'
             ]);
-
-            //判断版本,目前基于5.6.50开发,其他版本兼容性未知,若您需要强制安装请屏蔽检测
-            if(version_compare($db->info ()['version'],'5.6.0','<')) msg(-1,'MySQL数据库版本不能低于5.6,当前版本:'.$db->info ()['version']);
-            //链接成功..
+            if($_POST['db_type'] === 'mysql'){
+                if(version_compare($db->info ()['version'],'5.6.0','<')){
+                    msg(-1,'MySQL数据库版本不能低于5.6,当前版本:'.$db->info ()['version']);
+                }
+            }else{
+                if(version_compare($db->info ()['version'],'10.1.0','<')){
+                    msg(-1,'MariaDB数据库版本不能低于10.1,当前版本:'.$db->info ()['version']);
+                }
+            }
         }catch (Exception $e) {
             $E = $e->getMessage();
             if(strstr($E,'[1044]') || strstr($E,'[1049]')){
@@ -195,7 +200,7 @@ $db_config = array(
         $config = '<?php
 //数据库配置
 $db_config = array(
-    "type" => "mysql", //类型
+    "type" => "'.$_POST['db_type'].'", //类型
 	"host" => "'.$_POST['db_host'].'", //地址
 	"port" => '.$_POST['db_port'].', //端口
 	"name" => "'.$_POST['db_name'].'", //库名
@@ -283,19 +288,40 @@ function Write_Config(){
     insert_db("global_config", ["k" => "s_templates","v" => $templates,"d" => '默认模板']);
 
     //写站点配置
-    $o_config['Login'] = 'login'; //登录入口
-    $o_config['Register'] = 'register'; //注册入口
-    $o_config['RegOption'] = '0'; //注册配置
-    $o_config['Libs'] = './static'; //静态库路径
-    $o_config['Default_User'] = $_POST['User']; //默认用户
-    $o_config['XSS_WAF'] = '0'; //防XSS脚本
-    $o_config['SQL_WAF'] = '0'; //防SQL注入
-    $o_config['offline'] = '0'; //离线模式
-    $o_config['Debug']   = '0'; //调试模式
-    $o_config['Maintenance'] = '0'; //维护模式
-    $o_config['Sub_domain'] = '0'; //二级域名
-    $o_config['copyright'] = ''; //版权信息
-    $o_config['c_code'] = '0'; //禁用默认用户使用自定义代码
+    $o_config['Default_User'] = $_POST['User'];
+    $o_config['default_page'] = 0;
+    $o_config['default_UserGroup'] = '';
+    $o_config['RegOption'] = 0;
+    $o_config['Register'] = 'register';
+    $o_config['Login'] = 'login';
+    $o_config['Libs'] = './static';
+    $o_config['ICP'] = ''; 
+    $o_config['XSS_WAF'] = 0;
+    $o_config['SQL_WAF'] = 0;
+    $o_config['offline'] = 0;
+    $o_config['Update_Source'] = 0;
+    $o_config['Update_Overtime'] = 3;
+    $o_config['Debug'] = 0;
+    $o_config['Maintenance'] = 0;
+    $o_config['static_link'] = 0;
+    $o_config['Privacy'] = 0;
+    $o_config['Sub_domain'] = 0;
+    $o_config['copyright'] = '';
+    $o_config['global_header'] = '';
+    $o_config['global_footer'] = '';
+    $o_config['api_extend'] = 0;
+    $o_config['apply'] = 0;
+    $o_config['guestbook'] = 0;
+    $o_config['link_extend'] = 0;
+    $o_config['article'] = 0;
+    $o_config['c_name'] = 0;
+    $o_config['c_desc'] = 0;
+    $o_config['l_name'] = 0;
+    $o_config['l_url'] = 0;
+    $o_config['l_key'] = 0;
+    $o_config['l_desc'] = 0;
+    $o_config['c_code'] = 0;
+    
     
     insert_db("global_config", ["k" => "o_config","v" => $o_config,"d" => '网站配置']);  
     
@@ -379,8 +405,9 @@ function Write_Config(){
     <label class="layui-form-label">数据库类型</label>
     <div class="layui-input-block">
       <select id="db_type" name="db_type" lay-filter="db_type" >
-        <option value="sqlite" selected="">SQLite ( 个人和工作室推荐 )</option>
-        <option value="mysql" >MySQL ( 大量用户推荐 )</option>
+        <option value="sqlite" selected="">SQLite ( 推荐 )</option>
+        <option value="mysql" >MySQL ≥ 5.6.0 </option>
+        <option value="mariadb" >MariaDB ≥ 10.1 </option>
       </select>
     </div>
   </div>
@@ -394,40 +421,40 @@ function Write_Config(){
   </div>
 <!--SQLite配置-->
 
-<!--MySQL配置-->
+<!--MySQL/MariaDB 配置-->
  <div id='db_mysql' style = "display:none;">
   <div class="layui-form-item">
-    <label class="layui-form-label">MySQL地址</label>
+    <label class="layui-form-label">地址</label>
     <div class="layui-input-block">
       <input type="text" name="db_host" value="localhost" placeholder="请输入服务器地址" autocomplete="off" class="layui-input">
     </div>
   </div>
   <div class="layui-form-item">
-    <label class="layui-form-label">MySQL端口</label>
+    <label class="layui-form-label">端口</label>
     <div class="layui-input-block">
       <input type="number" name="db_port" value="3306" placeholder="请输入服务器端口" autocomplete="off" class="layui-input">
     </div>
   </div>
   <div class="layui-form-item">
-    <label class="layui-form-label">MySQL库名</label>
+    <label class="layui-form-label">库名</label>
     <div class="layui-input-block">
       <input type="text" name="db_name" placeholder="请输入数据库库名" autocomplete="off" class="layui-input">
     </div>
   </div>
   <div class="layui-form-item">
-    <label class="layui-form-label">MySQL账号</label>
+    <label class="layui-form-label">账号</label>
     <div class="layui-input-block">
       <input type="text" name="db_user" placeholder="请输入数据库账号" autocomplete="off" class="layui-input">
     </div>
   </div>
   <div class="layui-form-item">
-    <label class="layui-form-label">MySQL密码</label>
+    <label class="layui-form-label">密码</label>
     <div class="layui-input-block">
       <input type="text" name="db_password" placeholder="请输入数据库密码" autocomplete="off" class="layui-input">
     </div>
   </div>
  </div>
-<!--MySQL配置 End-->
+<!--MySQL/MariaDB 配置 End-->
  <div class="layui-form-mid layui-word-aux">安装方式：全新安装 &ensp;&ensp;&ensp;&ensp;&ensp;</div>
  <div class="layui-form-mid layui-word-aux">推荐配置：Nginx-1.20 +&ensp;PHP-8.1 </div>
  <button class="layui-btn" lay-submit lay-filter="register" style = "width:100%;">开始安装</button>
@@ -482,7 +509,7 @@ layui.use(['form'], function(){
             return false;
         }else if(d.db_type == 'mysql'){
             if(d.db_host.length == 0 || d.db_port.length == 0 || d.db_name.length == 0 || d.db_user.length == 0 || d.db_password.length == 0){
-                layer.msg('MySQL配置有误,请检查.', {icon: 5});
+                layer.msg('数据库配置有误,请检查.', {icon: 5});
                 return false;
             }
         }
@@ -517,7 +544,7 @@ layui.use(['form'], function(){
 //数据库类型切换
 function set_db_type(v){
     document.cookie="db_type="+v;
-    if(v == 'mysql'){
+    if(v == 'mysql' || v == 'mariadb'){
         $("#db_mysql").show();
         $("#db_sqlite").hide();
     }else if(v == 'sqlite'){

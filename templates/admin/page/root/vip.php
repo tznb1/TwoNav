@@ -12,12 +12,20 @@ if(!empty($Notice)){
 <div class="layuimini-container">
   <div class="layuimini-main">
     <div class="layui-form layuimini-form layui-form-pane">
+        <h4 style = "margin-bottom:1em;"><font color="red">不要使用盗版/破解版,盗版无法升级却存在诸多问题,所造成的损失与本程序无关</font></h4>
+        <blockquote class="layui-elem-quote layui-text" style="color:red" >
+            <li> 如何激活授权: </li>
+            <li>1. 购买授权后将授权号(卡密)和邮箱填入下方并点击保存</li>
+            <li>2. 返回概要页面 > 刷新 > 更新系统 ( 不更新还是免费版 )</li>
+            <li>3. 更新成功后就是授权版的系统了,可使用全部功能</li>
+            <li>4. 禁止传播/破解授权版源代码,违者封授权并追责</li>
+        </blockquote>
         <h3 style = "margin-bottom:1em;">当前域名：<font color="red"><?php echo $HTTP_HOST; ?></font></h3>
         
         <div class="layui-form-item">
             <label class="layui-form-label">授权卡密</label>
             <div class="layui-input-block">
-                <input type="text" id = "order_id" name="order_id" value="<?php echo $subscribe['order_id']; ?>" required  autocomplete="off" placeholder="请输入授权单号/卡密" class="layui-input">
+                <input type="text" id = "order_id" name="order_id" value="<?php echo $subscribe['order_id']; ?>" required  autocomplete="off" placeholder="请输入授权号或卡密" class="layui-input">
             </div>
         </div>
 
@@ -50,8 +58,7 @@ if(!empty($Notice)){
         </div>
 
         <div class="layui-btn-group">
-            <button class="layui-btn layui-btn-normal" lay-submit lay-filter="save_key">保存设置</button>
-            <button class="layui-btn layui-btn-warm" lay-submit lay-filter="del_key">删除</button>
+            <button class="layui-btn layui-btn-normal" lay-submit lay-filter="save_key">保存</button>
             <button class="layui-btn layui-btn-danger" lay-submit lay-filter="buy_vip" data-url="<?php echo empty($data['pay_rul']) ?'':$data['pay_rul']?>" >购买授权</button>
             <button class="layui-btn" lay-submit lay-filter="query_key">查询授权</button>
             <button class="layui-btn layui-bg-purple" type="button" id="validate" style="<?php echo empty($subscribe['order_id']) ? 'display:none;':''; ?>">正版验证</button>

@@ -5,6 +5,18 @@
     <li class="layui-timeline-item">
         <i class="layui-icon layui-timeline-axis"></i>
         <div class="layui-timeline-content layui-text">
+            <h4 class="layui-timeline-title">v2.1.02-20231012</h4>
+            <ul>
+                <li>[优化] IP统计的记录方式,提高性能和稳定性</li>
+                <li>[修复] 未在系统设置保存过设置时因缺少参数而导致部分页面加载异常</li>
+                <li>[安装] 数据库类型选项新增MariaDB,其他细节调整</li>
+                <li>[变更] 免费版升级授权版的相关提示信息</li>
+            </ul>
+        </div>
+    </li>
+    <li class="layui-timeline-item">
+        <i class="layui-icon layui-timeline-axis"></i>
+        <div class="layui-timeline-content layui-text">
             <h4 class="layui-timeline-title">v2.1.01-20231002</h4>
             <ul>
                 <li>[优化] 已部署国内服务器并接入了CDN加速和3个资源节点</li>

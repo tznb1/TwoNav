@@ -108,7 +108,7 @@ function other_upsys(){
         set_time_limit(5*60);
         try {
             //根据数据库类型扫描不同目录,并声明执行SQL语句的函数
-            if($GLOBALS['db_config']['type'] == 'mysql'){
+            if($GLOBALS['db_config']['type'] == 'mysql' || $GLOBALS['db_config']['type'] == 'mariadb'){
                 $dir = './system/MySQL';
                 function exe_sql($content) {
                     global $db;

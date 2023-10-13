@@ -1459,7 +1459,8 @@ function read_data(){
             $log .= "SQLite：".(is_writable($db_config['path'])?'数据库读写正常':'数据库只读(请将权限设为755)')."\n";
         }elseif($db_config['type'] == 'mysql'){
             $log .= "MySQL：".$db->info ()['version']."\n";
-            
+        }elseif($db_config['type'] == 'mariadb'){
+            $log .= "MariaDB：".$db->info ()['version']."\n";
         }
         
         $path = './data/test_'.time().'.txt';

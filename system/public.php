@@ -726,67 +726,14 @@ function Get_Rand_Str( $length = 8 ,$extend = false){
 }
 //发送邮件
 function send_email($config){
-    if(!is_file(DIR.'/system/PHPMailer/PHPMailer.php')){
-        msg(-1,'未安装PHPMailer!');
-    }
-
-    require DIR.'/system/PHPMailer/Exception.php';
-    require DIR.'/system/PHPMailer/PHPMailer.php';
-    require DIR.'/system/PHPMailer/SMTP.php';
-    $mail = new PHPMailer\PHPMailer\PHPMailer(true);
-    try {
-        $mail->CharSet ="UTF-8";
-        $mail->SMTPDebug = 0;
-        $mail->isSMTP();
-        $mail->Host = $config['host'];
-        $mail->SMTPAuth = true;
-        $mail->Username = $config['user'];
-        $mail->Password = $config['pwd'];
-        $mail->SMTPSecure = $config['secure'];
-        $mail->Port = intval($config['port']);
-        
-        if(preg_match('/(.+)<(.+@.+)>$/', $config['sender'], $match)){
-            $mail->setFrom($match[2],$match[1]);
-        }else{
-            $mail->setFrom($config['user'],empty($config['sender'])?'TwoNav':$config['sender']);
-        }
-        
-        $mail->addAddress($config['addressee']); //收件人
-    
-        $mail->isHTML(true);
-        $mail->Subject = $config['Subject'];
-        $mail->Body    = $config['Body'];
-        $mail->send();
-        if(!empty($config['return']) && $config['return'] == 'bool'){
-            return true;
-        }
-        msg(1,'邮件发送成功');
-    } catch (Exception $e) {
-        if(!empty($config['return']) && $config['return'] == 'bool'){
-            return false;
-        }
-        if(Debug){
-            msgA(['code'=>-1,'msg'=>'发送失败:'.$mail->ErrorInfo]);
-        }else{
-            msg(-1,'发送失败');
-        }
-    }
+    msg(0,'免费版不支持此功能');
 }
 
 //统计访问ip数
 function count_ip(){
-    $ip = Get_IP(); //取访客IP
-    $k = date('Ymd'); $t = 'ip_list';
-    $ip_list = get_db('user_count','e',['uid'=>UID,'k'=>$k,'t'=>$t]); //取列表
-    $ip_list = empty($ip_list) ? [] : unserialize($ip_list); //反序列化
-    //判断IP是否存在列表中
-    if(!in_array($ip, $ip_list)){
-        $ip_list[] = $ip; //加入列表
-        if(!has_db('user_count',['uid'=>UID,'t'=>$t,'k'=>$k])){
-            insert_db("user_count", ['uid'=>UID,"k"=>$k,"e"=>$ip_list,'t'=>$t]);  
-        }else{
-            update_db("user_count", ["e"=>$ip_list],['uid'=>UID,'t'=>$t,'k'=>$k]); 
-        }
+    $ip = Get_IP(); $k = date('Ymd'); $t = 'access_ip';
+    if(!has_db('user_count',['uid'=>UID,'k'=>$k,'t'=>$t,'v'=>$ip])){
+        insert_db("user_count",['uid'=>UID,'k'=>$k,'t'=>$t,'v'=>$ip]);
         write_user_count($k,'ip_count');//访问ip数+1
     }
 }

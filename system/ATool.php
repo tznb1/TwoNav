@@ -200,9 +200,10 @@ function Load_db(){
         }catch (Exception $e) {
             Amsg(-1,'载入数据库失败'.$db_config['path']); 
         }
-    }elseif($db_config['type'] == 'mysql'){
+    }elseif($db_config['type'] == 'mysql' || $db_config['type'] == 'mariadb'){
         try {
-            $db = new Medoo\Medoo(['type' => 'mysql',
+            $db = new Medoo\Medoo([
+                'type' => $db_config['type'],
                 'host' => $db_config['host'],
                 'port' => $db_config['port'],
                 'database' => $db_config['name'],

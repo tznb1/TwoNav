@@ -15,9 +15,10 @@ if($db_config['type'] == 'sqlite'){
     }catch (Exception $e) {
         Amsg(-1,'载入数据库失败'.$db_config['path']); 
     }
-}elseif($db_config['type'] == 'mysql'){
+}elseif($db_config['type'] == 'mysql' || $db_config['type'] == 'mariadb' ){
     try {
-        $db = new Medoo\Medoo(['type' => 'mysql',
+        $db = new Medoo\Medoo([
+            'type' => $db_config['type'],
             'host' => $db_config['host'],
             'port' => $db_config['port'],
             'database' => $db_config['name'],
@@ -36,6 +37,7 @@ $c = Get('c');
 $libs = $global_config['Libs'];
 $layui['js']  = $libs.'/Layui/v2.8.17/layui.js';
 $layui['css'] = $libs.'/Layui/v2.8.17/css/layui.css';
+$global_config['static_link'] = isset($global_config['static_link']) ? $global_config['static_link'] : 0;
 define('libs',$global_config['Libs']);
 define('SysVer',Get_Version());
 define('Debug',$global_config['Debug'] == 1);
