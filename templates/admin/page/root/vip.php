@@ -60,7 +60,6 @@ if(!empty($Notice)){
         <div class="layui-btn-group">
             <button class="layui-btn layui-btn-normal" lay-submit lay-filter="save_key">保存</button>
             <button class="layui-btn layui-btn-danger" lay-submit lay-filter="buy_vip" data-url="<?php echo empty($data['pay_rul']) ?'':$data['pay_rul']?>" >购买授权</button>
-            <button class="layui-btn" lay-submit lay-filter="query_key">查询授权</button>
             <button class="layui-btn layui-bg-purple" type="button" id="validate" style="<?php echo empty($subscribe['order_id']) ? 'display:none;':''; ?>">正版验证</button>
         </div>
 
@@ -101,41 +100,6 @@ layui.use(['jquery','form'], function () {
     var layer = layui.layer;
     var $ = layui.jquery;
     var vcode;
-    //查询订阅
-    form.on('submit(query_key)', function(data){
-        vcode = randomnum(6);
-        index = layer.prompt({formType: 0,value: '',title: '请输入验证码: ' + vcode,shadeClose: false,"success":function(){
-            $("input.layui-layer-input").on('keydown',function(e){
-                if(e.which == 13) {
-                    query_key(data);
-                }
-            });
-        }},function(){
-            query_key(data)
-        }); 
-    });
-    
-    function query_key(data) {
-        layer.close(index);
-        if($("input.layui-layer-input").val() != vcode){
-            layer.msg('验证码错误', {icon: 5});
-            return false; 
-        }
-        layer.load(2, {shade: [0.1,'#fff']});
-        $.post(get_api('other_services','query_key'),{'order_id':data.field.order_id,'email':data.field.email},function(data,status){
-            layer.closeAll('loading');
-            if(data.code == 200) {
-                $("#order_id").val(data.data.order_id);
-                $("#end_time").val(timestampToTime(data.data.end_time));
-                $("#type_name").val(data.data.type_name);
-                layer.msg(data.msg, {icon: 1,time: 10000});
-            }else{
-                layer.alert(data.msg,{icon:5,title:'查询结果',anim: 2,closeBtn: 0,btn: ['我知道了']});
-            }
-        }).fail(function () {
-            layer.msg('请求失败', {icon: 5});
-        });
-    }
     
     //保存订阅
     form.on('submit(save_key)', function(data){

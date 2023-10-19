@@ -5,7 +5,20 @@
     <li class="layui-timeline-item">
         <i class="layui-icon layui-timeline-axis"></i>
         <div class="layui-timeline-content layui-text">
-            <h4 class="layui-timeline-title">v2.1.02-20231012</h4>
+            <h4 class="layui-timeline-title">v2.1.03-20231019</h4>
+            <ul>
+                <li>[修复] 站点地图时间格式问题</li>
+                <li>[修复] 后台我的主页地址错误</li>
+                <li>[变更] 移除授权管理页查询授权功能 ( 如需查询请联系客服 )</li>
+                <li>[优化] 使用过渡页模板时若站点设置>链接模式不是过渡页面时自动修改配置</li>
+                <li>[模板] WebStack-Hugo > 修复二级分类横向滚动条过大/顶部的管理入口未遵循系统设置是否显示</li>
+            </ul>
+        </div>
+    </li>
+    <li class="layui-timeline-item">
+        <i class="layui-icon layui-timeline-axis"></i>
+        <div class="layui-timeline-content layui-text">
+            <h4 class="layui-timeline-title">v2.1.02-20231013</h4>
             <ul>
                 <li>[优化] IP统计的记录方式,提高性能和稳定性</li>
                 <li>[修复] 未在系统设置保存过设置时因缺少参数而导致部分页面加载异常</li>
@@ -17,7 +30,7 @@
     <li class="layui-timeline-item">
         <i class="layui-icon layui-timeline-axis"></i>
         <div class="layui-timeline-content layui-text">
-            <h4 class="layui-timeline-title">v2.1.01-20231002</h4>
+            <h4 class="layui-timeline-title">v2.1.01-20231003</h4>
             <ul>
                 <li>[优化] 已部署国内服务器并接入了CDN加速和3个资源节点</li>
                 <li>[新增] 系统设置>资源节点,可选自动/国内1/国内2/海外1</li>

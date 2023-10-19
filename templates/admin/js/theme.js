@@ -163,15 +163,12 @@ layui.use(function(){
             current2.css('color','#03a9f4');
             current2.prepend('<i class="layui-icon layui-icon-cellphone" title="移动终端正在使用此主题"> ');
             $(`#col_${d.current.home_pad}`).prependTo($row);
-            //if(current1.is(current2)){ $("#set:first").remove(); }
-            
         }else{
             if(d.current[active] !== null && d.current[active] !== undefined && d.current[active].length > 0){
                 var current = $(`#t_${d.current[active]}`);
                 current.css('color','#03a9f4');
                 current.prepend('<i class="fa fa-magic" style="color: #03a9f4;" title="正在使用"></i> ');
                 $(`#col_${d.current[active]}`).prependTo($row);
-                //$("#set:first").remove();
             }
         }
         $(`#col_default`).prependTo($row);
@@ -292,7 +289,7 @@ layui.use(function(){
         $.post(get_api('write_theme','set'),{type:type,name:name,fn:fn},function(data,status){
             if( data.code == 1 ) {
                 layer.msg(data.msg, {icon: 1});
-                setTimeout(() => {load_data(active);}, 800);
+                setTimeout(() => {load_data(active);}, (data.msg == '设置成功' ? 800 : 2000));
             }else{
                 layer.msg(data.msg, {icon: 5});
             }
@@ -302,6 +299,5 @@ layui.use(function(){
     //主题详情
     function theme_detail(data){
         layer.open({type: 1,scrollbar: false,maxmin: false,shadeClose: true,resize: false,title: data.name + ' - 主题详情',area: ['60%', '59%'],content: '<body class="layui-fluid"><div class="layui-row" style = "margin-top    :1em;"><div class="layui-col-sm9" style = "border-right:1px solid #e2e2e2;"><div style = "margin-left:1em;margin-right:1em;"><img src="'+data.screenshot+'" alt="" style = "max-width:100%;"></div></div><div class    ="layui-col-sm3"><div style = "margin-left:1em;margin-right:1em;"><h1>'+data.name+'</h1><p>描述：'+data.description+'</p><p>版本：'+data.version+'</p><p>更新时间：'+data.update+'</p><p>作者：'+data.author+'</p><p    >主页：<a style = "color:#01AAED;" href="'+data.homepage+'" target="_blank" rel = "nofollow">访问主页</a></p></div></div></div></body>'});
-                        
     }
 });

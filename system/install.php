@@ -150,7 +150,7 @@ $db_config = array(
     // mysql
     if($_POST['db_type'] === 'mysql' || $_POST['db_type'] === 'mariadb'){
         if( !isset($_POST['db_host']) || !isset($_POST['db_port']) || !isset($_POST['db_name']) || !isset($_POST['db_user']) || !isset($_POST['db_password']) ){
-            msg(-1,'MySQL配置错误,请检查..');
+            msg(-1,'数据库配置错误,请检查..');
         }
         
         require (DIR.'/system/Medoo.php'); //载入框架
@@ -164,13 +164,15 @@ $db_config = array(
                 'password' => $_POST['db_password'],
                 'charset' => 'utf8mb4'
             ]);
+            $ver = $db->info ()['version'];
             if($_POST['db_type'] === 'mysql'){
-                if(version_compare($db->info ()['version'],'5.6.0','<')){
-                    msg(-1,'MySQL数据库版本不能低于5.6,当前版本:'.$db->info ()['version']);
+                if(version_compare($ver,'5.6.0','<')){
+                    msg(-1,'MySQL数据库版本不能低于5.6,当前版本:'.$ver);
                 }
             }else{
-                if(version_compare($db->info ()['version'],'10.1.0','<')){
-                    msg(-1,'MariaDB数据库版本不能低于10.1,当前版本:'.$db->info ()['version']);
+                preg_match('/(\d+\.\d+\.\d+)-MariaDB/', $ver, $matches);
+                if(version_compare($matches[1],'10.1.0','<')){
+                    msg(-1,'MariaDB数据库版本不能低于10.1,当前版本:'.$ver);
                 }
             }
         }catch (Exception $e) {

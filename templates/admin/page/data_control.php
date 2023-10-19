@@ -34,7 +34,7 @@
             <div class="layui-progress" lay-filter="progress" id="progress" style="display:none;">
                 <div class="layui-progress-bar"></div>
             </div>
-            <blockquote class="layui-elem-quote" style="margin-top: 10px;border-left: 5px solid #FF5722; color: #FF5722;" id='guide'>第一步:请上传数据,支持: db3 / html 格式(最大10M),使用前请参考<a href="https://gitee.com/tznb/TwoNav/wikis/pages?sort_id=7968661&doc_id=3767990" target="_blank" rel = "nofollow">帮助文档</a></blockquote>
+            <blockquote class="layui-elem-quote" style="margin-top: 10px;border-left: 5px solid #FF5722; color: #FF5722;" id='guide'>第一步:请上传数据,支持: db3 / html / itabdata 格式(最大10M),使用前请参考<a href="https://gitee.com/tznb/TwoNav/wikis/pages?sort_id=7968661&doc_id=3767990" target="_blank" rel = "nofollow">帮助文档</a></blockquote>
             
             <div class="layui-form-item" style="display:none;" id='fid'>
                 <label class="layui-form-label">所属分类</label>

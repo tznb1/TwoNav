@@ -8,9 +8,6 @@ $data = empty($Notice)?[]:json_decode($Notice, true);
 
 //输出最新动态
 function echo_notice_link($data){
-    if(empty($data["notice"])){
-        return;
-    }
     echo '<div class="layui-card"><div class="layui-card-header"><i class="fa fa-bullhorn icon"></i>最新动态</div><div class="layui-card-body layui-text" id="notice_link">';
     foreach($data["notice"] as $value){
         echo "<div class=\"layuimini-notice\"><div class=\"layuimini-notice-title\"><a href=\"{$value['url']}\" target=\"_blank\">{$value['title']}</a></div></div>";
@@ -20,9 +17,6 @@ function echo_notice_link($data){
 
 //输出官方公告
 function echo_notice_text($data){
-    if(empty($data["message"])){
-        return;
-    }
     echo '<div class="layui-card"><div class="layui-card-header"><i class="fa fa-bell-o icon"></i>官方公告</div><div class="layui-card-body layui-text layadmin-text" id="notice_text">';
     echo $data['message'];
     echo '</div></div>';
@@ -39,7 +33,7 @@ if( $global_config['Sub_domain'] == 1 && check_purview('Sub_domain',1)){
 }
 if(!isset($_h)){
     $_h = static_link ? get_surl('{UUID}.html'):"./?u={$u}";
-    $_l = static_link ? get_surl("login-{UUID}-{$USER_DB['Login']}.html"):"./c={$USER_DB['Login']}&u={$u}" ;
+    $_l = static_link ? get_surl("login-{UUID}-{$USER_DB['Login']}.html"):"./?c={$USER_DB['Login']}&u={$u}" ;
 }
 require 'header.php'; 
 ?>

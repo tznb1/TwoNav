@@ -1194,9 +1194,17 @@ function write_theme(){
             }
         }else{
             $s_templates[$fn] = $name;
+            if($fn == 'transit'){
+                $site = unserialize(get_db('user_config','v',['uid'=>UID,'k'=>'s_site']));
+                if($site['link_model'] != 'Transition'){
+                    $site['link_model'] = 'Transition';
+                    update_db("user_config",["v"=>$site],["k"=>'s_site',"uid"=>UID]);
+                    $msg = ',已同步链接模式为过渡页面';
+                }
+            }
         }
         //更新数据
-        update_db('user_config',['v'=>$s_templates],['uid'=>UID,'k'=>'s_templates'],[1,'设置成功']);
+        update_db('user_config',['v'=>$s_templates],['uid'=>UID,'k'=>'s_templates'],[1,"设置成功{$msg}"]);
         
     //配置主题信息
     }elseif($_GET['type'] == 'config'){

@@ -402,6 +402,7 @@ function other_root(){
         delfile($dir,30);
         $size = $_SESSION['CleanCacheSize'];
         unset($_SESSION['CleanCacheSize']);
+        clean_cache();
         if($size == 0){
             msg(1,'暂无可清理缓存');
         }
@@ -465,11 +466,12 @@ function other_services(){
             msg(-1,'请求官方服务器失败,请稍后再试');
         }
         $data = json_decode($Res["content"], true);
+        $msg = $data['msg'];
         // 如果是保存设置
         if($_GET['type'] == 'save_key'){
             $data = $data['data'];
             if(!isset($data['order_id']) || empty($data['order_id'])){
-                msg(-1,'保存失败,请核对信息是否有误');
+                msg(-1,empty($msg) ? '保存失败,请核对信息是否有误<br />' : $msg);
             }
             //判断是否为IP
             if(preg_match("/^(\d+\.\d+\.\d+\.\d+):*\d*$/",$domain,$host)) {
