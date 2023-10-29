@@ -56,7 +56,18 @@ if(!empty($Notice)){
                 <input type="text" name="type_name" id ="type_name" value="<?php echo $subscribe['type_name'] ?? ''; ?>" autocomplete="off" placeholder="若未正确显示请点击保存设置" class="layui-input">
             </div>
         </div>
-
+<?php if(get_db('global_config','v',["k" => "sys_switch"]) == 'show' && $subscribe['type'] == '3'){ ?>
+        <div class="layui-form-item">
+            <label class="layui-form-label">版本切换</label>
+            <div class="layui-input-inline" >
+                <select name="sys" id="sys">
+                    <option value="biaozhun" selected>标准版</option>
+                    <option value="gaoji" >高级版</option>
+                </select>
+            </div>
+            <div class="layui-form-mid layui-word-aux">希望使用的系统版本 ( 下次更新时 )</div>
+        </div>
+<?php } ?>
         <div class="layui-btn-group">
             <button class="layui-btn layui-btn-normal" lay-submit lay-filter="save_key">保存</button>
             <button class="layui-btn layui-btn-danger" lay-submit lay-filter="buy_vip" data-url="<?php echo empty($data['pay_rul']) ?'':$data['pay_rul']?>" >购买授权</button>
@@ -100,7 +111,8 @@ layui.use(['jquery','form'], function () {
     var layer = layui.layer;
     var $ = layui.jquery;
     var vcode;
-    
+    $("#sys").val('<?php echo empty($subscribe['sys']) ? 'biaozhun':$subscribe['sys']; ?>');
+    form.render('select');
     //保存订阅
     form.on('submit(save_key)', function(data){
         var order_id = data.field.order_id;
@@ -113,7 +125,7 @@ layui.use(['jquery','form'], function () {
             return false;
         }
         layer.load(2, {shade: [0.1,'#fff']});
-        $.post(get_api('other_services','save_key'),{'order_id':data.field.order_id,'email':data.field.email},function(data,status){
+        $.post(get_api('other_services','save_key'),{'order_id':data.field.order_id,'email':data.field.email,'sys':data.field.sys},function(data,status){
             layer.closeAll('loading');
             if(data.code == 200) {
                 $("#order_id").val(data.data.order_id);

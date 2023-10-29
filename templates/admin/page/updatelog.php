@@ -5,7 +5,18 @@
     <li class="layui-timeline-item">
         <i class="layui-icon layui-timeline-axis"></i>
         <div class="layui-timeline-content layui-text">
-            <h4 class="layui-timeline-title">v2.1.03-20231019</h4>
+            <h4 class="layui-timeline-title">v2.1.04-20231029</h4>
+            <ul>
+                <li>[修复] 连续添加分类时未正确添加到所选的父分类中</li>
+                <li>[修复] 使用MySQL/MariaDB数据库时文章图片可能不显示的bug</li>
+                <li>[优化] 二级域名功能支持已知的双后缀顶级域名(例如example.com.cn)</li>
+            </ul>
+        </div>
+    </li>
+    <li class="layui-timeline-item">
+        <i class="layui-icon layui-timeline-axis"></i>
+        <div class="layui-timeline-content layui-text">
+            <h4 class="layui-timeline-title">v2.1.03-20231020</h4>
             <ul>
                 <li>[修复] 站点地图时间格式问题</li>
                 <li>[修复] 后台我的主页地址错误</li>

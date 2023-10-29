@@ -73,6 +73,7 @@
                 //分类切换按钮
                 $("#btn-type").text(type == '&type=all' ?'收起':'展开');
                 //将一级分类加入下拉框
+                let old_val = $("#fid").val();
                 $("#fid").empty();
                 $("#fid").append("<option value=\"0\">无</option>");
                 for (i = 0; i < count; i++) {
@@ -80,6 +81,8 @@
                         $("#fid").append("<option value=\""+res.data[i].cid+"\">"+res.data[i].name+"</option>");
                     }
                 }
+                $("#fid").val(old_val);
+                form.render('select');
                 limit = false; //取消修改限制
                 layer.closeAll('loading'); //关闭加载层
                 //加载加密分组数据

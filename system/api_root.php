@@ -456,7 +456,8 @@ function other_services(){
         'order_id' => isset($_POST['order_id']) ? $_POST['order_id'] : "",
         'sysver'   => SysVer,
         'ip'       => Get_IP(),
-        'method'   => $_GET['type']
+        'method'   => $_GET['type'],
+        'sys'      => $_POST['sys']
     ];
     $overtime = !isset($global_config['Update_Overtime']) ? 3 : ($global_config['Update_Overtime'] < 3 || $global_config['Update_Overtime'] > 60 ? 3 : $global_config['Update_Overtime']);
     // 判断操作类型
@@ -514,7 +515,7 @@ function other_services(){
         //如果不为空,则解析数据
         if(!empty($Notice)){
             $data = json_decode($Notice, true);
-            $cache_time = 60; //缓存时间(秒);
+            $cache_time = Debug ? 0 : 60; //缓存时间(秒);
             $reload = time() > $data["download_time"] + $cache_time; //是否更新
         }else{
             $reload = true; //需要刷新
@@ -531,6 +532,7 @@ function other_services(){
                 $new_data['download_time'] = time();
                 $new_data['version'] = version_compare($new_data['version'],SysVer,'<') ? SysVer : $new_data['version'];
                 write_global_config('notice',json_encode($new_data),'官方公告(缓存)');
+                write_global_config('sys_switch',"{$new_data['sys_switch']}",'sys_switch');
                 $data = $new_data;
             }
         }
