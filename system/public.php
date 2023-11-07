@@ -732,8 +732,8 @@ function send_email($config){
 //统计访问ip数
 function count_ip(){
     $ip = Get_IP(); $k = date('Ymd'); $t = 'access_ip';
-    if(!has_db('user_count',['uid'=>UID,'k'=>$k,'t'=>$t,'v'=>$ip])){
-        insert_db("user_count",['uid'=>UID,'k'=>$k,'t'=>$t,'v'=>$ip]);
+    if(!has_db('user_count',['uid'=>UID,'k'=>$k,'t'=>$t,'e'=>$ip])){
+        insert_db("user_count",['uid'=>UID,'k'=>$k,'t'=>$t,'e'=>$ip,'v'=>0]);
         write_user_count($k,'ip_count');//访问ip数+1
     }
 }

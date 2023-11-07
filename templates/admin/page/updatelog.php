@@ -5,11 +5,27 @@
     <li class="layui-timeline-item">
         <i class="layui-icon layui-timeline-axis"></i>
         <div class="layui-timeline-content layui-text">
-            <h4 class="layui-timeline-title">v2.1.04-20231029</h4>
+            <h4 class="layui-timeline-title">v2.1.05-20231106</h4>
+            <ul>
+                <li>[修复] 使用MySQL/MariaDB数据库时记录访客IP错误</li>
+                <li>[修复] 注册模板/引导页模板配置无法正常读取</li>
+                <li>[模板] 主页模板新增 > Snavigation ( 简约型的模板,点击时间显示书签数据 )</li>
+                <li>[模板] 引导页模板新增 > 無名の主页</li>
+                <li>[模板] WebStack-Hugo > 搜索栏新增站内搜索选项,用于解决同时开启站内搜索和搜索热词时遮挡问题</li>
+                <li>[模板] 挽风导航V1.0 > CSS样式细节优化 </li>
+            </ul>
+        </div>
+    </li>
+    <li class="layui-timeline-item">
+        <i class="layui-icon layui-timeline-axis"></i>
+        <div class="layui-timeline-content layui-text">
+            <h4 class="layui-timeline-title">v2.1.04-20231101</h4>
             <ul>
                 <li>[修复] 连续添加分类时未正确添加到所选的父分类中</li>
                 <li>[修复] 使用MySQL/MariaDB数据库时文章图片可能不显示的bug</li>
                 <li>[优化] 二级域名功能支持已知的双后缀顶级域名(例如example.com.cn)</li>
+                <li>[新增] Docker镜像增加intl模块</li>
+                <li>[模板] WebStack-Hugo > 修复过渡页模板logo设置无效</li>
             </ul>
         </div>
     </li>

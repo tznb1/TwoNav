@@ -69,7 +69,7 @@ if($page == 'config_home'){
         msg(-1,"参数错误");
     }
     if(in_array($_GET['fn'],['guide','register'])){
-        $theme_config_db = get_db('user_config','v',['k'=>'theme_'.$theme,'uid'=>UID]);
+        $theme_config_db = get_db('global_config','v',['k'=>"theme_{$_GET['fn']}_{$theme}"]);
     }else{
         $theme_config_db = get_db('user_config','v',['t'=>'theme_'.$_GET['fn'],'k'=>$theme,'uid'=>UID]);
     }

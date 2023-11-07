@@ -104,6 +104,9 @@ layui.use(function(){
         $.post(`./index.php?c=api&method=read_theme&dir=${dir}&u=${u}&cache=${cache ? 'no':'yes'}`, function (r, status) {
             layer.closeAll();
             if (r.code == 1) {
+                if(r.referrer.length > 0){
+                    $('meta[name="referrer"]').replaceWith(`<meta name="referrer" content="${r.referrer}">`); 
+                }
                 datas = r.data;
                 render_data(r);
             } else {

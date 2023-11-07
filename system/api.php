@@ -1547,12 +1547,10 @@ function read_data(){
             $date = date('Ymd', strtotime("-$i days"));
             $dates[] = $date;
         }
-        
         $dates = array_reverse($dates);
         $day_data = [];
         foreach ($dates as $date) {
-            $list = get_db('user_count', 'e', ['uid' => UID, 'k' => $date, 't' => 'ip_list']);
-            $list = unserialize($list);
+            $list = select_db('user_count','e',['uid'=>UID,'k'=>$date,'t'=>'access_ip']);
             $day_data[$date] = empty($list) ? [] : $list ;
         }
         msgA(['code'=>1,'data'=>$day_data]);

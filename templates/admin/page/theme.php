@@ -1,4 +1,4 @@
-<?php $title='主题管理';$awesome=true; require 'header.php';?>
+<?php $title='主题管理';$awesome=true; define('referrer','same-origin'); require 'header.php';?>
 <style>
 .tab-header .layui-btn.layui-this{border-color: #1E9FFF; color: #1E9FFF;}
 .screenshot{
@@ -25,7 +25,6 @@
 <script src="<?php echo $libs;?>/jquery/jquery.lazyload.min.js"></script>
 <script src="./templates/admin/js/public.js?v=<?php echo $Ver;?>"></script>
 <?php load_static('js');?>
-<script src="./templates/admin/js/theme.js?v=<?php echo $Ver;?>"></script>
 <script>
     const is_admin = <?php echo $USER_DB['UserGroup'] === 'root' ? 'true' : 'false'; ?>;
     const theme_set = <?php echo check_purview('theme_set',1) ? 'true' : 'false'; ?>;
@@ -34,3 +33,4 @@
     const article = <?php echo check_purview('article',1) ? 'true' : 'false'; ?>;
     const loginAddress = '<?php echo $USER_DB['Login']; ?>';
 </script>
+<script src="./templates/admin/js/theme.js?v=<?php echo $Ver;?>"></script>
