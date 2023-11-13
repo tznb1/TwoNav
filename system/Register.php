@@ -72,7 +72,7 @@ if(!empty($regcode_info['u_group'])){
 }
 
 //读取用户组信息,如果用户组不存在则设为默认用户组
-if($UserGroup != 'default'){
+if(!in_array($UserGroup,['default','root','visitor'])){
     $Group = get_db('user_group','*',['code' => $UserGroup]);
     if(empty( $Group )){
         $UserGroup = 'default';

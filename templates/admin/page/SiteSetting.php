@@ -195,13 +195,18 @@ layui.use(['jquery','form','upload'], function () {
     });
     //监听提交
     form.on('submit(save)', function (data) {
+        layer.load(0);
         $.post('./index.php?c=api&method=write_site_setting&u='+u,data.field,function(data,status){
+            layer.closeLast('loading');
             if(data.code == 1) {
                 layer.msg(data.msg, {icon: 1});
             }else{
                 layer.msg(data.msg, {icon: 5});
             }
-        });
+        }).fail(function(xhr, textStatus, errorThrown) {  
+            layer.closeLast('loading');
+            layer.alert('请求失败');
+        }); 
         return false;
     }); 
 

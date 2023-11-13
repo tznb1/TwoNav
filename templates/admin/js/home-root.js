@@ -9,14 +9,22 @@ layui.use(['layer','miniTab'], function(){
     
     // 获取最新信息
     $.post(get_api('other_services','get_notice'),function(data,status){
-        console.log(data );
         if(data.code == 200) {
             $("#new_ver a").text(data.version);
             $('#notice_link').text('');
-            data.notice.forEach(notice => {
-                $('#notice_link').append(`<div class="layuimini-notice"><div class="layuimini-notice-title"><a href="${notice.url}" target="_blank">${notice.title}</a></div></div>`);
-            });
-            $('#notice_text').html(data.message);
+            if (Array.isArray(data.notice) && data.notice.length > 0) {  
+                data.notice.forEach(notice => {
+                    $('#notice_link').append(`<div class="layuimini-notice"><div class="layuimini-notice-title"><a href="${notice.url}" target="_blank">${notice.title}</a></div></div>`);
+                });
+            }else{
+                $('.notice1').remove();  
+            }
+            if(data.message.length > 0){
+                $('#notice_text').html(data.message);
+            }else{
+                $('.notice2').remove();  
+            }
+            
         }
         init_update();
         $(".update").remove();

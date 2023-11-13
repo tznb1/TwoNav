@@ -35,6 +35,7 @@
                     <dl class="layui-nav-child">
                         <dd><a href="javascript:;" layuimini-content-href="LoginDevice" data-title="登录设备">登录设备</a></dd>
                         <dd><a href="javascript:;" layuimini-content-href="SecuritySetting" data-title="安全设置">安全设置</a></dd>
+                        <dd><a href="javascript:;" layuimini-content-href="AccessRestrictions" data-title="访问限制">访问限制</a></dd>
                         <dd><a href="javascript:;" layuimini-content-href="UserPassword" data-title="修改密码">修改密码</a></dd>
                         <dd><hr></dd>
                         <dd><a href="javascript:;" id="logout">退出登录</a></dd>

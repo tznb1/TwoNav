@@ -69,16 +69,22 @@ layui.use(['layer','form','miniTab'], function () {
     });
     //一键诊断
     $('.diagnose').on('click', function(){
+        layer.load(0);
         $("#console_log").text("");
         $("#console_log").append("浏览器UA：" + navigator.userAgent +"\n");
         $("#console_log").append("客户端时间：" +  timestampToTime(Math.round(new Date() / 1000) ) +"\n");
         $.post(get_api('read_data','diagnostic_log'),function(data,status){
+            layer.closeLast('loading');
             $("#console_log").append(data.msg);
+        }).fail(function(xhr, textStatus, errorThrown) {  
+            layer.closeLast('loading');
+            layer.alert('请求失败');
         });
     });
     
     //连通测试
     $('.connectivity_test').on('click', function(){
+        layer.load(0);
         $("#console_log").text("");
         $("#console_log").append("浏览器UA：" + navigator.userAgent +"\n");
         $("#console_log").append("客户端时间：" +  timestampToTime(Math.round(new Date() / 1000) ) +"\n");
@@ -94,12 +100,13 @@ layui.use(['layer','form','miniTab'], function () {
             url: get_api('read_data', 'connectivity_test'),
             type: 'POST',
             data: { url: url },
-            async: false,
+            //async: false,
             success: function(data, status) {
-              $("#console_log").append(data.msg + "\n");
-            },
-            error: function(jqXHR, textStatus, errorThrown) {
-              $("#console_log").append(routeName + ": 请求 " + url + " 发生错误：" + errorThrown + "\n");
+                layer.closeLast('loading');
+                $("#console_log").append(data.msg + "\n");
+            },error: function(jqXHR, textStatus, errorThrown) {
+                layer.closeLast('loading');
+                $("#console_log").append(routeName + ": 请求 " + url + " 发生错误：" + errorThrown + "\n");
             }
           });
         });
@@ -146,21 +153,31 @@ layui.use(['layer','form','miniTab'], function () {
     });
     //清理缓存
     $('.CleanCache').on('click', function(){
+        layer.load(0);
         $.post(get_api('other_root','CleanCache'),function(data,status){
+            layer.closeLast('loading');
              if(data.code == 1){
                 layer.msg(data.msg,{icon: 1})
             } else{
                 layer.msg(data.msg,{icon: 5});
             }
+        }).fail(function(xhr, textStatus, errorThrown) {  
+            layer.closeLast('loading');
+            layer.alert('请求失败');
         });
     });
     //数据库升级
     $('.db_upgrade').on('click', function(){
+        layer.load(0);
         $("#console_log").text("");
         $("#console_log").append(`正在处理中,请勿操作页面...\n`);
         $.post(get_api("other_upsys"),{"i":4,"pattern":"manual"}, function(data, status) {
+            layer.closeLast('loading');
             $("#console_log").text("");
             $("#console_log").append(`${data.msg}\n`);
+        }).fail(function(xhr, textStatus, errorThrown) {  
+            layer.closeLast('loading');
+            layer.alert('请求失败');
         });
     });
 });

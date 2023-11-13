@@ -5,7 +5,22 @@
     <li class="layui-timeline-item">
         <i class="layui-icon layui-timeline-axis"></i>
         <div class="layui-timeline-content layui-text">
-            <h4 class="layui-timeline-title">v2.1.05-20231106</h4>
+            <h4 class="layui-timeline-title">v2.1.06-20231113</h4>
+            <ul>
+                <li>[修复] 开启离线模式时概要页依旧获取在线数据,V0921</li>
+                <li>[优化] 为部分操作添加处理中的效果( 防止网络极差的用户以为没点到而重复点击 )</li>
+                <li>[新增] 内置用户组新增:访客 (代号:visitor,处于该用户组的账号登录后跳转到默认用户的主页,配合引导页使用实现需注册登录才能访问站点)</li>
+                <li>[备注] 由于访客无权限进入后台,所以也无法自助修改密码</li>
+                <li>[新增] 在用户组列表中显示内置用户组 ( 默认/访客/站长 )</li>
+                <li>[变更] 系统设置中的默认分组允许设置为内置用户组 ( 例如设为访客 )</li>
+                <li>[新增] 访问限制 (右上角账号下拉),可设置:无限制/白名单/黑名单,具体查看页面中的说明</li>
+            </ul>
+        </div>
+    </li>
+    <li class="layui-timeline-item">
+        <i class="layui-icon layui-timeline-axis"></i>
+        <div class="layui-timeline-content layui-text">
+            <h4 class="layui-timeline-title">v2.1.05-20231107</h4>
             <ul>
                 <li>[修复] 使用MySQL/MariaDB数据库时记录访客IP错误</li>
                 <li>[修复] 注册模板/引导页模板配置无法正常读取</li>

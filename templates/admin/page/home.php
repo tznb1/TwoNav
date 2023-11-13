@@ -8,7 +8,7 @@ $data = empty($Notice)?[]:json_decode($Notice, true);
 
 //输出最新动态
 function echo_notice_link($data){
-    echo '<div class="layui-card"><div class="layui-card-header"><i class="fa fa-bullhorn icon"></i>最新动态</div><div class="layui-card-body layui-text" id="notice_link">';
+    echo '<div class="layui-card notice1"><div class="layui-card-header"><i class="fa fa-bullhorn icon"></i>最新动态</div><div class="layui-card-body layui-text" id="notice_link">';
     foreach($data["notice"] as $value){
         echo "<div class=\"layuimini-notice\"><div class=\"layuimini-notice-title\"><a href=\"{$value['url']}\" target=\"_blank\">{$value['title']}</a></div></div>";
     }
@@ -17,7 +17,7 @@ function echo_notice_link($data){
 
 //输出官方公告
 function echo_notice_text($data){
-    echo '<div class="layui-card"><div class="layui-card-header"><i class="fa fa-bell-o icon"></i>官方公告</div><div class="layui-card-body layui-text layadmin-text" id="notice_text">';
+    echo '<div class="layui-card notice2"><div class="layui-card-header"><i class="fa fa-bell-o icon"></i>官方公告</div><div class="layui-card-body layui-text layadmin-text" id="notice_text">';
     echo $data['message'];
     echo '</div></div>';
 }

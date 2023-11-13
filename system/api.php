@@ -1132,7 +1132,10 @@ function read_theme(){
     msgA(['code'=>1,'data'=>$themes,'current'=>$current,'referrer'=>($data['referrer'] ?? '')]);
 }
 function msg_tip(){
-    msg(-1,'免费版不支持此功能,购买授权版<br /> <a href="https://gitee.com/tznb/TwoNav/wikis/pages?sort_id=7968669&doc_id=3767990" target="_blank" style="color: #1e9fff;">点击此处前往购买页面</a>');
+    if(is_subscribe()){
+        msg(-1,'请前往概要页面更新系统,未提示更新则尝试刷新页面<br />更新后即可解锁全部功能,如有疑问请联系客服');
+    }
+    msg(-1,'免费版不支持此功能<br /> <a href="https://gitee.com/tznb/TwoNav/wikis/pages?sort_id=7968669&doc_id=3767990" target="_blank" style="color: #1e9fff;">点击此处前往购买页面</a>');
 }
 
 //主题下载/更新/删除
