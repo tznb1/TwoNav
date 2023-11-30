@@ -5,7 +5,25 @@
     <li class="layui-timeline-item">
         <i class="layui-icon layui-timeline-axis"></i>
         <div class="layui-timeline-content layui-text">
-            <h4 class="layui-timeline-title">v2.1.06-20231113</h4>
+            <h4 class="layui-timeline-title">v2.1.07-20231130</h4>
+            <ul>
+                <li>[升级] Layui组件由2.8.17升级到2.9.0</li>
+                <li>[新增] 系统设置>限制相关>文章图片大小自定义,单位KB</li>
+                <li>[变更] 文章编辑器上传图片大小限制由5M改为默认不限制,如需限制请到系统设置中自定义</li>
+                <li>[变更] 文章编辑器单次上传图片数量由10改为100</li>
+                <li>[模板] WebStack-Hugo > 处于站内搜索时搜索图标可以被点击跳转的问题/新增页内标题自定义/公告信息</li>
+                <li>[模板] 新增主页模板:liuyike233 (简约型)</li>
+                <li>[模板] Snavigation在底部添加管理入口</li>
+                <li>[修复] 访问限制跳转到引导页时登录/注册连接错误的bug</li>
+                <li>[修复] 引导页未正确读取默认站点标题的bug</li>
+                <li>[变更] 部分环境获取请求IP遇到多个IP地址仅取首个</li>
+            </ul>
+        </div>
+    </li>
+    <li class="layui-timeline-item">
+        <i class="layui-icon layui-timeline-axis"></i>
+        <div class="layui-timeline-content layui-text">
+            <h4 class="layui-timeline-title">v2.1.06-20231114</h4>
             <ul>
                 <li>[修复] 开启离线模式时概要页依旧获取在线数据,V0921</li>
                 <li>[优化] 为部分操作添加处理中的效果( 防止网络极差的用户以为没点到而重复点击 )</li>

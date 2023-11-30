@@ -2,9 +2,9 @@
 <html>
 <head>
     <meta charset="utf-8" />
-    <title><?php echo $site['Title'];?></title>
-    <meta name="keywords" content="<?php echo $site['keywords']; ?>">
-    <meta name="description" content="<?php echo $site['description']; ?>">
+    <title><?php echo $s_site['title'];?></title>
+    <meta name="keywords" content="<?php echo $s_site['keywords']; ?>">
+    <meta name="description" content="<?php echo $s_site['description']; ?>">
     <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
     <link rel="stylesheet" href="<?php echo $theme_dir;?>/main.css" />
     <link rel="shortcut icon" href="<?php echo $favicon;?>">
