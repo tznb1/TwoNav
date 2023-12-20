@@ -2,6 +2,8 @@
 
 //如果是Get请求则载入登录模板
 if($_SERVER['REQUEST_METHOD'] === 'GET'){
+    session_start();
+    $_SESSION['login'] = $c;
     require DIR."/system/templates.php";
     require $index_path;
     exit;

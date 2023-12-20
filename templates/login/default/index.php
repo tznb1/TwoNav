@@ -1,5 +1,4 @@
-<?php if(!defined('DIR')){header('HTTP/1.1 404 Not Found');header("status: 404 Not Found");exit;}
-$LoginConfig = unserialize($USER_DB['LoginConfig']);?>
+<?php if(!defined('DIR')){header('HTTP/1.1 404 Not Found');header("status: 404 Not Found");exit;}?>
 <!DOCTYPE html>
 <html>
 <head>
@@ -31,20 +30,14 @@ $LoginConfig = unserialize($USER_DB['LoginConfig']);?>
             <div class="center">
                 <div class="item">
                     <span class="icon layui-icon layui-icon-username"></span>
-                    <input type="text" name="User" lay-verify="required"  placeholder="请输入账号">
+                    <input type="text" name="username" lay-verify="required"  placeholder="请输入账号">
                 </div>
 
                 <div class="item">
                     <span class="icon layui-icon layui-icon-password"></span>
-                    <input type="password" name="Password" lay-verify="required"  placeholder="请输入密码">
+                    <input type="password" name="password" lay-verify="required"  placeholder="请输入密码">
                     <span class="bind-password icon icon-4"></span>
                 </div>
-<?php if(!empty($LoginConfig['totp_key'])){ ?>
-                <div class="item">
-                    <span class="icon layui-icon layui-icon-vercode"></span>
-                    <input type="text" name="otp_code" lay-verify="required"  placeholder="请输入OTP验证码">
-                </div>
-<?php }?>
             </div>
             <div class="tip">
 <?php
@@ -83,28 +76,73 @@ $LoginConfig = unserialize($USER_DB['LoginConfig']);?>
         });
 
 
-        // 进行登录操作
-        form.on('submit(login)', function (data) {
-            data = data.field;
-            if (data.User == '') {
-                layer.msg('用户名不能为空');
-                return false;
-            }
-            if (data.Password == '') {
-                layer.msg('密码不能为空');
-                return false;
-            }
-            data.Password = $.md5(data.Password);
-            $.post('./index.php?c=<?php echo $c; ?>&u='+data.User,data,function(re,status){
-                if(re.code == 1) {
-                    window.location.href = re.url;
+        //账号登录
+        form.on('submit(login)', function($form) {
+            let url = `./?c=auth&mode=uname&t=` + Math.round(new Date() / 1000);
+            form_data = $form.field;form_data.keep = 'on';
+            form_data.password = $.md5(form_data.password);
+            let load = layer.msg('正在登录..', {icon: 16,shade: [0.1, '#f5f5f5'],scrollbar: false,offset: 'auto',time: 60*1000});
+            $.post(url,form_data,function(data,status){
+                layer.close(load);
+                if(data.code == 1) {
+                    layer.msg('登录成功', {icon: 1,shade: [0.1, '#f5f5f5'],scrollbar: false,offset: 'auto',time: 888,
+                        end: function() {
+                            window.location.href = data.url;
+                        }
+                    });
+                }else if(data.code == 2){
+                    //双重认证
+                    layer.open({
+                        type: 1,
+                        title: false,
+                        content: $('.OTP'),
+                        move: '.move',
+                        success: function(layero, index, that){
+                            //监听回车事件
+                            $('input[name="otp_code"]').keydown(function(event) {
+                                if (event.which === 13) {
+                                    $('button[lay-filter="validate_otp"]').click();
+                                }
+                            });
+                            //监听点击事件
+                            form.on('submit(validate_otp)', function ($form2) {
+                                form_data.otp_code = $form2.field.otp_code
+                                let load = layer.msg('正在验证..', {icon: 16,shade: [0.1, '#f5f5f5'],scrollbar: false,offset: 'auto',time: 60*1000});
+                                $.post(url,form_data,function(data,status){
+                                    layer.close(load);
+                                    if(data.code == 1) {
+                                        layer.msg('登录成功', {icon: 1,shade: [0.1, '#f5f5f5'],scrollbar: false,offset: 'auto',time: 888,
+                                            end: function() {
+                                                window.location.href = data.url;
+                                            }
+                                        });
+                                    }else{
+                                        layer.msg(data.msg, {icon: 5});
+                                    }
+                                });
+                                return false; 
+                            }); 
+                        }
+                    });
                 }else{
-                    layer.msg(re.msg, {icon: 5});
+                    layer.msg(data.msg, {icon: 5});
                 }
             });
-            return false;
+            return false; 
         });
     });
 </script>
 </body>
 </html>
+<ul class="OTP" style="display:none;">
+    <div class="layui-form layuimini-form layui-form-pane" style="padding: 20px 30px;">
+        <div class="move" style="height: 30px;margin-bottom: 15px;text-align: center;font-size: 21px;">动态口令认证</div>
+        <div class="layui-form-item">
+          <div class="layui-input-group" style="width: 100%;">
+            <input type="text" name="otp_code" lay-verify="required" lay-reqtext="请输入动态口令" placeholder="请输入动态口令" style="text-align: center;" class="layui-input" lay-affix="clear">
+          </div>
+        </div>
+        <div class="layui-input-block" style="margin-left: 1px;"><button type="button" class="layui-btn layui-btn-fluid" lay-submit lay-filter="validate_otp">验证并登录</button></div>
+        <div style="margin-top: 16px;font-size: 13px;color: #777;">* 如果您无法认证,请联系站长处理</div>
+    </div>
+</ul>

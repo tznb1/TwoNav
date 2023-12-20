@@ -291,8 +291,9 @@ function Set_key($USER_DB){
     $LoginConfig = unserialize($USER_DB['LoginConfig']);
     $session  = $LoginConfig['Session']; //保持时间(单位天)
     $Expire = Get_ExpireTime($session); //计算到期时间戳
+    $real_Expire = ($Expire == 0) ? time() + 86400 : $Expire;
     $time = time(); //取当前时间
-    $key = Getkey($USER_DB['User'],Get_MD5_Password($USER_DB["Password"],$USER_DB["RegTime"]),$Expire,$LoginConfig['KeySecurity'],$time);
+    $key = Getkey($USER_DB['User'],Get_MD5_Password($USER_DB["Password"],$USER_DB["RegTime"]),$real_Expire,$LoginConfig['KeySecurity'],$time);
     setcookie($USER_DB['User'].'_key', $key, $session == 0 ? 0 : $Expire,"/",'',false,$LoginConfig['HttpOnly']==1);
     insert_db("user_login_info", [
         "uid" => $USER_DB['ID'],
@@ -301,8 +302,8 @@ function Set_key($USER_DB){
         "ua"=>$_SERVER['HTTP_USER_AGENT'],
         "login_time"=>$time,
         "last_time"=>$time,
-        "expire_time"=>$Expire,
-        "cookie_key"=>md5($key)]); //不记录用户真实key,同时防止Cookie攻击
+        "expire_time"=>$real_Expire,
+        "cookie_key"=>md5($key)]);
     return $key;
 }
 

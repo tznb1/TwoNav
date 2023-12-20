@@ -97,6 +97,7 @@ if(!empty($_GET['type'])){
             msg(-1,'密码不能为空');
         }
         $RegTime = get_db('global_user','RegTime',['ID'=>$_POST['ID']]);
+        delete_db( "user_login_info", ["uid"=>$_POST['ID']] );
         update_db('global_user',['Password'=>Get_MD5_Password($_POST['new_pwd'],$RegTime)],["ID" => $_POST['ID'] ],[1,'修改成功']);
     }elseif($_GET['type'] == 'set_root'){
         update_db('global_user',['UserGroup'=>'root'],["ID" => $_POST['ID'] ],[1,'修改成功']);
@@ -227,7 +228,7 @@ function echo_Atool(){
 <head>
     <meta charset="UTF-8">
     <title>ATool 工具箱</title>
-    <link rel="stylesheet" href="../static/Layui/v2.9.0/css/layui.css">
+    <link rel="stylesheet" href="../static/Layui/v2.9.2/css/layui.css">
     <style>
         html, body {min-width: 1200px;background-color: #fff;position: relative;}
         .page-wrapper {width: 1200px;margin: 0 auto;padding: 0 15px;}
@@ -279,7 +280,7 @@ function echo_Atool(){
         <a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="del_otp" title="移除OTP登录验证">删OTP</a>
     </div>
 </script>
-<script src="../static/Layui/v2.9.0/layui.js"></script>
+<script src="../static/Layui/v2.9.2/layui.js"></script>
 <script src="../static/jquery/jquery-3.6.0.min.js"></script>
 <script src="../static/jquery/jquery.md5.js"></script>
 <script src="../templates/admin/js/public.js?v=<?php echo time();?>"></script>
@@ -416,7 +417,7 @@ function echo_verify(){ ?>
 <head>
     <meta charset="UTF-8">
     <title>ATool 工具箱</title>
-    <link rel="stylesheet" href="../static/Layui/v2.9.0/css/layui.css">
+    <link rel="stylesheet" href="../static/Layui/v2.9.2/css/layui.css">
     <link rel="stylesheet" href="../static/Other/login.css">
 </head>
 <body>
@@ -441,7 +442,7 @@ function echo_verify(){ ?>
     </div>
 </div>
 <script src = "../static/jquery/jquery-3.6.0.min.js"></script>
-<script src = "../static/Layui/v2.9.0/layui.js"></script>
+<script src = "../static/Layui/v2.9.2/layui.js"></script>
 <script src = '../static/jquery/jquery.md5.js'></script>
 <script>
     layui.use(['form','jquery'], function () {

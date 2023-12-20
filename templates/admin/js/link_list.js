@@ -474,6 +474,7 @@ layui.use(['form','table','dropdown','miniTab'], function () {
     //手机端操作
     function load_dropdown(){
         var data = [];
+        data.push({'title':'删除选中','id':'batch_del'});
         $(".layui-btn-normal.layui-hide-xs").each(function(){
             data.push({'title':$(this).text(),'id':$(this).attr('lay-event')});
         });

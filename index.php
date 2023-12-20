@@ -35,8 +35,8 @@ if($db_config['type'] == 'sqlite'){
 $global_config = unserialize( get_db("global_config", "v", ["k" => "o_config"]) ); //全局配置
 $c = Get('c');
 $libs = $global_config['Libs'];
-$layui['js']  = $libs.'/Layui/v2.9.0/layui.js';
-$layui['css'] = $libs.'/Layui/v2.9.0/css/layui.css';
+$layui['js']  = $libs.'/Layui/v2.9.2/layui.js';
+$layui['css'] = $libs.'/Layui/v2.9.2/css/layui.css';
 $global_config['static_link'] = isset($global_config['static_link']) ? $global_config['static_link'] : 0;
 define('libs',$global_config['Libs']);
 define('SysVer',Get_Version());
@@ -74,7 +74,7 @@ if(empty($c) || $c == 'index'){
     require "./system/Register.php";//注册
 }elseif($c == $global_config['Login']  || $c == $USER_DB['Login']){
     require "./system/login.php";//登陆
-}elseif(in_array($c,['admin','click','api','ico','icon','verify'])){
+}elseif(in_array($c,['admin','click','api','ico','icon','verify','auth'])){
     require "./system/{$c}.php";
 }elseif(in_array($c,['apply','guestbook','article','sitemap'])){
     if($global_config['Maintenance'] != 0){Amsg(-1,'网站正在进行维护,请稍后再试!');}

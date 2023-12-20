@@ -4,6 +4,15 @@ $title='系统设置';require(dirname(__DIR__).'/header.php');
 ?>
 <style>
 .layui-btn-container .layui-btn{border-width: 1px; border-style: solid; border-color: #FF5722!important; color: #FF5722!important;background: none;height: 30px; line-height: 30px; padding: 0 10px; font-size: 12px;}
+.footer{
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    padding: 10px;
+    background-color: #fff;
+    border-top: 1px solid #e6e6e6;
+}
 </style>
 <body>
 <div class="layuimini-container">
@@ -331,8 +340,8 @@ $title='系统设置';require(dirname(__DIR__).'/header.php');
                 <div class="layui-form-mid layui-word-aux">是否允许默认用户组使用自定义代码!允许存在安全隐患!</div>
             </div>
             
-            <div class="layui-form-item">
-                <div class="layui-input-block"><button class="layui-btn layui-btn-normal" lay-submit lay-filter="save">确认保存</button></div>
+            <div class="footer">
+                <button class="layui-btn layui-btn-normal" lay-submit lay-filter="save" style=" margin-left: 10px; ">确认保存</button>
             </div>
         </div>
     </form>
