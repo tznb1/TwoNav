@@ -5,6 +5,15 @@
     <li class="layui-timeline-item">
         <i class="layui-icon layui-timeline-axis"></i>
         <div class="layui-timeline-content layui-text">
+            <h4 class="layui-timeline-title">v2.1.09-20231220</h4>
+            <ul>
+                <li>[修复] 紧急修复一个影响登录的bug,影响范围:v2.1.08版本 + MySQL数据库</li>
+            </ul>
+        </div>
+    </li>
+    <li class="layui-timeline-item">
+        <i class="layui-icon layui-timeline-axis"></i>
+        <div class="layui-timeline-content layui-text">
             <h4 class="layui-timeline-title">v2.1.08-20231219</h4>
             <ul>
                 <li>[升级] Layui组件由2.9.0升级到2.9.2</li>

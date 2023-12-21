@@ -43,7 +43,7 @@ define('SysVer',Get_Version());
 define('Debug',$global_config['Debug'] == 1);
 define('static_link',$global_config['static_link'] > 0);
 
-if(!in_array($c,[$global_config["Register"],'ico','icon'])){
+if(!in_array($c,[$global_config["Register"],'ico','icon','auth'])){
     if($global_config['static_link'] > 0 && !empty($UUID)){
         $_GET['u'] = $global_config['static_link'] == 2 ? get_db("global_user", "User", ["ID"=>$UUID]) : $UUID;
     }

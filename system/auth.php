@@ -27,7 +27,7 @@ if($auth_mode == 'uname'){
         msg(-1,"浏览器UA长度异常,请更换浏览器!");
     }
     //读取资料
-    $USER_DB = get_db("global_user", "*", ["OR"=>['User'=>$username,'Email'=>$username,'phone'=>$username]]);
+    $USER_DB = get_db("global_user", "*", ["OR"=>['User'=>$username,'Email'=>$username]]);
     if(empty($USER_DB)){
         $log['description'] = '请求登录>账号不存在';
         insert_db("user_log",$log);

@@ -20,6 +20,16 @@ if(!empty($Notice)){
             <li>3. 更新成功后就是授权版的系统了,可使用全部功能</li>
             <li>4. 禁止传播/破解授权版源代码,违者封授权并追责</li>
         </blockquote>
+        <blockquote class="layui-elem-quote layui-text" style="color:red" >
+            <li> 温馨提示: </li>
+            <li>授权是跟当前访问的域名或IP绑定的,通常建议绑定域名</li>
+            <li>初次保存授权时会自动激活卡密并绑定当前域名或IP</li>
+            <li>请不要在临时域名或临时IP中激活授权 (特殊情况请提前说明)</li>
+            <li>授权针对顶级域名授权,如授权www.nav.cn时,dh.nav.cn可以正常使用</li>
+            <li>绑定IP时部分功能会无法使用,如二级域名功能</li>
+            <li>激活后修改域名或IP需扣除修改次数(年授权需付费修改)</li>
+            <li>如有疑问请联系技术支持QQ: 271152681</li>
+        </blockquote>
         <h3 style = "margin-bottom:1em;">当前域名：<font color="red"><?php echo $HTTP_HOST; ?></font></h3>
         
         <div class="layui-form-item">
