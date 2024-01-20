@@ -1506,6 +1506,7 @@ function read_data(){
         $log .= in_array("Phar",$ext) ? "" : "Phar：不支持 (在线更新/主题下载)\n";
         $log .= in_array("hash",$ext) ? "" : "hash：不支持 (书签分享/生成注册码)\n";
         $log .= in_array("session",$ext) ? "" : "session：不支持 (影响较大)\n";
+        $log .= in_array("intl",$ext) ? "" : "intl：不支持 (使用中文域名时可能会导致异常)\n";
         $log .= "可用模块：".implode("&#12288;",$ext)."\n";
         $updatadb_logs = select_db('updatadb_logs','file_name',['file_name[!]'=>'install.sql']);
         $log .= "数据库更新记录:".(empty($updatadb_logs)?'无':"\n".implode("\n",$updatadb_logs))."\n";
@@ -1643,9 +1644,8 @@ function other_get_link_info(){
         msg(-1010,'URL不能为空!');
     }elseif(!preg_match("/^(http:\/\/|https:\/\/).*/",$url)){
         msg(-1010,'只支持识别http/https协议的链接!');
-    }elseif( !filter_var($url, FILTER_VALIDATE_URL) ) {
-         msg(-1010,'URL无效!');
     }
+    $url = process_url_idn($url);
     //获取网站标题 (HTML/JS跳转无法识别)
     $c = curl_init(); 
     curl_setopt($c, CURLOPT_URL, $url); 

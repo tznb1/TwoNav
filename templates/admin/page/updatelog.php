@@ -5,6 +5,18 @@
     <li class="layui-timeline-item">
         <i class="layui-icon layui-timeline-axis"></i>
         <div class="layui-timeline-content layui-text">
+            <h4 class="layui-timeline-title">v2.1.11-20240119</h4>
+            <ul>
+                <li>[修复] 链接识别遇到中文域名时提示URL无效</li>
+                <li>[修复] 链接模式为隐私保护(header)时中文域名无法跳转</li>
+                <li>[修复] 主链优先设为强制优先时不起作用</li>
+                <li>[优化] 一键诊断缺少intl扩展模块时给出提醒</li>
+            </ul>
+        </div>
+    </li>
+    <li class="layui-timeline-item">
+        <i class="layui-icon layui-timeline-axis"></i>
+        <div class="layui-timeline-content layui-text">
             <h4 class="layui-timeline-title">v2.1.09-20231220</h4>
             <ul>
                 <li>[修复] 紧急修复一个影响登录的bug,影响范围:v2.1.08版本 + MySQL数据库</li>

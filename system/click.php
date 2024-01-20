@@ -86,7 +86,9 @@ if(!empty($link['url_standby']) || $site['link_model'] == 'Transition'){
 if(!empty($link['url_standby'])) {
     $link['url_standby'] = unserialize($link['url_standby']);
     //主链优先模式
-    if(!empty($site['main_link_priority']) && $site['link_model'] != 'Transition'){
+    if($site['main_link_priority'] == '3'){
+        $site['link_model'] =  $site['link_model'] == 'direct' ? '302' : $site['link_model'];
+    }elseif($site['main_link_priority'] > 0 && $site['link_model'] != 'Transition'){
         $code = get_http_code($link['url'],3,($site['main_link_priority'] == 1)); 
         if(in_array(intval($code),[200,301,302,401]) ){ 
             $site['link_model'] =  $site['link_model'] == 'direct' ? '302' : $site['link_model'];
@@ -110,9 +112,11 @@ if ($site['link_model'] == '302'){ //302重定向(临时)
     exit;
 }elseif($site['link_model'] == 'Privacy'){ //隐私保护_header
     header("Content-type: text/html; charset=utf-8"); 
+    if(preg_match('/[\x{4e00}-\x{9fa5}]/u', $link['url']) > 0){
+        exit ('<html lang="zh-ch"><head><title>正在保护您的隐私..</title><meta name="referrer" content="same-origin"><script>window.location.href="'.$link['url'].'"</script></head>');
+    }
     header("Refresh:0;url=".$link['url']);
-    echo '<html lang="zh-ch"><head><title>正在保护您的隐私..</title><meta name="referrer" content="same-origin"></head>';
-    exit;
+    exit ('<html lang="zh-ch"><head><title>正在保护您的隐私..</title><meta name="referrer" content="same-origin"></head>');
 }elseif($site['link_model'] == 'Privacy_js'){ //隐私保护_js
     header("Content-type: text/html; charset=utf-8");
     echo '<html lang="zh-ch"><head><title>正在保护您的隐私..</title><meta name="referrer" content="same-origin"><script>window.location.href="'.$link['url'].'"</script></head>';

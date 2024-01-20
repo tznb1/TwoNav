@@ -776,3 +776,11 @@ function get_OEM(){
 function Not_Found() {
     header('HTTP/1.1 404 Not Found');header("status: 404 Not Found");exit;
 }
+
+function process_url_idn($url) {
+    $parsed_url = parse_url($url);
+    if(!preg_match('/[\x{4e00}-\x{9fa5}]/u', $parsed_url['host'])){
+        return $url;
+    }
+    return substr_replace($url, idn_to_ascii($parsed_url['host']), strpos($url, "//") + 2, strlen($parsed_url['host']));
+}
