@@ -5,6 +5,18 @@
     <li class="layui-timeline-item">
         <i class="layui-icon layui-timeline-axis"></i>
         <div class="layui-timeline-content layui-text">
+            <h4 class="layui-timeline-title">v2.1.12-20240308</h4>
+            <ul>
+                <li>[优化] 后台概要页支持时间差异较大提示,避免因时间错误导致的各种问题</li>
+                <li>[新增] 站点设置新增重复链接选项,解决部分用户需要添加相同链接的问题</li>
+                <li>[升级] Layui组件由2.9.2升级到2.9.7</li>
+                <li>[变更] 默认配置调整,概要页QQ群改为免费用户群(授权用户可凭授权加入会员群)</li>
+            </ul>
+        </div>
+    </li>
+    <li class="layui-timeline-item">
+        <i class="layui-icon layui-timeline-axis"></i>
+        <div class="layui-timeline-content layui-text">
             <h4 class="layui-timeline-title">v2.1.11-20240119</h4>
             <ul>
                 <li>[修复] 链接识别遇到中文域名时提示URL无效</li>

@@ -520,6 +520,9 @@ function other_services(){
         }else{
             $reload = true; //需要刷新
         }
+        if($GLOBALS['global_config']['offline'] == '1'){
+            msgA(['code'=>200,'message'=>"已开启离线模式,无法获取最新动态/官方公告/下载模板/更新系统等。"]);
+        }
         // 判断是否刷新数据
         if(!$global_config['offline'] && $reload){
             if(is_subscribe('bool')){
@@ -534,6 +537,12 @@ function other_services(){
                 write_global_config('notice',json_encode($new_data),'官方公告(缓存)');
                 write_global_config('sys_switch',"{$new_data['sys_switch']}",'sys_switch');
                 $data = $new_data;
+            }
+        }
+        //时间检测
+        if(isset($_GET['t']) && !empty($_GET['t'])){
+            if (abs( time() - $_GET['t'] ) > 300) {
+                $data['message'] .= "<br /><span style=\"color: #ff5722;\" >检测到客户端时间与服务器时间存在较大差异<br />这会导致部分功能无法正常使用<br />请及时校对服务器或客户端时间</span>";
             }
         }
         msgA($data);

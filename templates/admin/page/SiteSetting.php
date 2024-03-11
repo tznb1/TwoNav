@@ -73,17 +73,21 @@
                         <option value="20" >本地服务</option>
                         <option value="21" >本地服务(伪静态)</option>
                         <option value="2" >favicon.png.pub (小图标)</option>
-                        <!--<option value="4" >api.15777.cn</option>-->
-                        <!--<option value="5" >favicon.cccyun.cc</option>-->
                         <option value="6" >api.iowen.cn</option>
-                        <!--<option value="7" >toolb.cn</option>-->
-                        <!--<option value="8" >apis.jxcxin.cn</option>-->
-                        <!--<option value="9" >ico.kucat.cn</option>-->
                     </select>
                 </div>
                 <div class="layui-form-mid layui-word-aux">所有API接口均由其他大佬提供!若有异常请尝试更换接口!</div>
             </div>
-            
+            <div class="layui-form-item">
+                <label class="layui-form-label">重复链接</label>
+                <div class="layui-input-inline" >
+                    <select name="repeat_url" >
+                        <option value="0" selected>禁止</option>
+                        <option value="1">允许</option>
+                    </select>
+                </div>
+                <div class="layui-form-mid layui-word-aux">是否允许添加已存在的链接</div>
+            </div>
             <div class="layui-form-item">
                 <label class="layui-form-label">最新网址</label>
                 <div class="layui-input-inline" >

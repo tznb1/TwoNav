@@ -4,8 +4,8 @@ if(!defined('DIR')){header('HTTP/1.1 404 Not Found');header("status: 404 Not Fou
 //初始化
 session_name('TwoNav_initial');
 session_start();
-$layui['js']  = './static/Layui/v2.9.2/layui.js';
-$layui['css'] = './static/Layui/v2.9.2/css/layui.css';
+$layui['js']  = './static/Layui/v2.9.7/layui.js';
+$layui['css'] = './static/Layui/v2.9.7/css/layui.css';
 
 //判断请求类型
 if($_SERVER['REQUEST_METHOD'] === 'POST'){
@@ -312,10 +312,10 @@ function Write_Config(){
     $o_config['global_header'] = '';
     $o_config['global_footer'] = '';
     $o_config['api_extend'] = 0;
-    $o_config['apply'] = 0;
-    $o_config['guestbook'] = 0;
+    $o_config['apply'] = 1;
+    $o_config['guestbook'] = 1;
     $o_config['link_extend'] = 0;
-    $o_config['article'] = 0;
+    $o_config['article'] = 1;
     $o_config['c_name'] = 0;
     $o_config['c_desc'] = 0;
     $o_config['l_name'] = 0;

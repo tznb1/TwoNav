@@ -240,7 +240,7 @@ require 'header.php';
 <?php }?>
                             <tr>
                                 <td>用户交流</td>
-                                <td><a target="_blank" href="https://qm.qq.com/cgi-bin/qm/qr?k=LaIzFK2hfTYBZGR0cKvW3xZL6aNgcSXH&jump_from=webapi&authKey=LHh1NtAiGdK0wNyoZiHWrzAZTWWq26YgAwX0Ak7rBWchh6Y5ocUX/0cCXLMXvq/k" title="TwoNav - 技术交流">QQ群：695720839</a>
+                                <td><a target="_blank" href="https://qm.qq.com/cgi-bin/qm/qr?k=dMXOVXaYcnKMVmPsqBqpeSxcszy-z4vT&jump_from=webapi&authKey=SQArXAovtNKkH4VGv2Uy6p9wITMQxtjx8W2xLxCKkw3IOwXqQ9H34k4K9o1p4DVQ" title="TwoNav - 技术交流2">QQ群：621815595</a>
                                </td>
                             </tr>
                             <tr>

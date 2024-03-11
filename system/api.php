@@ -378,7 +378,7 @@ function write_link(){
         //检测链接是否合法
         check_link($fid,$title,$url,$_POST['url_standby']); 
         //检查链接是否已存在
-        if(get_db('user_links','lid',['uid'=>UID ,"url" => $url])){
+        if(empty(get_db('user_config','v',['uid'=>UID ,'t'=>'config','k'=>'repeat_url'])) && has_db('user_links',['uid'=>UID ,"url" => $url])){
             msg(-1,'链接已存在!');
         }
         //描述长度检测
@@ -581,7 +581,9 @@ function write_link(){
             msg(-1,'关键字长度不能大于'.$length_limit['l_key'].'个字节');
         }
         //检查链接是否已存在
-        if(has_db('user_links',['uid'=>UID ,'lid[!]'=>$lid, "url" => $url])){msg(-1,'链接已存在!');}
+        if(empty(get_db('user_config','v',['uid'=>UID ,'t'=>'config','k'=>'repeat_url'])) && has_db('user_links',['uid'=>UID ,'lid[!]'=>$lid, "url" => $url])){
+             msg(-1,'链接已存在!');
+        }
         //检查链接ID是否存在
         if(!has_db('user_links',['uid'=>UID ,'lid'=>$lid])){msg(-1,'链接ID不存在!');}
 
@@ -812,6 +814,7 @@ function write_site_setting(){
         'link_model'=>['v'=>['direct','Privacy','Privacy_js','Privacy_meta','301','302','Transition'],'msg'=>'链接模式参数错误'],
         'main_link_priority'=>['int'=>true,'min'=>0,'max'=>3,'msg'=>'主链优先参数错误'],
         'link_icon'=>['int'=>true,'min'=>0,'max'=>30,'msg'=>'链接图标参数错误'],
+        'repeat_url'=>['int'=>true,'min'=>0,'max'=>1,'msg'=>'重复链接参数错误'],
         'site_icon'=>['empty'=>true],
         'top_link'=>['int'=>true,'min'=>0,'max'=>100,'msg'=>'热门链接参数错误'],
         'new_link'=>['int'=>true,'min'=>0,'max'=>100,'msg'=>'最新链接参数错误'],
@@ -837,6 +840,7 @@ function write_site_setting(){
         @unlink($site['site_icon_file']);
         $s_site['site_icon_file'] = '';
     }
+    write_user_config('repeat_url',$_POST['repeat_url'],'config','重复链接');
     update_db("user_config",["v"=>$s_site],["k"=>'s_site',"uid"=>UID],[1,'保存成功']);
 }
 //写过渡页配置
@@ -1507,6 +1511,7 @@ function read_data(){
         $log .= in_array("hash",$ext) ? "" : "hash：不支持 (书签分享/生成注册码)\n";
         $log .= in_array("session",$ext) ? "" : "session：不支持 (影响较大)\n";
         $log .= in_array("intl",$ext) ? "" : "intl：不支持 (使用中文域名时可能会导致异常)\n";
+        $log .= $GLOBALS['global_config']['offline'] == '1' ? "离线模式：已开启,会导致无法更新系统/下载主题模板等\n" : "";
         $log .= "可用模块：".implode("&#12288;",$ext)."\n";
         $updatadb_logs = select_db('updatadb_logs','file_name',['file_name[!]'=>'install.sql']);
         $log .= "数据库更新记录:".(empty($updatadb_logs)?'无':"\n".implode("\n",$updatadb_logs))."\n";

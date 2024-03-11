@@ -8,7 +8,7 @@ layui.use(['layer','miniTab'], function(){
     
     
     // 获取最新信息
-    $.post(get_api('other_services','get_notice'),function(data,status){
+    $.post(get_api('other_services','get_notice') + '&t=' + Math.round(new Date() / 1000),function(data,status){
         if(data.code == 200) {
             $("#new_ver a").text(data.version);
             $('#notice_link').text('');

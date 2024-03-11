@@ -25,11 +25,12 @@ TwoNav 是一款开源的书签（导航）管理程序，界面简洁，安装�
 - [https://github.com/tznb1/TwoNav](https://github.com/tznb1/TwoNav)
 
 ### 技术支持
-- QQ: 271152681
-- QQ群: 695720839
+- 技术支持QQ: 271152681
+- 授权版QQ群: 695720839
+- 免费版QQ群: 621815595
 
 ### 运行环境
-* PHP: 7.3 - 8.2 
+* PHP: 7.3 - 8.2
 * 数据库: SQLite3 或 MySQL > 5.6.0
 
 ### 功能特色
