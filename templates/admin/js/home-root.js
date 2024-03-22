@@ -40,7 +40,7 @@ layui.use(['layer','miniTab'], function(){
         //获取当前版本 
         let current_version = $("#ver").text();
 
-        let pattern = /\d{8}/;
+        let pattern = /v(\d+\.\d+\.\d+)/;
         current_version = pattern.exec(current_version)[0];
         latest_version = pattern.exec(latest_version)[0];
     

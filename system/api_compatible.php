@@ -296,7 +296,8 @@ function get_a_category(){
 //获取TwoNav信息
 function app_info(){
     $data['php_version'] = floatval(PHP_VERSION);
-    $data['onenav_version'] = SysVer;
+    $data['onenav_version'] = 'v0.9.35-20240318'; //模拟版本号用于解决新版插件检测版本>1提示发生异常
+    $data['twonav_version'] = SysVer;
     $data['cat_num'] = count_db('user_categorys',['uid'=>UID])??0;
     $data['link_num'] = count_db('user_links',['uid'=>UID])??0;
     $data['username'] = U;

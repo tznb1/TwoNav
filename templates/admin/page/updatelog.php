@@ -5,6 +5,18 @@
     <li class="layui-timeline-item">
         <i class="layui-icon layui-timeline-axis"></i>
         <div class="layui-timeline-content layui-text">
+            <h4 class="layui-timeline-title">v2.1.13-20240321</h4>
+            <ul>
+                <li>[优化] 兼容OneNav浏览器扩展V1.1.0重构版</li>
+                <li>[优化] 浏览器插件的相关使用说明 ( 右上角账号>安全设置>获取API )</li>
+                <li>[优化] 更新检测逻辑由原来判断日期改成判断版本号</li>
+                <li>[优化] 支持PHP8.3环境下运行</li>
+            </ul>
+        </div>
+    </li>
+    <li class="layui-timeline-item">
+        <i class="layui-icon layui-timeline-axis"></i>
+        <div class="layui-timeline-content layui-text">
             <h4 class="layui-timeline-title">v2.1.12-20240308</h4>
             <ul>
                 <li>[优化] 后台概要页支持时间差异较大提示,避免因时间错误导致的各种问题</li>

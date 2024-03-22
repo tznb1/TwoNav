@@ -33,8 +33,8 @@ function check_env() {
     $ext = get_loaded_extensions(); //获取组件信息
     $php_version = floatval(PHP_VERSION); //获取PHP版本
     
-    if( ( $php_version < 7.3 ) || ( $php_version > 8.2 ) ) {
-        exit("当前PHP版本{$php_version}不满足要求,支持范围7.3 - 8.2");
+    if($php_version < 7.3 ) {
+        exit("当前PHP版本{$php_version}不满足要求,要求不低于7.3");
     }
     
     //检查是否支持pdo_sqlite
@@ -59,8 +59,8 @@ function diagnosis() {
         $php_version = floatval(PHP_VERSION);
         $log .= "PHP版本：{$php_version}<br />";
         $log .= "Web版本：{$_SERVER['SERVER_SOFTWARE']}<br />";
-        if( ( $php_version < 7.3 ) || ( $php_version > 8.1 ) ) {
-            $log .= "PHP版本：不满足要求,需要7.3 <= PHP <= 8.1 )<br />";
+        if( $php_version < 7.3) {
+            $log .= "PHP版本：不满足要求,要求不低于7.3<br />";
         }
         //获取加载的模块
         $ext = get_loaded_extensions(); 
@@ -85,6 +85,7 @@ function diagnosis() {
         $log .= in_array("Phar",$ext) ? "Phar：支持<br />" : "Phar：不支持 (在线更新/主题下载)<br />";
         $log .= in_array("hash",$ext) ? "hash：支持<br />" : "hash：不支持 (书签分享/生成注册码)<br />";
         $log .= in_array("session",$ext) ? "session：支持<br />" : "session：不支持 (影响较大)<br />";
+        $log .= in_array("intl",$ext) ? "" : "intl：不支持 (使用中文域名时可能会导致异常)\n";
         $log .= "可用模块：".implode("&#12288;",$ext)."<br />";
         exit($log);
 }

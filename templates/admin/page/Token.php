@@ -22,12 +22,14 @@
               <div class="layui-colla-item">
                 <div class="layui-colla-title">如何使用Chrome浏览器扩展 [非官方]</div>
                 <div class="layui-colla-content">
-                    前言:  由于浏览器扩展插件非TwoNav所开发适配,如存在Bug或无法使用属正常现象!<br />
-                    安装:  谷歌应用商店下载<a href="https://chrome.google.com/webstore/detail/onenav/omlkjgkogkfpjbdigianpdbjncdchdco?hl=zh-CN&authuser=0" >OneNav</a>并安装 ( 已知0.9.24 - 1.0.1可用,其他版本未知 )<br />
-                    设置S: 1.TwoNav后台>右上角账号>安全设置>API模式>设为<兼容模式> 2.在本页面获取Token<br />
-                    设置C: 插件API设置>填入域名和Token并保存>完成<br />
-                    问题1: 对于单用户使用,确保系统设置中默认用户是当前用户即可!多用户使用时需开启二级域名功能并将域名替换成用户的二级域名,注意结尾不需要带/
-                    问题2: 因为插件非官方开发维护,能用就尽量不要更新,如果插件更新可能会导致无法正常使用,需这个更新获得兼容性!
+                    注意事项:  由于浏览器扩展插件非TwoNav所开发适配,如存在Bug或无法使用属正常现象!<br />
+                    安装扩展:  扩展插件获取: 
+                        <a style="color:#3c78d8"  href="https://chromewebstore.google.com/detail/onenav/omlkjgkogkfpjbdigianpdbjncdchdco" >Chrome/Edge</a> /
+                        <a style="color:#3c78d8"  href="https://addons.mozilla.org/zh-CN/firefox/addon/onenav" >Firefox</a> 下载并安装 ( 已知0.9.24 - 1.1.0可用,其他版本未知 )<br />
+                    后台设置: 1.TwoNav后台>右上角账号>安全设置>API模式>设为<兼容模式> 2.在本页面获取Token<br />
+                    扩展设置: 设置>填入域名和Token并保存即可,注意: 扩展插件中的推荐内容与本程序无关<br />
+                    问题1: 对于单用户使用,确保系统设置中默认用户是当前用户即可!多用户使用时需开启二级域名功能并将域名替换成用户的二级域名,注意结尾不需要带/<br />
+                    问题2: 因为插件非官方开发维护,能用就尽量不要更新,更新后可能会导致无法正常使用!如有发现不兼容我们也会尽快跟进!<br />
                     问题3: 因为国内环境限制,你可能无法访问谷歌,这种情况你可以在交流群获取插件(安装方法自行百度,部分浏览器可能需要开发者模式加载)
                 </div>
               </div>

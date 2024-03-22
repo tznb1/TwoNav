@@ -1462,8 +1462,8 @@ function read_data(){
         $php_version = floatval(PHP_VERSION);
         $log .= "PHP版本：{$php_version}\n";
         $log .= "Web版本：{$_SERVER['SERVER_SOFTWARE']}\n";
-        if( ( $php_version < 7.3 ) || ( $php_version > 8.2 ) ) {
-            $log .= "PHP版本：不满足要求,支持范围7.3 - 8.2 )\n";
+        if( $php_version < 7.3  ) {
+            $log .= "PHP版本：不满足要求,要求不低于7.3\n";
         }
         //获取加载的模块
         $ext = get_loaded_extensions(); 
