@@ -49,6 +49,8 @@ INSERT INTO "updatadb_logs" ("file_name", "update_time", "status", "extra") VALU
 INSERT INTO "updatadb_logs" ("file_name", "update_time", "status", "extra") VALUES ('20230522.php', '1684762253', 'TRUE', '');
 INSERT INTO "updatadb_logs" ("file_name", "update_time", "status", "extra") VALUES ('20230715.php', '1689427853', 'TRUE', '');
 INSERT INTO "updatadb_logs" ("file_name", "update_time", "status", "extra") VALUES ('20230723.php', '1690119053', 'TRUE', '');
+INSERT INTO "updatadb_logs" ("file_name", "update_time", "status", "extra") VALUES ('20231218.php', '1702828800', 'TRUE', '');
+INSERT INTO "updatadb_logs" ("file_name", "update_time", "status", "extra") VALUES ('20240328.php', '1711296000', 'TRUE', '');
 
 -- 创建用户表
 DROP TABLE IF EXISTS `global_user`;
@@ -90,6 +92,8 @@ CREATE TABLE IF NOT EXISTS `user_categorys` (
   `description` text NOT NULL DEFAULT '' COMMENT '描述',
   `font_icon` text NOT NULL COMMENT '字体图标',
   `icon` text NOT NULL DEFAULT '' COMMENT '个性图标',
+  `category_type` VARCHAR(255) NOT NULL DEFAULT 'link' COMMENT '分类类型',
+  `max` VARCHAR(255) NOT NULL DEFAULT '' COMMENT '显示数量',
   `extend` text NOT NULL COMMENT '扩展',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COMMENT='用户分类';
@@ -300,3 +304,21 @@ CREATE TABLE IF NOT EXISTS `user_article_list` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4;
 
+-- 第三方用户表
+CREATE TABLE IF NOT EXISTS `third_party_user` (
+  `id` int UNSIGNED NOT NULL AUTO_INCREMENT,  
+  `uid` int UNSIGNED NOT NULL COMMENT '用户id',  
+  `inlet` text NOT NULL COMMENT '入口',  
+  `provider` text NOT NULL COMMENT '提供商',  
+  `nickname` text NOT NULL COMMENT '昵称',  
+  `openid` text NOT NULL COMMENT '第三方用户标识',  
+  `access_token` text NOT NULL COMMENT '访问令牌',  
+  `refresh_token` text NOT NULL COMMENT '刷新令牌',  
+  `faceimg` text NOT NULL COMMENT '头像URL',  
+  `bind_time` int UNSIGNED NOT NULL DEFAULT 0 COMMENT '绑定时间',  
+  `login_time` int UNSIGNED NOT NULL DEFAULT 0 COMMENT '登录时间',  
+  `expires` int UNSIGNED NOT NULL DEFAULT 0 COMMENT '到期时间',  
+  `extend` text NOT NULL COMMENT '扩展',  
+  FOREIGN KEY (`uid`) REFERENCES `global_user` (`ID`) ON DELETE CASCADE,  
+  PRIMARY KEY (`id`)  
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4;

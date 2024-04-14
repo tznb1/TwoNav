@@ -289,6 +289,7 @@ function write_category(){
 }
 
 //读链接列表
+//读链接列表
 function read_link_list(){
     if($_GET['type'] == 'extend_list'){
         if($GLOBALS['global_config']['link_extend'] != 1 || !check_purview('link_extend',1)){
@@ -307,7 +308,8 @@ function read_link_list(){
     $page   = empty(intval($_REQUEST['page'])) ? 1 : intval($_REQUEST['page']);
     $limit  = empty(intval($_REQUEST['limit'])) ? 50 : intval($_REQUEST['limit']);
     $offset = ($page - 1) * $limit; //起始行号
-    $where = ["uid"=> UID];
+    $where = ["uid"=> UID,'fid[<=]'=>10000000];
+    
     //分类筛选
     if(!empty($fid)){
         $where['AND']['fid'] = $fid;
@@ -317,6 +319,12 @@ function read_link_list(){
         //     array_push($category,$fid);
         //     $where['AND']['fid'] = $category;
         // }
+    }else{
+        //240405新增: 避免查找全部时将已停用分类下的链接显示出来
+        $category_where = ['uid'=>UID,'fid'=>0,'status'=>1];
+        $fid = select_db('user_categorys','cid', $category_where);
+        $category_where['fid'] = $fid;
+        $where['AND']['fid'] = array_merge ($fid,select_db('user_categorys','cid',$category_where));
     }
     //属性筛选
     if($_POST['property']==='0' || $_POST['property'] ==='1'){$where['AND']['property'] = ($_POST['property'] == 1?1:0);}
@@ -1431,7 +1439,7 @@ function read_data(){
             msg(1,'您已开启离线模式,无法使用该功能!');
         }
         $ch = curl_init();
-        curl_setopt($ch, CURLOPT_URL, $_POST['url']);
+        curl_setopt($ch, CURLOPT_URL, 'https://gitee.com/tznb/TwoNav_Resource/raw/master/connectivity_test.txt');
         curl_setopt($ch, CURLOPT_TIMEOUT, 10);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);

@@ -21,7 +21,6 @@
 							<ul class="layui-tab-title">
 								<li class="layui-this">配色</li>
 								<li>设置</li>
-								<li>天气</li>
 							</ul>
 							<div class="layui-tab-content">
 								<!--配色Tab-->
@@ -217,57 +216,6 @@
 									</div>
 
 								</div>
-								<!--天气Tab-->
-								<div class="layui-tab-item">
-									<div class="layui-form-item">
-										<input id="WeatherPosition-input" type="hidden" value="<?php echo $theme_config['WeatherPosition'];?>">
-										<label class="layui-form-label">插件位置</label>
-										<div class="layui-input-inline">
-											<select lay-verify="required" id="WeatherPosition" name="WeatherPosition" lay-search>
-												<option value="0">关闭</option>
-												<option value="1">头部工具条</option>
-												<option value="2">正文右上角</option>
-											</select>
-										</div>
-										<div class="layui-form-mid layui-word-aux">插件显示的位置</div>
-									</div>
-
-									<div class="layui-form-item">
-										<input id="WeatherBackground-input" type="hidden" value="<?php echo $theme_config['WeatherBackground'];?>">
-										<label class="layui-form-label">天气背景</label>
-										<div class="layui-input-inline">
-											<select lay-verify="required" id="WeatherBackground" name="WeatherBackground" lay-search>
-												<option value="1">随天气变化</option>
-												<option value="2">浅色</option>
-												<option value="3">深色</option>
-												<option value="4">透明</option>
-											</select>
-										</div>
-										<div class="layui-form-mid layui-word-aux">天气插件的背景颜色</div>
-									</div>
-
-									<div class="layui-form-item">
-										<input id="WeatherFontColor-input" type="hidden" value="<?php echo $theme_config['WeatherFontColor'];?>">
-										<label class="layui-form-label">天气字体色</label>
-										<div class="layui-input-inline">
-											<select lay-verify="required" id="WeatherFontColor" name="WeatherFontColor" lay-search>
-												<option value="1">随头部字体色</option>
-												<option value="2">随标题字体色</option>
-											</select>
-										</div>
-										<div class="layui-form-mid layui-word-aux">天气插件的字体颜色</div>
-									</div>
-									<div class="layui-form-item">
-										<label class="layui-form-label">插件Key</label>
-										<div class="layui-input-inline" style="width: 50%;">
-											<input type="url" id="WeatherKey" name="WeatherKey" value="<?php echo $theme_config['WeatherKey'];?>" placeholder="" autocomplete="off" class="layui-input">
-										</div>
-										<div class="layui-form-mid layui-word-aux">
-											<a target="_blank" style="color:#03a9f4!important;" href='https://widget.qweather.com/create-simple/'>申请Key</a>
-										</div>
-									</div>
-								</div>
-
 
 								<div class="layui-form-item" style="padding-top: 10px;">
 									<div class="layui-input-block">
@@ -288,7 +236,7 @@ var u = '<?php echo $u?>';
 var t = '<?php echo $theme;?>';
 var s = '<?php echo $_GET['source'];?>';
 var api = get_api('write_theme','config') + '&t=' + t;
-layui.use(['form','colorpicker','element','dropdown','background'], function(){
+layui.use(['form','colorpicker','element','dropdown'], function(){
     var form = layui.form;
     var colorpicker = layui.colorpicker;
     var dropdown = layui.dropdown;
@@ -327,9 +275,7 @@ dropdown.render({elem: '#CardBackgroundColor-input',data:BackgroundColor ,click:
 dropdown.render({elem: '#OtherBackgroundColor-input',data:BackgroundColor ,click: function(obj){this.elem.val(obj.code);},style: 'width: 225px;'});
 dropdown.render({elem: '#SidebarBackgroundColor-input',data:BackgroundColor ,click: function(obj){this.elem.val(obj.code);},style: 'width: 225px;'});
 
-//背景图下拉菜单 
-layui.background.render("input[name='backgroundURL']");
- 
+
 function layeropen(content,url){
     layer.open({
         type: 1

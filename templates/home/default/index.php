@@ -2,8 +2,6 @@
 $night = $theme_config['night'] == 1 || ( $theme_config['night'] == 2 && (date('G') <= 12 || date('G') >= 19 )) ? 'mdui-theme-layout-dark':'';
 $background = $theme_config['backgroundURL'];
 $DescrRowNumber = intval($theme_config['DescrRowNumber']);
-$WeatherKey = $theme_config['WeatherKey'];
-$WeatherPosition =  intval(empty($WeatherKey)?"0":$theme_config['WeatherPosition']);
 $referrer = $theme_config['referrer'];
 $protectA = (($referrer == 'link' || $referrer == 'link_icon') && $site['link_model'] == 'direct') ? 'referrerpolicy="same-origin"':'';
 $protectIMG = ($referrer == 'link_icon' || $referrer == 'icon' ) ? 'referrerpolicy="same-origin"':'';
@@ -83,7 +81,6 @@ body{
 				</div>
 			</div>
 	
-			<?php if($WeatherPosition==1){ echo '<div id="he-plugin-simple"></div>';} ?>
 			<a class = "mdui-hidden-xs mdui-btn mdui-btn-icon" id="config"  title = "主题设置" <?php if(!is_login) {echo 'style="display:none;"';}?>><i   class="mdui-icon material-icons HFC">&#xe40a;</i></a>
 			<!-- 新版搜索框END -->
 		</div>
@@ -163,7 +160,6 @@ body{
 	<!--左侧抽屉导航END-->
 	<!--正文内容部分-->
 	<div class="mdui-container">
-	    <?php if($WeatherPosition==2){ echo '<div style="position:fixed;z-index:1000;right:0px;width:160px;padding-right:0px;"><div id="he-plugin-simple"></div></div>'."\n";} ?>
 		<div class="mdui-row">
 			<!-- 遍历分类目录 -->
             <?php foreach ( $categorys as $category ) {
@@ -240,41 +236,5 @@ var is_login = <?php echo is_login?'true':'false'; ?>;
 <script src = "<?php echo $libs?>/Other/holmes.js"></script>
 <script src = "<?php echo $libs; ?>/jquery/jquery.qrcode.min.js"></script>
 <script src = "<?php echo $theme_dir?>/static/embed.js?v=<?php echo $theme_ver;?>"></script>
-<?php 
-// 如果Key不为空,则加载天气插件!
-if ($WeatherPosition != 0){
-    $WeatherFontColor = $theme_config['WeatherFontColor'];  
-    if ($WeatherFontColor == 1){
-        $WeatherFontColor = $theme_config['HeadFontColor'];
-    }elseif($WeatherFontColor == 2){
-        $WeatherFontColor = $theme_config['TitleFontColor'];
-    }
-    ?>
-<!--天气插件-->
-<script>
-WIDGET = {
-  "CONFIG": {
-    "modules": "01234", //实况温度、城市、天气状况、预警
-    "background": "<?php echo $theme_config['WeatherBackground'];?>", //背景颜色
-    "tmpColor": "<?php echo $WeatherFontColor ?>", //温度文字颜色
-    "tmpSize": "16",
-    "cityColor": "<?php echo $WeatherFontColor ?>", //城市名文字颜色
-    "citySize": "16",
-    "aqiColor": "<?php echo $WeatherFontColor ?>", //空气质量文字颜色
-    "aqiSize": "16", 
-    "weatherIconSize": "24", //天气图标尺寸
-    "alertIconSize": "18", //预警图标尺寸
-    "padding": "5px 1px 5px 1px", //边距
-    "borderRadius": "5", //圆角
-    "key": "<?php echo $WeatherKey;?>"
-  }
-}
-</script>
-<script src="https://widget.qweather.net/simple/static/js/he-simple-common.js?v=2.0"></script>
-<!--天气插件End-->
-<?php
-}
-?>
-
 </body>
 </html>

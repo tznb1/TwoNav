@@ -15,6 +15,5 @@ layui.config({
     treetable: 'treetable-lay/treetable', //table树形扩展
     tableSelect: 'tableSelect/tableSelect', // table选择扩展 
     xIcon: 'xIcon/xIcon', //图标选择器
-    treeSelect: 'treeSelect/treeSelect', // 树形下拉选择器
-    background: 'background/background' //随机背景图
+    treeSelect: 'treeSelect/treeSelect'
 });

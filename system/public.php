@@ -521,6 +521,9 @@ function Get_IP() {
 
 //获取URL状态码
 function get_http_code($url,$TIMEOUT = 10 ,$NOBODY = true) { 
+    if(!preg_match("/^(http:\/\/|https:\/\/).*/",$url)){
+        return false; 
+    }
     $curl = curl_init(); 
     curl_setopt($curl, CURLOPT_URL, $url);
     curl_setopt($curl, CURLOPT_HEADER, 1);
@@ -535,6 +538,9 @@ function get_http_code($url,$TIMEOUT = 10 ,$NOBODY = true) {
 }
 
 function ccurl($url,$overtime = 3,$Referer = false,$post_data = false){
+    if(!preg_match("/^(http:\/\/|https:\/\/).*/",$url)){
+        return false; 
+    }
     try {
         $curl  =  curl_init ( $url ) ; //初始化
         curl_setopt($curl, CURLOPT_TIMEOUT, $overtime ); //超时
@@ -565,6 +571,9 @@ function ccurl($url,$overtime = 3,$Referer = false,$post_data = false){
 }
 
 function downFile($url, $file = '', $savePath = './data/temp/',$referer = '',$TIMEOUT = 60,$post_data = false){
+    if(!preg_match("/^(http:\/\/|https:\/\/).*/",$url)){
+        return false; 
+    }
     $ch = curl_init();
     curl_setopt($ch, CURLOPT_URL, $url);
     curl_setopt($ch, CURLOPT_TIMEOUT, $TIMEOUT); //超时/秒

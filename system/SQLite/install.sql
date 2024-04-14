@@ -41,7 +41,8 @@ INSERT INTO "updatadb_logs" ("file_name", "update_time", "status", "extra") VALU
 INSERT INTO "updatadb_logs" ("file_name", "update_time", "status", "extra") VALUES ('20230522.php', '1684762253', 'TRUE', '');
 INSERT INTO "updatadb_logs" ("file_name", "update_time", "status", "extra") VALUES ('20230715.php', '1689427853', 'TRUE', '');
 INSERT INTO "updatadb_logs" ("file_name", "update_time", "status", "extra") VALUES ('20230723.php', '1690119053', 'TRUE', '');
-
+INSERT INTO "updatadb_logs" ("file_name", "update_time", "status", "extra") VALUES ('20231218.php', '1702828800', 'TRUE', '');
+INSERT INTO "updatadb_logs" ("file_name", "update_time", "status", "extra") VALUES ('20240328.php', '1711296000', 'TRUE', '');
 
 -- 创建用户表
 CREATE TABLE IF NOT EXISTS "global_user" (
@@ -79,6 +80,8 @@ CREATE TABLE IF NOT EXISTS "user_categorys" (
   "description" TEXT(128) NOT NULL DEFAULT "",
   "font_icon" TEXT DEFAULT "",
   "icon" TEXT DEFAULT "",
+  "category_type" TEXT DEFAULT "link",
+  "max" text DEFAULT "",
   "extend" TEXT DEFAULT ""
 );
 
@@ -263,4 +266,22 @@ CREATE TABLE "user_article_list" (
   "cover" TEXT,
   "extend" TEXT,
   CONSTRAINT "id" UNIQUE ("id" ASC)
+);
+
+-- 第三方用户表
+CREATE TABLE "third_party_user" (
+  "id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+  "uid" INTEGER NOT NULL,
+  "inlet" TEXT NOT NULL DEFAULT "",
+  "provider" TEXT NOT NULL DEFAULT "",
+  "nickname" TEXT NOT NULL DEFAULT "",
+  "openid" TEXT NOT NULL DEFAULT "",
+  "access_token" TEXT NOT NULL DEFAULT "",
+  "refresh_token" TEXT NOT NULL DEFAULT "",
+  "faceimg" TEXT NOT NULL DEFAULT "",
+  "bind_time" integer NOT NULL DEFAULT 0,
+  "login_time" integer NOT NULL DEFAULT 0,
+  "expires" integer NOT NULL DEFAULT 0,
+  "extend" TEXT NOT NULL DEFAULT "",
+  CONSTRAINT "uid" FOREIGN KEY ("uid") REFERENCES "global_user" ("ID") ON DELETE CASCADE
 );

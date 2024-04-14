@@ -88,27 +88,18 @@ layui.use(['layer','form','miniTab'], function () {
         $("#console_log").text("");
         $("#console_log").append("浏览器UA：" + navigator.userAgent +"\n");
         $("#console_log").append("客户端时间：" +  timestampToTime(Math.round(new Date() / 1000) ) +"\n");
-        
-        var urls = [
-          ['资源节点-码云', 'https://gitee.com/tznb/TwoNav_Resource/raw/master/connectivity_test.txt']
-        ];
-        urls.forEach(function(route) {
-          var routeName = route[0];
-          var url = route[1];
-          $("#console_log").append("正在检测: " + routeName +"\n");
-          $.ajax({
-            url: get_api('read_data', 'connectivity_test'),
-            type: 'POST',
-            data: { url: url },
-            //async: false,
-            success: function(data, status) {
-                layer.closeLast('loading');
-                $("#console_log").append(data.msg + "\n");
-            },error: function(jqXHR, textStatus, errorThrown) {
-                layer.closeLast('loading');
-                $("#console_log").append(routeName + ": 请求 " + url + " 发生错误：" + errorThrown + "\n");
-            }
-          });
+        $("#console_log").append("正在检测: " + 'gitee' +"\n");
+        $.ajax({
+          url: get_api('read_data', 'connectivity_test'),
+          type: 'POST',
+          data: { id: '1' },
+          success: function(data, status) {
+              layer.closeLast('loading');
+              $("#console_log").append(data.msg + "\n");
+          },error: function(jqXHR, textStatus, errorThrown) {
+              layer.closeLast('loading');
+              $("#console_log").append('gitee' + ": 请求 " + url + " 发生错误：" + errorThrown + "\n");
+          }
         });
     });
     //phpinfo

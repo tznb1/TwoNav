@@ -5,6 +5,20 @@
     <li class="layui-timeline-item">
         <i class="layui-icon layui-timeline-axis"></i>
         <div class="layui-timeline-content layui-text">
+            <h4 class="layui-timeline-title">v2.1.14-20240414</h4>
+            <ul>
+                <li>[修复] 修复已知的安全漏洞提高安全性</li>
+                <li>[修复] 分类停用时链接列表查找全部时出现已停用分类下的链接</li>
+                <li>[升级] Layui组件由2.9.7升级到2.9.8</li>
+                <li>[优化] Docker镜像支持在线下载安装包</li>
+                <li>[移除] 和风天气插件 ( 因官方停止服务 )</li>
+                <li>[移除] 随机背景图URL ( 大多数已经无法正常使用了 )</li>
+            </ul>
+        </div>
+    </li>
+    <li class="layui-timeline-item">
+        <i class="layui-icon layui-timeline-axis"></i>
+        <div class="layui-timeline-content layui-text">
             <h4 class="layui-timeline-title">v2.1.13-20240321</h4>
             <ul>
                 <li>[优化] 兼容OneNav浏览器扩展V1.1.0重构版</li>

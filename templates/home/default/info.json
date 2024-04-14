@@ -2,10 +2,9 @@
     "name":"默认主题(加强)",
     "description":"默认主题(加强)",
     "homepage":"https://gitee.com/tznb/TwoNav",
-    "version":"2.1.0",
-    "update":"2023/09/28",
+    "version":"2.1.1",
+    "update":"2024/04/14",
     "author":"落幕",
-    "screenshot":"https://s3.bmp.ovh/imgs/2022/04/17/8cac968a8cc8135c.png",
     "config": {
         "HeadBackgroundColor":"#3f51b5",
         "SidebarBackgroundColor":"",
@@ -19,12 +18,7 @@
         "CardNum":"0",
         "backgroundURL":"",
         "DescrRowNumber":"2",
-        "night":"0",
-        "WeatherBackground":"1",
-        "WeatherKey":"dd2e9ab2728d4b3c91245fe4057cb9ce",
-        "WeatherFontColor":"1",
-        "WeatherPosition":"2",
-        "ClickLocation":"0"
+        "night":"0"
     },
     "support":{
         "subitem":0,
