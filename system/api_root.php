@@ -152,8 +152,6 @@ function other_upsys(){
                 //查找数据库是否已安装更新
                 if(empty(get_db('updatadb_logs','*',['file_name'=>$file_name]))){
                     require $filePath; //载入升级脚本
-                    //脚本规范:头部判断是否有DIR常量来避免被直接访问,中间执行升级脚本!底部将执行记录写入数据库!
-                    //insert_db('updatadb_logs',['file_name'=>$file_name,'update_time'=>time(),'status'=>'TRUE','extra'=>'']);
                 } 
             }
         } catch (Exception $e) {
@@ -163,7 +161,6 @@ function other_upsys(){
             $updatadb_logs = select_db('updatadb_logs','file_name',['file_name[!]'=>'install.sql']);
             $msg .= "当前版本：" . SysVer . "\n";
             $msg .= "数据储存：{$GLOBALS['db_config']['type']}\n";
-            //$msg .= "脚本列表:".(empty($file_list)?'无': "\n".implode("\n",$file_list))."\n" ;
             $msg .= "更新记录:".(empty($updatadb_logs)?'无':"\n".implode("\n",$updatadb_logs))."\n";
             msg(1,$msg);
         }else{
@@ -347,10 +344,7 @@ function write_sys_settings(){
         if(!empty($_POST['copyright'])){$o_config['copyright'] = "";$filter = true;}
         if(!empty($_POST['global_header'])){$o_config['global_header'] = "";$filter = true;}
         if(!empty($_POST['global_footer'])){$o_config['global_footer'] = "";$filter = true;}
-        if($_POST['apply'] == 1){$o_config['apply'] = 0;$filter = true;}
-        if($_POST['guestbook'] == 1){$o_config['guestbook'] = 0;$filter = true;}
         if($_POST['link_extend'] == 1){$o_config['link_extend'] = 0;$filter = true;}
-        if($_POST['article'] == 1){$o_config['article'] = 0;$filter = true;}
         if($_POST['static_link'] == 1){$o_config['static_link'] = 0;$filter = true;}
     }
     update_db("global_config", ["v" => $o_config], ["k" => "o_config"],[1,($filter ?"保存成功,未检测到有效授权,带*号的配置无法为你保存":"保存成功")]);

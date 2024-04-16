@@ -4,23 +4,26 @@ if(!defined('DIR')){header('HTTP/1.1 404 Not Found');header("status: 404 Not Fou
 //初始化
 session_name('TwoNav_initial');
 session_start();
-$layui['js']  = './static/Layui/v2.9.8/layui.js';
-$layui['css'] = './static/Layui/v2.9.8/css/layui.css';
+$layui_dir = "./static/Layui";
+foreach(scandir($layui_dir) as $value) {
+    if(is_dir($layui_dir . '/' . $value) && preg_match('/^v\d+\.\d+\.\d+$/', $value) && is_file("{$layui_dir}/$value/layui.js")) {
+        $layui['js']  = "./static/Layui/{$value}/layui.js";
+        $layui['css'] = "./static/Layui/{$value}/css/layui.css";
+    }
+}
 
 //判断请求类型
 if($_SERVER['REQUEST_METHOD'] === 'POST'){
     if(empty($_SESSION['initial'])){ msg(-1,'当前环境无法满足程序运行条件!'); }
     define('Debug',TRUE);
     $db = null;
-    $USER_DB =null;
+    $USER_DB = null;
     require DIR.'/system/public.php';
     install();
 }else{
     clearstatcache();//清除缓存
     check_env();
-    $libs = './static'; //使用本地静态库
 }
-
 
 // 环境检查
 function check_env() {
@@ -57,7 +60,7 @@ function diagnosis() {
         
         //检查PHP版本，需要大于5.6小于8.0
         $php_version = floatval(PHP_VERSION);
-        $log .= "PHP版本：{$php_version}<br />";
+        $log .= "PHP版本：{$php_version}  <a href='./?phpinfo=1' style='text-decoration: none;'> 显示phpinfo</a> <br />";
         $log .= "Web版本：{$_SERVER['SERVER_SOFTWARE']}<br />";
         if( $php_version < 7.3) {
             $log .= "PHP版本：不满足要求,要求不低于7.3<br />";
@@ -267,7 +270,7 @@ function Write_Config(){
     $s_site['title'] = '我的书签'; //站点标题
     $s_site['subtitle'] = 'TwoNav'; //副标题
     $s_site['logo'] = '我的书签'; //站点logo
-    $s_site['keywords'] = 'TwoNav,开源导航,开源书签,简洁导航,云链接,个人导航,个人书签,扩展,多用户,落幕'; //关键字
+    $s_site['keywords'] = 'TwoNav,开源导航,开源书签,简洁导航,网址导航,云链接,个人导航,个人书签'; //关键字
     $s_site['description'] = 'TwoNav 是一款使用PHP + SQLite3/MySQL 开发的简约导航/书签管理器。'; //描述
     $s_site['link_model'] = '302'; //链接模式
     $s_site['link_icon'] = '0'; //链接图标
@@ -458,15 +461,17 @@ function Write_Config(){
   </div>
  </div>
 <!--MySQL/MariaDB 配置 End-->
- <div class="layui-form-mid layui-word-aux">安装方式：全新安装 &ensp;&ensp;&ensp;&ensp;&ensp;</div>
- <div class="layui-form-mid layui-word-aux">推荐配置：Nginx-1.20 +&ensp;PHP-8.1 </div>
- <button class="layui-btn" lay-submit lay-filter="register" style = "width:100%;">开始安装</button>
+ <div class="layui-form-mid layui-word-aux" style="width: 99%;">
+     <span>推荐环境：Nginx &&ensp;PHP8+ </span>
+     <a href="./?diagnosis=1" style="float: right;color: #fff;" target="_blank">info</a>
+ </div>
+ <button class="layui-btn" lay-submit lay-filter="install" style = "width:100%;">开始安装</button>
 </form>
 
 </div>
 </div>
 </div>
-<script src = '<?php echo $libs?>/jquery/jquery-3.6.0.min.js'></script>
+<script src = './static/jquery/jquery-3.6.0.min.js'></script>
 <script src = '<?php echo $layui['js']; ?>'></script>
 <script>
 
@@ -478,7 +483,7 @@ set_db_type(db_type);
 
 layui.use(['form'], function(){
     var form = layui.form;
-    
+    var install = 0;
     //伪静态检测
     var request = new XMLHttpRequest();
     request.open('GET', './static/Other/login.css?t=' + new Date().getTime(), true);
@@ -499,7 +504,7 @@ layui.use(['form'], function(){
     
     
     //开始安装
-    form.on('submit(register)', function(data){
+    form.on('submit(install)', function(data){
         var d = data.field;
         if(!/^[A-Za-z0-9]{3,13}$/.test(d.User)){
             layer.msg('账号只能是3到13位的数字和字母!', {icon: 5});
@@ -516,20 +521,40 @@ layui.use(['form'], function(){
                 return false;
             }
         }
+        //防止重复安装
+        if(install > 0){
+            return false;
+        }
+        //安装标记和动态效果
+        install = 1;
+        layer.load(1, {shade:[0.5,'#fff']});
+        layer.msg('正在安装中..', {icon: 16,time: 1000*300});
+        setTimeout(function() {
+            if(install == 1){
+                layer.msg('如果页面长时间无响应，请检查您的运行环境和网络，然后尝试刷新页面再次操作...', {icon: 16,time: 1000*300});
+            }
+        }, 6000);
         $.post('./index.php?c=install',d,function(Re,status){
             if(Re.code == 1){
+                install = 2;
+                layer.closeLast('loading');
                 open_msg(d.User,d.Password);
             }else if(Re.code == -2){ //强制安装
                 layer.confirm(Re.msg,{icon: 3, title:'确定继续 ?'}, function(index){
                     $.post('./index.php?c=install&f=yes',d,function(Re,status){
+                        layer.closeLast('loading');
                         if(Re.code == 1){
+                            install = 2;
                             open_msg(d.User,d.Password);
                         }else{
+                            install = 0;
                             layer.msg(Re.msg, {icon: 5,time: 60*1000});
                         }
                     });
                 });
             }else{
+                install = 0;
+                layer.closeLast('loading');
                 layer.msg(Re.msg, {icon: 5,time: 60*1000});
             }
         });
