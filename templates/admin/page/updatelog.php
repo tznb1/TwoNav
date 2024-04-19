@@ -5,7 +5,7 @@
     <li class="layui-timeline-item">
         <i class="layui-icon layui-timeline-axis"></i>
         <div class="layui-timeline-content layui-text">
-            <h4 class="layui-timeline-title">v2.1.14-20240416</h4>
+            <h4 class="layui-timeline-title">v2.1.14-20240419</h4>
             <ul>
                 <li>[修复] 修复已知的安全漏洞提高安全性</li>
                 <li>[修复] 分类停用时链接列表查找全部时出现已停用分类下的链接</li>

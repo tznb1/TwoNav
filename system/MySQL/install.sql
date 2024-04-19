@@ -68,6 +68,8 @@ CREATE TABLE IF NOT EXISTS `global_user` (
   `Login` varchar(16) NOT NULL COMMENT '登录入口',
   `LoginConfig` text NOT NULL COMMENT '登陆配置',
   `kct` int(10) UNSIGNED DEFAULT '0' COMMENT 'Key清理时间',
+  `domain` text NOT NULL COMMENT '个性域名',
+  `phone` text NOT NULL COMMENT '手机号',
   `Extend1` text NOT NULL COMMENT '扩展1',
   `Extend2` text NOT NULL COMMENT '扩展2',
   PRIMARY KEY (`ID`),

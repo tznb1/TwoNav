@@ -59,6 +59,8 @@ CREATE TABLE IF NOT EXISTS "global_user" (
   "Login" TEXT(16) NOT NULL,
   "LoginConfig" TEXT NOT NULL,
   "kct" integer(10) DEFAULT 0,
+  "domain" TEXT NOT NULL DEFAULT "",
+  "phone" TEXT NOT NULL DEFAULT "",
   "Extend1" TEXT NOT NULL DEFAULT "",
   "Extend2" TEXT NOT NULL DEFAULT "",
   CONSTRAINT "User" UNIQUE ("User" ASC, "Email" ASC)
