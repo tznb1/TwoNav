@@ -15,21 +15,21 @@ $title='系统设置';require(dirname(__DIR__).'/header.php');
             <div class="layui-form-item">
                 <label class="layui-form-label">账号</label>
                 <div class="layui-input-inline">
-                    <input type="pass" name="user" lay-verify="required" lay-reqtext="账号不能为空" placeholder='请输入账号' autocomplete="off" class="layui-input">
+                    <input type="pass" name="user" lay-reqtext="账号不能为空" placeholder='请输入账号' autocomplete="off" class="layui-input">
                 </div>
                 <div class="layui-form-mid layui-word-aux">邮箱账号,例如: admin@qq.com</div>
             </div>
             <div class="layui-form-item">
                 <label class="layui-form-label">密码</label>
                 <div class="layui-input-inline">
-                    <input type="password" name="pwd" lay-verify="required" lay-reqtext="密码不能为空" placeholder='请输入密码或授权码' autocomplete="off" class="layui-input">
+                    <input type="password" name="pwd" lay-reqtext="密码不能为空" placeholder='请输入密码或授权码' autocomplete="off" class="layui-input">
                 </div>
                 <div class="layui-form-mid layui-word-aux">邮箱密码,也可能是独立密码或者授权码</div>
             </div>
             <div class="layui-form-item">
                 <label class="layui-form-label">服务器</label>
                 <div class="layui-input-inline">
-                    <input type="text" name="host" lay-verify="required" lay-reqtext="服务器不能为空" placeholder='请输入发件服务器地址' autocomplete="off" class="layui-input">
+                    <input type="text" name="host" lay-reqtext="服务器不能为空" placeholder='请输入发件服务器地址' autocomplete="off" class="layui-input">
                 </div>
                 <div class="layui-form-mid layui-word-aux">例如: smtp.qq.com</div>
             </div>
@@ -37,7 +37,7 @@ $title='系统设置';require(dirname(__DIR__).'/header.php');
             <div class="layui-form-item">
                 <label class="layui-form-label">端口</label>
                 <div class="layui-input-inline">
-                    <input type="number" name="port" lay-verify="required" lay-reqtext="端口不能为空" placeholder='请输入服务器端口' value="465" autocomplete="off" class="layui-input">
+                    <input type="number" name="port" lay-reqtext="端口不能为空" placeholder='请输入服务器端口' value="465" autocomplete="off" class="layui-input">
                 </div>
                 <div class="layui-form-mid layui-word-aux">通常是: 465或587</div>
             </div>
@@ -56,7 +56,7 @@ $title='系统设置';require(dirname(__DIR__).'/header.php');
             <div class="layui-form-item">
                 <label class="layui-form-label">发送人</label>
                 <div class="layui-input-inline">
-                    <input type="text" name="sender" lay-verify="required" lay-reqtext="发送人名称不能为空" placeholder='' autocomplete="off" class="layui-input">
+                    <input type="text" name="sender" lay-reqtext="发送人名称不能为空" placeholder='' autocomplete="off" class="layui-input">
                 </div>
                 <div class="layui-form-mid layui-word-aux">例如: TwoNav</div>
             </div>
@@ -83,7 +83,7 @@ $title='系统设置';require(dirname(__DIR__).'/header.php');
             <div class="layui-form-item">
                 <label class="layui-form-label">发送间隔</label>
                 <div class="layui-input-inline">
-                    <input type="number" name="send_interval" lay-verify="required" lay-reqtext="发送间隔不能为空" placeholder='IP发送间隔,单位秒!' value="60" autocomplete="off" class="layui-input">
+                    <input type="number" name="send_interval" lay-reqtext="发送间隔不能为空" placeholder='IP发送间隔,单位秒!' value="60" autocomplete="off" class="layui-input">
                 </div>
                 <div class="layui-form-mid layui-word-aux">为了避免被恶意发送,建议不低于30秒</div>
             </div>
@@ -112,37 +112,15 @@ layui.use(['jquery','form'], function () {
     var form = layui.form;
     var layer = layui.layer;
     var $ = layui.jquery;
-    
-    //表单赋值
-    form.val('form', <?php echo json_encode(unserialize( get_db("global_config", "v", ["k" => "mail_config"])));?>);
 
     //监听提交
     form.on('submit(save)', function (data) {
-        $.post(get_api('other_root','write_mail_config'),data.field,function(data,status){
-            if(data.code == 1) {
-                if(data.msg!="保存成功"){
-                    layer.alert(data.msg)
-                }else{
-                    layer.msg(data.msg, {icon: 1});
-                }
-            }else{
-                layer.msg(data.msg, {icon: 5});
-            }
-        });
+        layer.msg('当前版本不支持此功能,如需此功能请购买高级版授权', {icon: 5,time: 1000*300});
         return false;
     }); 
     //测试
     form.on('submit(send_test)', function (data) {
-        layer.load(1, {shade:[0.3,'#fff']});
-        layer.msg('正在发送中..', {icon: 16,time: 1000*300});
-        $.post(get_api('other_root','write_mail_test'),data.field,function(data,status){
-            layer.closeAll();
-            if(data.code == 1) {
-                layer.alert(data.msg);
-            }else{
-                layer.msg(data.msg, {icon: 5});
-            }
-        });
+        layer.msg('当前版本不支持此功能,如需此功能请购买高级版授权', {icon: 5,time: 1000*300});
         return false;
     }); 
 

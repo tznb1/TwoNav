@@ -522,7 +522,7 @@ function other_services(){
             if(is_subscribe('bool')){
                 $Res = ccurl('http://service.twonav.cn/service.php',$overtime,true,data_encryption('get_new_ver',['ver'=>SysVer]));
             }else{
-                $Res = ccurl('http://tznb.gitee.io/twonav_resource/Notice.json',$overtime);
+                $Res = ccurl('http://gitee.com/tznb/TwoNav_Resource/raw/master/Notice.json',$overtime);
             }
             $new_data = json_decode($Res['content'], true);
             if($new_data["code"] == 200 ){

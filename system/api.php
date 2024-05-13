@@ -1084,7 +1084,7 @@ function read_theme(){
         
         //没有缓存 或 禁止缓存 或 缓存过时
         if(empty($template) ||   $_GET['cache'] === 'no'  || time() -  $data["time"] > 1800 ){ 
-            $urls = ["gitee" => "http://tznb.gitee.io/twonav_resource/{$request_dir}_template.json"];
+            $urls = ["gitee" => "http://gitee.com/tznb/TwoNav_Resource/raw/master/{$request_dir}_template.json"];
             $Source = $global_config['Update_Source'] ?? '';
             if (!empty($Source) && isset($urls[$Source])) {
                 $urls = [$Source => $urls[$Source]];

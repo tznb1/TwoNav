@@ -47,7 +47,7 @@ $title='系统设置';require(dirname(__DIR__).'/header.php');
                 <div class="layui-form-mid layui-word-aux">直接访问域名不带任何参数时显示的页面</div>
             </div>
 
-            <div class="layui-form-item">
+            <div class="layui-form-item layui-hide">
                 <label class="layui-form-label required">默认分组</label>
                 <div class="layui-input-inline">
                     <input type="text" name="default_UserGroup"  lay-reqtext="默认用户不能为空" placeholder='default'  autocomplete="off" class="layui-input">
@@ -55,7 +55,7 @@ $title='系统设置';require(dirname(__DIR__).'/header.php');
                 <div class="layui-form-mid layui-word-aux">用户注册成功后所在分组代号,留空则使用默认分组</div>
             </div>
             
-            <div class="layui-form-item">
+            <div class="layui-form-item layui-hide">
                 <label class="layui-form-label">注册配置</label>
                 <div class="layui-input-inline" >
                     <select name="RegOption">
@@ -67,7 +67,7 @@ $title='系统设置';require(dirname(__DIR__).'/header.php');
                 <div class="layui-form-mid layui-word-aux">个人使用时建议禁止注册</div>
             </div>
 
-            <div class="layui-form-item">
+            <div class="layui-form-item layui-hide">
                 <label class="layui-form-label">注册入口</label>
                 <div class="layui-input-inline">
                     <input type="text" name="Register" lay-verify="required" lay-reqtext="注册入口不能为空" placeholder='register'  autocomplete="off" class="layui-input">
@@ -75,7 +75,7 @@ $title='系统设置';require(dirname(__DIR__).'/header.php');
                 <div class="layui-form-mid layui-word-aux">不想被随意注册时可以修改</div>
             </div>
             
-            <div class="layui-form-item">
+            <div class="layui-form-item layui-hide">
                 <label class="layui-form-label">登录入口</label>
                 <div class="layui-input-inline">
                     <input type="text" name="Login" lay-verify="required" lay-reqtext="登录入口不能为空" placeholder='login'  autocomplete="off" class="layui-input">
@@ -83,7 +83,7 @@ $title='系统设置';require(dirname(__DIR__).'/header.php');
                 <div class="layui-form-mid layui-word-aux">修改可以防止被爆破,修改请记好入口名,否则无法登录后台</div>
             </div>
             
-            <div class="layui-form-item">
+            <div class="layui-form-item layui-hide">
                 <label class="layui-form-label">静态路径</label>
                 <div class="layui-input-inline">
                     <input type="text" name="Libs" lay-verify="required" lay-reqtext="静态路径不能为空,填错会导致无法正常加载网页!默认./static" placeholder='./static'  autocomplete="off" class="layui-input">
@@ -99,7 +99,7 @@ $title='系统设置';require(dirname(__DIR__).'/header.php');
                 <div class="layui-form-mid layui-word-aux">主页底部显示的备案信息</div>
             </div>
             
-            <div class="layui-form-item">
+            <div class="layui-form-item layui-hide">
                 <label class="layui-form-label">防XSS脚本</label>
                 <div class="layui-input-inline" >
                     <select name="XSS_WAF">
@@ -110,7 +110,7 @@ $title='系统设置';require(dirname(__DIR__).'/header.php');
                 <div class="layui-form-mid layui-word-aux">拦截POST表单中的XSS恶意代码,提升网站安全性</div>
             </div>
             
-            <div class="layui-form-item">
+            <div class="layui-form-item layui-hide">
                 <label class="layui-form-label">防SQL注入</label>
                 <div class="layui-input-inline" >
                     <select name="SQL_WAF">
@@ -121,7 +121,7 @@ $title='系统设置';require(dirname(__DIR__).'/header.php');
                 <div class="layui-form-mid layui-word-aux">拦截POST表单中的SQL注入代码,提升网站安全性</div>
             </div>
             
-            <div class="layui-form-item">
+            <div class="layui-form-item layui-hide">
                 <label class="layui-form-label">离线模式</label>
                 <div class="layui-input-inline" >
                     <select name="offline">
@@ -140,6 +140,7 @@ $title='系统设置';require(dirname(__DIR__).'/header.php');
                         <option value="1">国内-1</option>
                         <option value="2">国内-2</option>
                         <option value="3">海外-3</option>
+                        <option value="4">国内-4</option>
                     </select>
                 </div>
                 <div class="layui-form-mid layui-word-aux">默认为自动 (非必要请勿修改)</div>
@@ -164,7 +165,7 @@ $title='系统设置';require(dirname(__DIR__).'/header.php');
                 <div class="layui-form-mid layui-word-aux">开发者调试模式,请不要随意开启</div>
             </div>
 
-            <div class="layui-form-item">
+            <div class="layui-form-item layui-hide">
                 <label class="layui-form-label">维护模式</label>
                 <div class="layui-input-inline">
                     <select name="Maintenance">
@@ -175,7 +176,7 @@ $title='系统设置';require(dirname(__DIR__).'/header.php');
                 <div class="layui-form-mid layui-word-aux">开启时将关闭主页/登录/注册等服务,站长账号不受影响(网站升级迁移时适用)</div>
             </div>
             
-            <div class="layui-form-item">
+            <div class="layui-form-item layui-hide">
                 <label class="layui-form-label required">静态链接</label>
                 <div class="layui-input-inline">
                     <select name="static_link">

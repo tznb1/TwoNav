@@ -5,7 +5,20 @@
     <li class="layui-timeline-item">
         <i class="layui-icon layui-timeline-axis"></i>
         <div class="layui-timeline-content layui-text">
-            <h4 class="layui-timeline-title">v2.1.14-20240419</h4>
+            <h4 class="layui-timeline-title">v2.1.15-20240513</h4>
+            <ul>
+                <li>[修复] 因 Gitee Pages 停止服务导致的相关问题</li>
+                <li>[升级] Layui组件由2.9.8升级到2.9.9</li>
+                <li>[变更] 系统设置隐藏部分配置(防止乱搞导致系统异常)</li>
+                <li>[变更] 保存授权后自动刷新页面并跳转到概要页方便新手用户更新系统</li>
+                <li>[移除] 自助注册功能</li>
+            </ul>
+        </div>
+    </li>
+    <li class="layui-timeline-item">
+        <i class="layui-icon layui-timeline-axis"></i>
+        <div class="layui-timeline-content layui-text">
+            <h4 class="layui-timeline-title">v2.1.14-20240416</h4>
             <ul>
                 <li>[修复] 修复已知的安全漏洞提高安全性</li>
                 <li>[修复] 分类停用时链接列表查找全部时出现已停用分类下的链接</li>

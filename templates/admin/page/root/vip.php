@@ -141,7 +141,11 @@ layui.use(['jquery','form'], function () {
                 $("#order_id").val(data.data.order_id);
                 $("#end_time").val(timestampToTime(data.data.end_time));
                 $("#type_name").val(data.data.type_name);
-                layer.msg(data.msg, {icon: 1,time: 10000});
+                layer.msg('保存成功,稍后请更新系统..', {icon: 16,shade: [0.1, '#f5f5f5'],scrollbar: false,offset: 'auto',time: 3666,
+                    end: function() {
+                        window.parent.location.href = './?c=admin';
+                    }
+                });
             }else{
                 layer.alert(data.msg,{icon:5,title:'保存结果',anim: 2,closeBtn: 0,btn: ['我知道了']});
             }
@@ -157,53 +161,6 @@ layui.use(['jquery','form'], function () {
         window.open($(this).attr('data-url'));
         return false;
     });
-    
-    //清空订阅信息
-    form.on('submit(del_key)', function(data){
-        vcode = randomnum(6);
-        index = layer.prompt({formType: 0,value: '',title: '请输入验证码: ' + vcode,shadeClose: false,"success":function(){
-            $("input.layui-layer-input").on('keydown',function(e){
-                if(e.which == 13) {
-                    del_key(data);
-                }
-            });
-        }},function(){
-            del_key(data)
-        }); 
-        return false;
-    });
-    
-    function del_key(data){
-        layer.close(index);
-        if($("input.layui-layer-input").val() != vcode){
-            layer.msg('验证码错误', {icon: 5});
-            return false; 
-        }
-        var order_id = data.field.order_id;
-        if(order_id.length < 20){
-            layer.msg('订单号错误,请核对', {icon: 5});
-            return false;
-        }
-        if(data.field.email.length == 0){
-            layer.msg('邮箱不能为空,请核对', {icon: 5});
-            return false;
-        }
-        layer.load(2, {shade: [0.1,'#fff']});
-        $.post(get_api('other_services','del_key'),{'order_id':data.field.order_id,'email':data.field.email},function(data,status){
-            layer.closeAll('loading');
-            if(data.code == 200) {
-                $("#order_id").val('');
-                $("#email").val('');
-                $("#end_time").val('1970-01-01 08:00:00');
-                $("#type_name").val('');
-                layer.msg(data.msg, {icon: 1,time: 10000});
-            }else{
-                layer.alert(data.msg,{icon:5,title:'保存结果',anim: 2,closeBtn: 0,btn: ['我知道了']});
-            }
-        }).fail(function () {
-            layer.msg('请求失败', {icon: 5});
-        });
-    }
     
     // 正版验证
     $('#validate').on('click', function(){

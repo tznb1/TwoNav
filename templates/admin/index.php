@@ -14,7 +14,7 @@
     <link rel="stylesheet" href="<?php echo $layui['css'];?>" media="all">
     <link rel="stylesheet" href="./templates/admin/css/layuimini.css?v=<?php echo $Ver;?>" media="all">
     <link rel="stylesheet" href="./templates/admin/css/themes/default.css?v=<?php echo $Ver;?>" media="all">
-    <link rel="stylesheet" href="<?php echo $libs?>/Font-awesome/4.7.0/css/font-awesome.css" media="all">
+    <link rel="stylesheet" href="<?php echo $libs?>/Font-awesome/4.7.0/css/font-awesome.min.css" media="all">
     <link rel="shortcut icon" href="<?php echo $favicon;?>">
     <style id="layuimini-bg-color"></style>
 </head>
