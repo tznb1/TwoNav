@@ -406,7 +406,11 @@ function write_link(){
             $tmp_path = $_SESSION['upload_images'][UID][$_POST['file']];
             if(!empty($tmp_path) && is_file($tmp_path)){
                 $suffix = strtolower(end(explode('.',$tmp_path)));
-                $path =  "./data/user/{$u}/favicon/{$lid}.{$suffix}";
+                $path =  "./data/user/{$u}/favicon";
+                if(!Check_Path($path)){
+                    msg(-1,'创建目录失败,请检查权限');
+                }
+                $path .= "/{$lid}.{$suffix}";
                 if(rename($tmp_path,$path)) { //移动文件到用户目录
                     $icon = $path;
                 }else{

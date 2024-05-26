@@ -35,8 +35,8 @@ if($db_config['type'] == 'sqlite'){
 $global_config = unserialize( get_db("global_config", "v", ["k" => "o_config"]) ); //全局配置
 $c = Get('c');
 $libs = $global_config['Libs'];
-$layui['js']  = $libs.'/Layui/v2.9.9/layui.js';
-$layui['css'] = $libs.'/Layui/v2.9.9/css/layui.css';
+$layui['js']  = $libs.'/Layui/v2.9.10/layui.js';
+$layui['css'] = $libs.'/Layui/v2.9.10/css/layui.css';
 $global_config['static_link'] = isset($global_config['static_link']) ? $global_config['static_link'] : 0;
 define('libs',$global_config['Libs']);
 define('SysVer',Get_Version());

@@ -5,6 +5,16 @@
     <li class="layui-timeline-item">
         <i class="layui-icon layui-timeline-axis"></i>
         <div class="layui-timeline-content layui-text">
+            <h4 class="layui-timeline-title">v2.1.16-20240525</h4>
+            <ul>
+                <li>[升级] Layui组件由2.9.9升级到2.9.10</li>
+                <li>[修复] 添加链接时上传图标未自动创建目录</li>
+            </ul>
+        </div>
+    </li>
+    <li class="layui-timeline-item">
+        <i class="layui-icon layui-timeline-axis"></i>
+        <div class="layui-timeline-content layui-text">
             <h4 class="layui-timeline-title">v2.1.15-20240513</h4>
             <ul>
                 <li>[修复] 因 Gitee Pages 停止服务导致的相关问题</li>
