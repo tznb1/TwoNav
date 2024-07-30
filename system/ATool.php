@@ -91,7 +91,7 @@ if(!empty($_GET['type'])){
            $user_group['root'] = '站长';
            $user_group['default'] = '默认';
            foreach ($datas as $key => $data){
-               $datas[$key]['UserGroupName'] = $user_group[$data['UserGroup']]??'Null';
+               $datas[$key]['UserGroupName'] = $user_group[$data['UserGroup']]??$data['UserGroup'];
            }
         }
         msgA(['code'=>1,'msg'=>'获取成功','count'=>$count,'data'=>$datas]);
@@ -116,6 +116,10 @@ if(!empty($_GET['type'])){
     }elseif($_GET['type'] == 'set_close_Maintenance'){
         $global_config['Maintenance'] = 0;
         update_db("global_config", ["v" => $global_config], ["k" => "o_config"],[1,'设置成功']);
+    //开启调试模式
+    }elseif($_GET['type'] == 'set_open_debug'){
+        $global_config['Debug'] = 1;
+        update_db("global_config", ["v" => $global_config], ["k" => "o_config"],[1,'设置成功']);
     //重置静态路径
     }elseif($_GET['type'] == 'Set_Libs'){
         $global_config['Libs'] = "./static";
@@ -126,6 +130,10 @@ if(!empty($_GET['type'])){
         if(function_exists("opcache_reset")){
             opcache_reset(); //清理PHP缓存
         }
+        msgA(['code'=>1,'msg'=>'操作成功']);
+    //清空统计
+    }elseif($_GET['type'] == 'del_tongji'){
+        delete_db('user_count',[]);
         msgA(['code'=>1,'msg'=>'操作成功']);
     //改账号
     }elseif($_GET['type'] == 'set_user_name'){
@@ -181,6 +189,14 @@ if(!empty($_GET['type'])){
         }
         $LoginConfig['totp_key'] = '';
         update_db("global_user", ["LoginConfig" => $LoginConfig], ["ID" => $_POST['ID']],[1,'操作成功']);
+    }elseif($_GET['type'] == 'get_pwd2'){
+        $user_data = get_db('global_user','*',['ID'=>$_POST['ID']]);
+        $LoginConfig = unserialize($user_data['LoginConfig']);
+        if(empty($LoginConfig['Password2'])){
+            msgA(['code'=>-1,'msg'=>'当前账号未设置二级密码']);
+        }else{
+            msgA(['code'=>1,'msg'=> "当前账号: {$user_data['User']}<br />二级密码: {$LoginConfig['Password2']}"]);
+        }
     }
     
     msgA(['code'=>-1,'msg'=>'请求类型错误']);
@@ -252,9 +268,11 @@ function echo_Atool(){
         <a class="layui-btn layui-btn-sm layui-btn-primary" href="../index.php?c=<?php echo $global_config['Register'];?>" target="_blank"><i class="layui-icon layui-icon-add-1"></i>打开注册页</a>
         <button type="set_allow_register" class="set layui-btn layui-btn-sm layui-btn-primary"><i class="layui-icon layui-icon-set-sm"></i>允许注册</button>
         <button type="set_close_Maintenance" class="set layui-btn layui-btn-sm layui-btn-primary"><i class="layui-icon layui-icon-set-sm"></i>关闭维护模式</button>
+        <button type="set_open_debug" class="set layui-btn layui-btn-sm layui-btn-primary"><i class="layui-icon layui-icon-set-sm"></i>打开调试模式</button>
         <button type="Set_Libs" class="set layui-btn layui-btn-sm layui-btn-primary"><i class="layui-icon layui-icon-set-sm"></i>重置静态路径</button>
         <button type="Set_clear_cache" class="set layui-btn layui-btn-sm layui-btn-primary"><i class="layui-icon layui-icon-set-sm"></i>清除缓存</button>
-        <a class="layui-btn layui-btn-sm layui-btn-primary" href="https://gitee.com/tznb/TwoNav/wikis/pages?sort_id=7993451&doc_id=3767990" target="_blank"><i class="layui-icon layui-icon-align-left"></i>帮助</a>
+        <button type="del_tongji" class="del_tongji layui-btn layui-btn-sm layui-btn-primary"><i class="layui-icon layui-icon-set-sm"></i>清空统计</button>
+        <a class="layui-btn layui-btn-sm layui-btn-primary" href="https://docs.twonav.cn/#/books/start-07" target="_blank"><i class="layui-icon layui-icon-align-left"></i>帮助</a>
     </div>
     <hr>
     <div class="layui-inline layui-form" style="padding-bottom: 5px;">
@@ -281,10 +299,7 @@ function echo_Atool(){
 <!-- 表格操作列 -->
 <script type="text/html" id="tablebar">
     <div class="layui-btn-group">
-        <a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="set_pwd">改密码</a>
-        <a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="set_root">设站长</a>
-        <a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="set_user_name">改账号</a>
-        <a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="del_otp" title="移除OTP登录验证">删OTP</a>
+        <a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="more">操作 <i class="layui-icon layui-icon-down"></i></a>
     </div>
 </script>
 <script src="<?php echo $GLOBALS['layui']['js']; ?>"></script>
@@ -292,13 +307,14 @@ function echo_Atool(){
 <script src="../static/jquery/jquery.md5.js"></script>
 <script src="../templates/admin/js/public.js?v=<?php echo time();?>"></script>
 <script>
-    layui.use(['layer','table'], function () {
+    layui.use(function () {
         var $ = layui.jquery;
         var layer = layui.layer;
         var table = layui.table;
+        var dropdown = layui.dropdown;
         var cols = [[
             {field:'ID',title:'ID',width:60,sort:true}
-            ,{title:'操作',toolbar:'#tablebar',width:220}
+            ,{title:'操作',toolbar:'#tablebar',width:90}
             ,{field:'User',title:'账号',minWidth:120,templet:function(d){
                 return '<a style="color:#3c78d8" title="打开用户主页" target="_blank" href="../?u='+d.User+'">'+d.User+'</a>'
             }}
@@ -310,6 +326,7 @@ function echo_Atool(){
             ,{field:'RegTime',title: '注册时间',minWidth:100,templet:function(d){
                 return d.RegTime == null ? '' : timestampToTime(d.RegTime,true);
             }}
+            
             ]]
         //用户表渲染
         table.render({
@@ -345,47 +362,67 @@ function echo_Atool(){
         table.on('tool(table)', function (obj) {
             console.log(obj.data);
             var data = obj.data;
-            if (obj.event == 'set_pwd') {
-                layer.prompt({formType: 3,value: '',title: '请输入新密码'}, function(value, index, elem){
-                    $.post('./ATool.php?type=set_pwd',{ID:data.ID,new_pwd:$.md5(value)},function(data,status){
-                        if(data.code == 1) {
-                            layer.close(index);
-                            layer.msg(data.msg, {icon: 1});
-                        }else{
-                            layer.msg(data.msg, {icon: 5});
+            if(obj.event == 'more'){
+                dropdown.render({
+                    elem: this,
+                    show: true, 
+                    data: [{
+                            title: '修改密码',
+                            id: 'set_pwd'
+                        },{
+                            title: '设为站长',
+                            id: 'set_root'
+                        },{
+                            title: '修改账号',
+                            id: 'set_user_name'
+                        },{
+                            title: '取消双重验证',
+                            id: 'del_otp'
+                        },{
+                            title: '查看二级密码',
+                            id: 'get_pwd2'
                         }
-                    });
-                });
-            }else if(obj.event == 'set_root'){
-                $.post('./ATool.php?type=set_root',{ID:data.ID},function(data,status){
-                    if(data.code == 1) {
-                        table.reload('table');
-                        layer.msg(data.msg, {icon: 1});
-                    }else{
-                        layer.msg(data.msg, {icon: 5});
-                    }
-                });
-            }else if(obj.event == 'set_user_name'){
-                layer.prompt({formType: 3,value: '',title:'请输入新账号 (原账号:'+data.User+')'}, function(value, index, elem){
-                    $.post('./ATool.php?type=set_user_name',{ID:data.ID,new_user_name:value},function(data,status){
-                        if(data.code == 1) {
-                            layer.close(index);
-                            table.reload('table');
-                            layer.msg(data.msg, {icon: 1});
+                    ],
+                    click: function(menu, othis){
+                        if(menu.id == 'set_pwd'){
+                            layer.prompt({formType: 3,value: '',title: '请输入新密码'}, function(value, index, elem){
+                                $.post('./ATool.php?type=set_pwd',{ID:data.ID,new_pwd:$.md5(value)},function(data,status){
+                                    if(data.code == 1) {
+                                        layer.close(index);
+                                        layer.msg(data.msg, {icon: 1});
+                                    }else{
+                                        layer.msg(data.msg, {icon: 5});
+                                    }
+                                });
+                            });
+                        }else if(menu.id == 'set_user_name'){
+                            layer.prompt({formType: 3,value: '',title:'请输入新账号 (原账号:'+data.User+')'}, function(value, index, elem){
+                                $.post('./ATool.php?type=set_user_name',{ID:data.ID,new_user_name:value},function(data,status){
+                                    if(data.code == 1) {
+                                        layer.close(index);
+                                        table.reload('table');
+                                        layer.msg(data.msg, {icon: 1});
+                                    }else{
+                                        layer.msg(data.msg, {icon: 5});
+                                    }
+                                });
+                            });
+                        }else if(menu.id == 'set_root' || menu.id == 'del_otp' || menu.id == 'get_pwd2'){
+                            $.post('./ATool.php?type=' + menu.id,{ID:data.ID},function(data,status){
+                                if(data.code == 1) {
+                                    table.reload('table');
+                                    layer.msg(data.msg, {icon: 1});
+                                }else{
+                                    layer.msg(data.msg, {icon: 5});
+                                }
+                            });
                         }else{
-                            layer.msg(data.msg, {icon: 5});
+                            layer.msg('无效操作', {icon: 5});
                         }
-                    });
-                });
-            }else if(obj.event == 'del_otp'){
-                $.post('./ATool.php?type=del_otp',{ID:data.ID},function(data,status){
-                    if(data.code == 1) {
-                        layer.msg(data.msg, {icon: 1});
-                    }else{
-                        layer.msg(data.msg, {icon: 5});
                     }
-                });
+                })
             }
+            return false;
         });
         $('.set').click(function () {
             let type = $(this).attr("type");
@@ -397,6 +434,22 @@ function echo_Atool(){
                 }
             });
             return false;
+        });
+        //清空统计
+        $('.del_tongji').on('click', function(){
+            layer.confirm('确认后将删除所有账号的统计数据(访问统计/点击统计/报表统计),是否继续?',{icon: 3, title:'此操作不可逆'}, function(index){
+                $.post('./ATool.php?type=del_tongji',function(data,status){
+                    layer.closeLast('loading');
+                     if(data.code == 1){
+                        layer.msg(data.msg,{icon: 1})
+                    } else{
+                        layer.msg(data.msg,{icon: 5});
+                    }
+                }).fail(function(xhr, textStatus, errorThrown) {  
+                    layer.closeLast('loading');
+                    layer.alert('请求失败');
+                });
+            });
         });
         $('#logout').click(function () {
             layer.confirm('退出后ATool将被关闭并重置Key',{icon: 3, title:'为了您的站点安全:'}, function(index){

@@ -43,6 +43,7 @@ INSERT INTO "updatadb_logs" ("file_name", "update_time", "status", "extra") VALU
 INSERT INTO "updatadb_logs" ("file_name", "update_time", "status", "extra") VALUES ('20230723.php', '1690119053', 'TRUE', '');
 INSERT INTO "updatadb_logs" ("file_name", "update_time", "status", "extra") VALUES ('20231218.php', '1702828800', 'TRUE', '');
 INSERT INTO "updatadb_logs" ("file_name", "update_time", "status", "extra") VALUES ('20240328.php', '1711296000', 'TRUE', '');
+INSERT INTO "updatadb_logs" ("file_name", "update_time", "status", "extra") VALUES ('20240720.php', '1721404800', 'TRUE', '');
 
 -- 创建用户表
 CREATE TABLE IF NOT EXISTS "global_user" (
@@ -88,6 +89,7 @@ CREATE TABLE IF NOT EXISTS "user_categorys" (
 );
 
 INSERT INTO "user_categorys"("id", "cid", "fid", "uid", "pid", "status", "property", "name", "add_time", "up_time", "weight", "description", "font_icon", "icon", "extend") VALUES (1, 1, 0, 0, 0, 1, 0, '默认分类', 1672502400, 1672502400, 0, 'TwoNav默认分类', 'fa fa-book', '', '');
+CREATE INDEX "category_idx_1" ON "user_categorys" ("fid","uid","status","property","pid","weight");
 
 -- 用户链接表
 CREATE TABLE IF NOT EXISTS "user_links" (
@@ -112,7 +114,8 @@ CREATE TABLE IF NOT EXISTS "user_links" (
 );
 INSERT INTO "user_links"("id", "lid", "uid", "fid", "pid", "status", "property", "title", "url", "url_standby", "weight", "description", "icon", "click", "add_time", "up_time", "extend") VALUES (1, 1, 0, 1, 0, 1, 0, 'TwoNav 源码', 'https://gitee.com/tznb/TwoNav', '', 0, '项目开源地址', '', 0, 1672502400, 1672502400, '');
 INSERT INTO "user_links"("id", "lid", "uid", "fid", "pid", "status", "property", "title", "url", "url_standby", "weight", "description", "icon", "click", "add_time", "up_time", "extend") VALUES (2, 2, 0, 1, 0, 1, 0, '使用说明', 'https://gitee.com/tznb/TwoNav/wikis', '', 0, '使用说明', '', 0, 1672502400, 1672502400, '');
- 
+CREATE INDEX "link_idx_1" ON "user_links" ("uid","fid","status","property","pid","add_time","click");
+
 -- 登录信息表
 CREATE TABLE IF NOT EXISTS "user_login_info" (
   "id" integer NOT NULL PRIMARY KEY AUTOINCREMENT,

@@ -5,6 +5,18 @@
     <li class="layui-timeline-item">
         <i class="layui-icon layui-timeline-axis"></i>
         <div class="layui-timeline-content layui-text">
+            <h4 class="layui-timeline-title">v2.1.17-20240730</h4>
+            <ul>
+                <li>[升级] Layui组件由2.9.10升级到v2.9.13</li>
+                <li>[增加] Atool工具箱增加查看二级密码功能</li>
+                <li>[增加] Atool工具箱增加清空统计数据 ( 指全部账号概要页面的报表统计/访问统计/点击统计 )</li>
+                <li>[优化] 性能优化 ( 存在数据库更新,建议先备份在升级 )</li>
+            </ul>
+        </div>
+    </li>
+    <li class="layui-timeline-item">
+        <i class="layui-icon layui-timeline-axis"></i>
+        <div class="layui-timeline-content layui-text">
             <h4 class="layui-timeline-title">v2.1.16-20240525</h4>
             <ul>
                 <li>[升级] Layui组件由2.9.9升级到2.9.10</li>

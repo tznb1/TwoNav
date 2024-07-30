@@ -388,6 +388,9 @@ function Write_Config(){
 <div class="login-logo"><h1>TwoNav 安装引导</h1></div>
 <div class="layui-col-lg6 layui-col-md-offset3" style ="margin-top:4em;">
 <form class="layui-form layui-form-pane" action="">
+     <div class="layui-form-mid layui-word-aux" style="width: 99%;">
+     <span>禁止用于违法用途、使用者造成的一切法律后果由使用者自行承担、安装视为同意。</span>
+ </div>
   <div class="layui-form-item">
     <label class="layui-form-label">管理员账号</i></label>
     <div class="layui-input-block">
@@ -411,7 +414,7 @@ function Write_Config(){
     <label class="layui-form-label">数据库类型</label>
     <div class="layui-input-block">
       <select id="db_type" name="db_type" lay-filter="db_type" >
-        <option value="sqlite" selected="">SQLite ( 推荐 )</option>
+        <option value="sqlite" selected="">SQLite</option>
         <option value="mysql" >MySQL ≥ 5.6.0 </option>
         <option value="mariadb" >MariaDB ≥ 10.1 </option>
       </select>
