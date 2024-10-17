@@ -13,10 +13,6 @@
     <link rel="stylesheet" href="<?php echo $layui['css']; ?>">
     <link rel="stylesheet" href="<?php echo $libs?>/Other/login.css?v=<?php echo SysVer; ?>">
     <link rel="shortcut icon" href="./favicon.ico" type="image/x-icon">
-    <!--[if lt IE 9]>
-    <script src="<?php echo $libs?>/Other/html5.min.js"></script>
-    <script src="<?php echo $libs?>/Other/respond.min.js"></script>
-    <![endif]-->
 </head>
 <body>
 <div class="main-body">
@@ -60,6 +56,11 @@
 <script src = "<?php echo $layui['js']; ?>"></script>
 <script src = '<?php echo $libs?>/jquery/jquery.md5.js'></script>
 <script>
+    if (/Trident/.test(navigator.userAgent) || /MSIE/.test(navigator.userAgent)) {
+        alert("当前浏览器版本过低，请使用Chrome浏览器或火狐浏览器等现代浏览器");
+    }
+</script>
+<script>
     layui.use(['form','jquery'], function () {
         var $ = layui.jquery,
             form = layui.form,
@@ -68,10 +69,10 @@
         $('.bind-password').on('click', function () {
             if ($(this).hasClass('icon-5')) {
                 $(this).removeClass('icon-5');
-                $("input[name='Password']").attr('type', 'password');
+                $("input[name='password']").attr('type', 'password');
             } else {
                 $(this).addClass('icon-5');
-                $("input[name='Password']").attr('type', 'text');
+                $("input[name='password']").attr('type', 'text');
             }
         });
 

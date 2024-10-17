@@ -5,6 +5,22 @@
     <li class="layui-timeline-item">
         <i class="layui-icon layui-timeline-axis"></i>
         <div class="layui-timeline-content layui-text">
+            <h4 class="layui-timeline-title">v2.1.18-20241018</h4>
+            <ul>
+                <li>[升级] Layui组件由2.9.14升级到2.9.16</li>
+                <li>[升级] Medoo组件由2.1.8升级到2.1.12</li>
+                <li>[新增] 授权管理页面增加修改域名入口</li>
+                <li>[变更] 分类页面标题显示分类名称-分类描述</li>
+                <li>[修复] 默认登录模板输入密码处点击小眼睛未显示密码</li>
+                <li>[优化] 调高超时参数以兼顾网络较慢的环境</li>
+                <li>[优化] 默认登录模板检测到使用IE浏览器时弹出提示</li>
+                <li>[优化] 内置防火墙拦截时提示如何解决</li>
+            </ul>
+        </div>
+    </li>
+    <li class="layui-timeline-item">
+        <i class="layui-icon layui-timeline-axis"></i>
+        <div class="layui-timeline-content layui-text">
             <h4 class="layui-timeline-title">v2.1.17-20240730</h4>
             <ul>
                 <li>[升级] Layui组件由2.9.10升级到v2.9.13</li>

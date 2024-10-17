@@ -121,7 +121,11 @@ if($config_type == 'user'){
     if(!check_purview('header',1)){$site['custom_header'] = '';}
     if(!check_purview('footer',1)){$site['custom_footer'] = '';}
     
-    //主页标题( 主标题 - 副标题 )
+    //主页标题(分类页面显示分类名-描述)
+    if(isset($_GET['cid']) && intval($_GET['cid']) > 0){
+        $teml_cd = get_db('user_categorys',['name','description'],['uid'=>UID,'cid'=>intval($_GET['cid'])]);
+        $site['title'] = $teml_cd['name']; $site['subtitle'] = $teml_cd['description']; 
+    }
     $site['Title']  =  $site['title'].(empty($site['subtitle'])?'':' - '.$site['subtitle']);
     
     //站点图标

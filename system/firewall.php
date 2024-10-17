@@ -21,7 +21,7 @@ foreach($_POST as $key =>$value){
         }
     }
     //拦截SQL注入
-    if($global_config['SQL_WAF'] == 1 ){
+    if(!isset($code) && $global_config['SQL_WAF'] == 1 ){
         if(preg_match("/\s+(or|xor|and)\s+(=|<|>|'|".'")/i',$value)){
             $code = 2101;
         }elseif(preg_match("/select.+(from|limit)/i",$value)){
@@ -43,5 +43,10 @@ foreach($_POST as $key =>$value){
         }
     }
     
-    if(!empty($code)){msgA(['code'=>$code,'msg'=>$code.':已拦截不合法参数！','key'=>$key,'Value'=>$value,'method'=>$method ]);}
+    if(!empty($code)){
+        $tips = $code <= 2100 ? 
+            '<br />如果您是站长,请前往系统设置关闭防XSS脚本<br />如果您是用户,请联系站长处理': 
+            '<br />如果您是站长,请前往系统设置关闭防SQL注入<br />如果您是用户,请联系站长处理';
+        msgA(['code'=>$code,'msg'=>$code.':已拦截不合法参数！'.$tips,'key'=>$key,'Value'=>$value,'method'=>$method ]);
+    }
 }

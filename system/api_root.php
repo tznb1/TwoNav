@@ -453,7 +453,7 @@ function other_services(){
         'method'   => $_GET['type'],
         'sys'      => $_POST['sys']
     ];
-    $overtime = !isset($global_config['Update_Overtime']) ? 3 : ($global_config['Update_Overtime'] < 3 || $global_config['Update_Overtime'] > 60 ? 3 : $global_config['Update_Overtime']);
+    $overtime = 30;
     // 判断操作类型
     if($_GET['type'] == 'query_key' || $_GET['type'] == 'save_key'){
         $Res = ccurl("http://service.twonav.cn/service.php",$overtime,true,$post);

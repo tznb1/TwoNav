@@ -15,7 +15,7 @@ if(!empty($Notice)){
         <h4 style = "margin-bottom:1em;"><font color="red">不要使用盗版/破解版,盗版无法升级却存在诸多问题,所造成的损失与本程序无关</font></h4>
         <blockquote class="layui-elem-quote layui-text" style="color:red" >
             <li> 如何激活授权: </li>
-            <li>1. 购买授权后将授权号(卡密)和邮箱填入下方并点击保存</li>
+            <li>1. 购买授权后将授权卡密和邮箱填入下方并点击保存</li>
             <li>2. 返回概要页面 > 刷新 > 更新系统 ( 不更新还是免费版 )</li>
             <li>3. 更新成功后就是授权版的系统了,可使用全部功能</li>
             <li>4. 禁止传播/破解授权版源代码,违者封授权并追责</li>
@@ -66,21 +66,11 @@ if(!empty($Notice)){
                 <input type="text" name="type_name" id ="type_name" value="<?php echo $subscribe['type_name'] ?? ''; ?>" autocomplete="off" placeholder="若未正确显示请点击保存设置" class="layui-input">
             </div>
         </div>
-<?php if(get_db('global_config','v',["k" => "sys_switch"]) == 'show' && $subscribe['type'] == '3'){ ?>
-        <div class="layui-form-item">
-            <label class="layui-form-label">版本切换</label>
-            <div class="layui-input-inline" >
-                <select name="sys" id="sys">
-                    <option value="biaozhun" selected>标准版</option>
-                    <option value="gaoji" >高级版</option>
-                </select>
-            </div>
-            <div class="layui-form-mid layui-word-aux">希望使用的系统版本 ( 下次更新时 )</div>
-        </div>
-<?php } ?>
+
         <div class="layui-btn-group">
             <button class="layui-btn layui-btn-normal" lay-submit lay-filter="save_key">保存</button>
             <button class="layui-btn layui-btn-danger" lay-submit lay-filter="buy_vip" data-url="<?php echo empty($data['pay_rul']) ?'':$data['pay_rul']?>" >购买授权</button>
+            <button class="layui-btn layui-btn-danger" lay-submit lay-filter="Modify_Domain" data-url="https://docs.twonav.cn/#/books/root-02?id=%e4%bf%ae%e6%94%b9%e5%9f%9f%e5%90%8d" >修改域名</button>
             <button class="layui-btn layui-bg-purple" type="button" id="validate" style="<?php echo empty($subscribe['order_id']) ? 'display:none;':''; ?>">正版验证</button>
         </div>
 
@@ -153,7 +143,12 @@ layui.use(['jquery','form'], function () {
             layer.msg('请求失败', {icon: 5});
         });
     });
-    
+    //修改域名
+    form.on('submit(Modify_Domain)', function(data){
+        let url = $(this).attr('data-url');
+        window.open($(this).attr('data-url'));
+        return false;
+    });
     //购买授权
     form.on('submit(buy_vip)', function(data){
         let url = $(this).attr('data-url');
