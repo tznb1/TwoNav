@@ -171,22 +171,14 @@ function geticourl($icon,$link){
     }
     if ($site['link_icon'] == 'default'){
         return($GLOBALS['libs'].'/Other/default.ico');
-    }elseif ($icon ==20){
+    }elseif ($icon == 20){
         return('./index.php?c=icon&url='.base64_encode($link['real_url']));
-    }elseif ($icon ==21){
+    }elseif ($icon == 21){
         return('./ico/'.base64_encode($link['real_url']));
-    }elseif($icon ==2){ 
+    }elseif($icon == 2){ 
         return('https://favicon.png.pub/v1/'.base64_encode(get_url_host($link['real_url'],true,true)));
-    }elseif($icon ==4){
-        return('https://api.15777.cn/get.php?url='.$link['real_url']);
-    }elseif($icon ==5){
-        return('https://favicon.cccyun.cc/'.$link['real_url']);
-    }elseif($icon ==6){
-        return('https://api.iowen.cn/favicon/'.parse_url($link['real_url'])['host'].'.png');
-    }elseif($icon ==7){
-        return('https://toolb.cn/favicon/'.parse_url($link['real_url'])['host']);
-    }elseif($icon ==8){
-        return('https://apis.jxcxin.cn/api/Favicon?url='.$link['real_url']);
+    }elseif($icon == 6){
+        return('https://t3.gstatic.cn/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&size=128&url='.$link['real_url']);
     }else{
         return('./system/ico.php?text='.mb_strtoupper(mb_substr($link['title'], 0, 1)));
     }

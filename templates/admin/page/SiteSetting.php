@@ -72,11 +72,11 @@
                         <option value="0" selected>离线图标(首字图标)</option>
                         <option value="20" >本地服务</option>
                         <option value="21" >本地服务(伪静态)</option>
-                        <option value="2" >favicon.png.pub (小图标)</option>
-                        <option value="6" >api.iowen.cn</option>
+                        <option value="2" >第三方:favicon.png.pub (小图标)</option>
+                        <option value="6" >第三方:gstatic.cn (大图标)</option>
                     </select>
                 </div>
-                <div class="layui-form-mid layui-word-aux">所有API接口均由其他大佬提供!若有异常请尝试更换接口!</div>
+                <div class="layui-form-mid layui-word-aux">三方接口由其他站长提供!若有异常请尝试更换接口!建议使用本地服务!</div>
             </div>
             <div class="layui-form-item">
                 <label class="layui-form-label">重复链接</label>
