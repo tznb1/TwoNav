@@ -90,11 +90,11 @@ TwoNav 是一款开源的书签（导航）管理程序，界面简洁，安装�
 * 支持更换各种模板/支持混搭,26个主题模板
 * 安全性支持:更换登录入口/二级密码/OTP双重验证
 
-### 赞助商
-* [此项目的 CDN 加速和安全防护由腾讯 EdgeOne 赞助。](https://edgeone.ai/?from=github "此项目的 CDN 加速和安全防护由腾讯 EdgeOne 赞助。")
-[![](https://edgeone.ai/media/34fe3a45-492d-4ea4-ae5d-ea1087ca7b4b.png)](https://edgeone.ai/?from=github)
-[Best Asian CDN, Edge, and Secure Solutions - Tencent EdgeOne](https://edgeone.ai/?from=github "Best Asian CDN, Edge, and Secure Solutions - Tencent EdgeOne")
-
 ![](https://foruda.gitee.com/images/1680680754989095293/fcc56e76_10359480.jpeg "主页预览")
 ![](https://foruda.gitee.com/images/1680680836189756220/8c227c34_10359480.jpeg "主题模板")
+
+### 赞助商
+* 本项目 CDN 加速及安全防护由 Tencent EdgeOne 赞助：EdgeOne 提供长期有效的免费套餐，包含不限量的流量和请求，覆盖中国大陆节点，且无任何超额收费，感兴趣的朋友可以去 EdgeOne 官网获取
+* [亚洲最佳CDN、边缘和安全解决方案 - Tencent EdgeOne](https://edgeone.ai/zh?from=github)
+[![](https://edgeone.ai/media/34fe3a45-492d-4ea4-ae5d-ea1087ca7b4b.png)](https://edgeone.ai/?from=github)
 
