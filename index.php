@@ -1,8 +1,5 @@
 <?php
 error_reporting(E_ALL^E_NOTICE^E_WARNING^E_DEPRECATED);
-header("Cache-Control: no-cache, no-store, must-revalidate"); 
-header("Pragma: no-cache"); 
-header("Expires: 0");
 define('DIR',__DIR__); //常量: 运行目录
 require DIR."/system/Msg.php";
 if(!is_file(DIR.'/data/config.php')){require DIR.'/system/install.php';exit;} //无配置时进入安装引导
@@ -38,8 +35,8 @@ if($db_config['type'] == 'sqlite'){
 $global_config = unserialize( get_db("global_config", "v", ["k" => "o_config"]) ); //全局配置
 $c = Get('c');
 $libs = $global_config['Libs'];
-$layui['js']  = $libs.'/Layui/v2.9.27/layui.js';
-$layui['css'] = $libs.'/Layui/v2.9.27/css/layui.css';
+$layui['js']  = $libs.'/Layui/v2.9.18/layui.js';
+$layui['css'] = $libs.'/Layui/v2.9.18/css/layui.css';
 $global_config['static_link'] = isset($global_config['static_link']) ? $global_config['static_link'] : 0;
 define('libs',$global_config['Libs']);
 define('SysVer',Get_Version());

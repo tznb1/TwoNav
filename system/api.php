@@ -475,7 +475,7 @@ function write_link(){
         
         //取后缀并判断是否支持
         $suffix = strtolower(end(explode('.',$_FILES["file"]["name"])));
-        if(!preg_match('/^(jpg|jpeg|png|ico|bmp|svg|webp|jfif)$/',$suffix)){
+        if(!preg_match('/^(jpg|jpeg|png|ico|bmp|svg)$/',$suffix)){
             @unlink($_FILES["file"]["tmp_name"]);
             msg(-1,'文件格式不被支持!');
         }
@@ -1669,23 +1669,17 @@ function other_get_link_info(){
     curl_setopt($c, CURLOPT_RETURNTRANSFER, 1); 
     curl_setopt($c, CURLOPT_SSL_VERIFYPEER, false);
     curl_setopt($c, CURLOPT_SSL_VERIFYHOST, false);
-    curl_setopt($c, CURLOPT_HTTPHEADER, [
-        "Accept: text/html; charset=utf-8",
-        "User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.6261.95 Safari/537.36",
-        "Accept-Language: zh-CN,zh;q=0.9" 
-    ]);
+    curl_setopt($c, CURLOPT_USERAGENT, 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/95.0.4638.69 Safari/537.36');
     curl_setopt($c, CURLOPT_FOLLOWLOCATION, 1); //允许重定向,解决http跳转到https无法识别
-    curl_setopt($c , CURLOPT_TIMEOUT, 6); //设置超时时间
+    curl_setopt($c , CURLOPT_TIMEOUT, 5); //设置超时时间
     $data = curl_exec($c); 
     curl_close($c); 
-    function decode($str) {
-        return strip_tags(str_replace(array('&comma;', '&amp;', '&quot;'), array(',', '&', '"'), html_entity_decode($str, ENT_QUOTES, 'UTF-8')));
-    }
+
     require (DIR .'/system/get_page_info.php');
     $info = get_page_info($data);
-    $link['title'] =  decode($info['site_title']);
-    $link['keywords'] = decode($info['site_keywords']);
-    $link['description'] = decode($info['site_description']);
+    $link['title'] =  $info['site_title'];
+    $link['keywords'] = $info['site_keywords'];
+    $link['description'] = $info['site_description'];
     msgA(['code'=>1,'data'=>$link]);
 }
 
