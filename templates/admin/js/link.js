@@ -67,7 +67,7 @@ layui.use(module, function () {
     upload.render({
         elem: '#up_icon'
         ,url: get_api('write_link','upload_images')
-        ,exts: 'jpg|jpeg|png|ico|bmp|svg'
+        ,exts: 'jpg|jpeg|png|ico|bmp|svg|webp|jfif'
         ,acceptMime:  'image/*'
         ,accept: 'file'
         ,size: 1024 
