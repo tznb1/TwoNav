@@ -5,6 +5,19 @@
     <li class="layui-timeline-item">
         <i class="layui-icon layui-timeline-axis"></i>
         <div class="layui-timeline-content layui-text">
+            <h4 class="layui-timeline-title">v2.1.19-20250909</h4>
+            <ul>
+                <li>[升级] Layui组件由2.9.18升级到2.9.27</li>
+                <li>[优化] 响应标头设置禁止缓存(尽量避免CDN意外缓存导致的问题)</li>
+                <li>[变更] 图标上传支持webp和jfif格式</li>
+                <li>[优化] 链接识别时在请求头表明中文优先 ( 解决多语言站点默认提供英文 )</li>
+                <li>[优化] 链接识别时对内容进行解码 ( 解决部分站点乱码 )</li>
+            </ul>
+        </div>
+    </li>
+    <li class="layui-timeline-item">
+        <i class="layui-icon layui-timeline-axis"></i>
+        <div class="layui-timeline-content layui-text">
             <h4 class="layui-timeline-title">v2.1.18-20241105</h4>
             <ul>
                 <li>[升级] Layui组件由2.9.14升级到2.9.18</li>
