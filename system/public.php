@@ -744,6 +744,7 @@ function send_email($config){
 
 //统计访问ip数
 function count_ip(){
+    if(isset($GLOBALS['global_config']['ip_tj']) && $GLOBALS['global_config']['ip_tj'] == 0) return;
     $ip = Get_IP(); $k = date('Ymd'); $t = 'access_ip';
     if(!has_db('user_count',['uid'=>UID,'k'=>$k,'t'=>$t,'e'=>$ip])){
         insert_db("user_count",['uid'=>UID,'k'=>$k,'t'=>$t,'e'=>$ip,'v'=>0]);

@@ -103,6 +103,11 @@ if($page === 'edit_link' &&  !empty($_GET['id'])){
     exit;
 }
 
+// 备用管理入口(用于解决老薛主机默认拦截关键字root的问题)
+if(preg_match('/^gl\//', $page)){
+    $page = preg_replace('/^gl\//', 'root/', $page);
+}
+
 //页面文件不存在时载入404
 if(!empty($page)){
     if(!is_file(DIR.'/templates/admin/page/'.$page.'.php')){

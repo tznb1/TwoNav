@@ -389,7 +389,9 @@ function Write_Config(){
 <div class="layui-col-lg6 layui-col-md-offset3" style ="margin-top:4em;">
 <form class="layui-form layui-form-pane" action="">
      <div class="layui-form-mid layui-word-aux" style="width: 99%;">
-     <span>禁止用于违法用途、使用者造成的一切法律后果由使用者自行承担、安装视为同意。</span>
+     <span>请遵守当地法律法规、使用者造成的一切法律后果需自行承担、安装视为同意。</span>
+     <br />
+     <span>不支持远古浏览器,会导致无法正常安装!遇到问题请尝试更换浏览器。</span>
  </div>
   <div class="layui-form-item">
     <label class="layui-form-label">管理员账号</i></label>
@@ -589,12 +591,12 @@ function open_msg(u,p){
     layer.open({ //弹出结果
     type: 1
     ,title: '安装成功'
-    ,area: ['230px', '260px']
+    ,area: ['230px', '290px']
     ,maxmin: false
     ,shadeClose: false
     ,resize: false
     ,closeBtn: 0
-    ,content: '<div style="padding: 15px;">管理员账号: '+u+'<br>管理员密码: '+p+'<br><h3><a href="?c=admin&u='+u+'" style="color: #0000FF;" class="fl">  <br> >>点我进入后台</a></h3><h3><a href="?u='+u+'" style="color: #0000FF;" class="fl">  <br> >>点我进入首页</a></h3>  <h3><a href="https://gitee.com/tznb/TwoNav/wikis/%E5%AE%89%E8%A3%85%E6%95%99%E7%A8%8B/%E5%AE%89%E5%85%A8%E9%85%8D%E7%BD%AE" style="color: #0000FF;" class="fl" target="_blank">  <br> >>安全配置说明</a></h3> </div>'
+    ,content: '<div style="padding: 15px;">管理员账号: '+u+'<br>管理员密码: '+p+'<br><h3><a href="?c=admin&u='+u+'" style="color: #0000FF;" class="fl">  <br> >>点我进入后台</a></h3><h3><a href="?u='+u+'" style="color: #0000FF;" class="fl">  <br> >>点我进入首页</a></h3>  <h3><a href="https://docs.twonav.cn/#/books/start-04" style="color: #0000FF;" class="fl" target="_blank">  <br> >>安全配置说明</a></h3> </div>'
     });
 }
 

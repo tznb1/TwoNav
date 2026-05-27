@@ -167,7 +167,7 @@ require 'header.php';
                                             </a>
                                         </div>
                                         <div class="layui-col-xs3 layuimini-qiuck-module">
-                                            <a href="https://gitee.com/tznb/TwoNav/wikis/pages" target="_blank">
+                                            <a href="https://docs.twonav.cn/#/" target="_blank">
                                                 <i class="fa fa-book"></i>
                                                 <cite>使用说明</cite>
                                             </a>
@@ -179,7 +179,7 @@ require 'header.php';
                                             </a>
                                         </div>
                                         <div class="layui-col-xs3 layuimini-qiuck-module">
-                                            <a href="https://gitee.com/tznb/TwoNav/wikis/pages?sort_id=7968669&doc_id=3767990" target="_blank">
+                                            <a href="https://pay.twonav.cn" target="_blank">
                                                 <i class="fa fa-diamond"></i>
                                                 <cite>购买授权</cite>
                                             </a>

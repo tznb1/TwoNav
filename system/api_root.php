@@ -319,6 +319,7 @@ function write_sys_settings(){
         'api_extend'=>['empty'=>true],
         'c_code'=>['int'=>true,'min'=>0,'max'=>1,'msg'=>'自定义代码参数错误'],
         'static_link'=>['int'=>true,'min'=>0,'max'=>2,'msg'=>'静态链接参数错误'],
+        'ip_tj'=>['int'=>true,'min'=>0,'max'=>1,'msg'=>'IP统计参数错误'],
         //更新设置
         'Update_Source'=>['empty'=>true],
         'Update_Overtime'=>['int'=>true,'min'=>3,'max'=>60,'msg'=>'资源超时参数错误'],

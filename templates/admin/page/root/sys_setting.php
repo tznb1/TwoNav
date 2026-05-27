@@ -187,7 +187,16 @@ $title='系统设置';require(dirname(__DIR__).'/header.php');
                 </div>
                 <div class="layui-form-mid layui-word-aux">开启后部分动态链接将改为静态链接 (请确保伪静态生效中,选定后不建议更改)</div>
             </div>
-            
+            <div class="layui-form-item">
+                <label class="layui-form-label">IP统计</label>
+                <div class="layui-input-inline">
+                    <select name="ip_tj">
+                        <option value="0">关闭</option>
+                        <option value="1" selected="">开启</option>
+                    </select>
+                </div>
+                <div class="layui-form-mid layui-word-aux">关闭后不在统计访问IP,可降低资源消耗(被攻击时建议关闭,否则会记录大量IP)</div>
+            </div>
             <div class="layui-form-item">
                 <label class="layui-form-label required">强制私有</label>
                 <div class="layui-input-inline">

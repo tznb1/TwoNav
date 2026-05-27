@@ -5,6 +5,16 @@
     <li class="layui-timeline-item">
         <i class="layui-icon layui-timeline-axis"></i>
         <div class="layui-timeline-content layui-text">
+            <h4 class="layui-timeline-title">v2.1.20-20260525</h4>
+            <ul>
+                <li>[新增] 系统设置中可关闭IP统计</li>
+                <li>[新增] 备用管理入口</li>
+            </ul>
+        </div>
+    </li>
+    <li class="layui-timeline-item">
+        <i class="layui-icon layui-timeline-axis"></i>
+        <div class="layui-timeline-content layui-text">
             <h4 class="layui-timeline-title">v2.1.19-20250909</h4>
             <ul>
                 <li>[升级] Layui组件由2.9.18升级到2.9.27</li>
